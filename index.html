@@ -138,8 +138,8 @@
     }
     .closer-photo {
       width: 100%;
-      max-width: 300px;
-      height: 540px;
+      max-width: 290px;
+      height: 400px;
       border-radius: 28px;
       border: 2px solid rgba(255,255,255,0.16);
       background: rgba(255,255,255,0.04);
@@ -152,14 +152,14 @@
         0 18px 40px rgba(0,0,0,0.28);
     }
 
-    .closer-bottom {
+   .closer-bottom {
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
       text-align: center;
-      margin-top: 6px;
+      margin-top: 14px;
     }
 
     .closer-name {
@@ -598,7 +598,7 @@ async function loadDashboard() {
             src="${img}"
             alt="Top closer photo"
             onerror="this.parentNode.textContent='No Photo';"
-            style="width: 135%;height: 135%;object-fit: cover;object-position: center top;transform: translateY(6%);display: block;">
+            style="width:135%;height:135%;object-fit:cover;object-position:center top;transform:translateY(4%);display:block;">
         `;
       } else {
         photoWrap.textContent = "No Photo";
