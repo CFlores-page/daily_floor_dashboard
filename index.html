@@ -1,9 +1,3 @@
-latest sales row highlights
-pulse panel tags
-live chart labels
-
-That would make the whole dashboard feel branded instead of only the bars. 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -377,28 +371,7 @@ That would make the whole dashboard feel branded instead of only the bars.
   <section class="panel chart-panel">
     <h2>Campaign Volume Today</h2>
     <div class="chart-shell">
-      <div class="bars">
-        <div class="bar-wrap">
-          <div class="bar-value">$1,450</div>
-          <div class="bar tafer" style="height: 62%;"></div>
-          <div class="bar-label">TAFER</div>
-        </div>
-        <div class="bar-wrap">
-          <div class="bar-value">$1,780</div>
-          <div class="bar villagroup" style="height: 78%;"></div>
-          <div class="bar-label">VILLAGROUP</div>
-        </div>
-        <div class="bar-wrap">
-          <div class="bar-value">$980</div>
-          <div class="bar balfer" style="height: 42%;"></div>
-          <div class="bar-label">BALFER</div>
-        </div>
-        <div class="bar-wrap">
-          <div class="bar-value">$1,035</div>
-          <div class="bar revenue-team" style="height: 46%;"></div>
-          <div class="bar-label">REVENUE TEAM</div>
-        </div>
-      </div>
+      <div class="bars" id="campaign-bars"></div>
     </div>
   </section>
 
@@ -541,12 +514,65 @@ function setText(selector, value, fallback = "") {
   if (el) el.textContent = value || fallback;
 }
 
+function parseMoney(value) {
+  if (typeof value === "number") return value;
+  const cleaned = String(value || "").replace(/[^0-9.-]/g, "");
+  const num = Number(cleaned);
+  return Number.isFinite(num) ? num : 0;
+}
+
+function formatMoney(value) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(parseMoney(value));
+}
+
+function campaignClass(name) {
+  const key = String(name || "").trim().toUpperCase();
+  if (key === "TAFER") return "tafer";
+  if (key === "VILLAGROUP") return "villagroup";
+  if (key === "BALFER") return "balfer";
+  if (key === "REVENUE TEAM") return "revenue-team";
+  return "tafer";
+}
+
+function renderCampaignBars(rows) {
+  const shell = document.getElementById("campaign-bars");
+  if (!shell) return;
+
+  const cleaned = rows
+    .filter(r => r.some(cell => String(cell).trim() !== ""))
+    .filter(r => String(r[0] || "").trim().toUpperCase() !== "CAMPAIGN")
+    .map(r => ({
+      name: String(r[0] || "").trim(),
+      value: parseMoney(r[1] || 0)
+    }));
+
+  const max = Math.max(...cleaned.map(r => r.value), 0);
+  const safeMax = max > 0 ? max : 1;
+
+  shell.innerHTML = cleaned.map(row => {
+    const pct = Math.max(12, Math.round((row.value / safeMax) * 100));
+    return `
+      <div class="bar-wrap">
+        <div class="bar-value">${formatMoney(row.value)}</div>
+        <div class="bar ${campaignClass(row.name)}" style="height: ${pct}%;"></div>
+        <div class="bar-label">${row.name}</div>
+      </div>
+    `;
+  }).join("");
+}
+
 async function loadDashboard() {
   try {
-    const [metrics, top, sales] = await Promise.all([
+    const [metrics, top, sales, chart] = await Promise.all([
       getSheet("B2:B4"),
       getSheet("A7:B10"),
-      getSheet("A13:D22")
+      getSheet("A13:D22"),
+      getSheet("H2:I6")
     ]);
 
     setText(".date-banner", todayLabel());
@@ -566,6 +592,8 @@ async function loadDashboard() {
         photoWrap.textContent = "No Photo";
       }
     }
+
+    renderCampaignBars(chart);
 
     const tbody = document.querySelector(".latest-panel tbody");
     if (tbody) {
@@ -592,7 +620,6 @@ async function loadDashboard() {
 loadDashboard();
 setInterval(loadDashboard, 60000);
 </script>
-
 
 </body>
 </html>
