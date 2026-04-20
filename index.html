@@ -583,18 +583,24 @@ async function loadDashboard() {
     setText(".closer-name", top?.[1]?.[0], "No sales yet");
     setText(".closer-meta", top?.[2]?.[0], "");
 
+    renderCampaignBars(chart)
+
     const photoWrap = document.querySelector(".closer-photo");
     const img = driveImage(top?.[3]?.[0] || "");
+    
     if (photoWrap) {
       if (img) {
-        photoWrap.innerHTML = `<img src="${img}" alt="Top closer photo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        photoWrap.innerHTML = `
+          <img
+            src="${img}"
+            alt="Top closer photo"
+            style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+        `;
       } else {
         photoWrap.textContent = "No Photo";
       }
     }
-
-    renderCampaignBars(chart);
-
+    
     const tbody = document.querySelector(".latest-panel tbody");
     if (tbody) {
       tbody.innerHTML = sales
