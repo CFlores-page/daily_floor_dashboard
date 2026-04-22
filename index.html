@@ -623,15 +623,6 @@ function renderLatestSales(rows) {
     .join("");
 }
 
-function campaignClass(name) {
-  const key = String(name || "").trim().toUpperCase();
-  if (key === "TAFER") return "tafer";
-  if (key === "VILLAGROUP") return "villagroup";
-  if (key === "BALFER") return "balfer";
-  if (key === "REVENUE TEAM") return "revenue-team";
-  return "tafer";
-}
-
 function renderCampaignBars(rows) {
   const shell = document.getElementById("campaign-bars");
   if (!shell) return;
@@ -661,10 +652,10 @@ function renderCampaignBars(rows) {
 
 async function loadDashboard() {
   try {
-    const [metrics, top, sales, chart] = await Promise.all([
+    const [metrics, topCloserData, sales, chart] = await Promise.all([
       getSheet("B2:B4"),
-      getSheet("A7:B10"),
-      getSheet("A13:D22"),
+      getSheet("A7:A11"),
+      getSheet("A13:E22"),
       getSheet("H2:I6")
     ]);
 
@@ -673,13 +664,15 @@ async function loadDashboard() {
     setText(".volume-today .metric-value", metrics?.[1]?.[0], "$0.00");
     setText(".average-today .metric-value", metrics?.[2]?.[0], "$0.00");
 
-    setText(".closer-name", top?.[1]?.[0], "No sales yet");
-    setText(".closer-meta", top?.[2]?.[0], "");
-
-    applyTopCloserTheme(top?.[0]?.[0] || "");
-
-    const photoWrap = document.querySelector(".closer-photo");
-    const img = driveImage(top?.[3]?.[0] || "");
+    setText(".closer-name", topCloserData?.[1]?.[0], "No sales yet");
+    setText(".closer-meta", topCloserData?.[2]?.[0], "No sales yet");
+  
+    applyTopCloserTheme(topCloserData?.[4]?.[0] || "");
+  
+  const photoWrap = document.querySelector(".closer-photo");
+  const rawPhotoUrl = topCloserData?.[3]?.[0] || "";
+  const img = rawPhotoUrl;
+    
     if (photoWrap) {
       if (img) {
         photoWrap.innerHTML = `<img src="${img}" alt="Top closer photo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
