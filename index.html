@@ -438,17 +438,17 @@
 
   <section class="panel metric sales-today">
     <div class="metric-label">Sales Today</div>
-    <div class="metric-value">8</div>
+    <div class="metric-value">Loading...</div>
   </section>
 
   <section class="panel metric volume-today">
     <div class="metric-label">Volume Today</div>
-    <div class="metric-value">$5,245.00</div>
+    <div class="metric-value">Loading...</div>
   </section>
 
   <section class="panel metric average-today">
     <div class="metric-label">Average Sale Today</div>
-    <div class="metric-value">$655.63</div>
+    <div class="metric-value">Loading... </div>
   </section>
 
   <section class="panel top-closer">
@@ -457,8 +457,8 @@
       <div class="closer-row">
         <div class="closer-photo">Picture Here</div>
         <div class="closer-bottom">
-          <div class="closer-name">GOMEZ BERNAL NOE</div>
-          <div class="closer-meta">2 sales | $1,598.00</div>
+          <div class="closer-name">Loading...</div>
+          <div class="closer-meta">Loading... </div>
         </div>
       </div>
     </div>
@@ -672,22 +672,26 @@ async function loadDashboard() {
 
     setText(".closer-name", topCloserData?.[1]?.[0], "No sales yet");
     setText(".closer-meta", topCloserData?.[2]?.[0], "No sales yet");
-  
+
     applyTopCloserTheme(topCloserData?.[4]?.[0] || "");
-  
-  const photoWrap = document.querySelector(".closer-photo");
-  const rawPhotoUrl = topCloserData?.[3]?.[0] || "";
-  const img = rawPhotoUrl;
-    
+
+    const photoWrap = document.querySelector(".closer-photo");
+    const rawPhotoUrl = topCloserData?.[3]?.[0] || "";
+    const img = rawPhotoUrl;
+
     if (photoWrap) {
       if (img) {
         photoWrap.innerHTML = `
-  <img
-    src="${img}"
-    alt="Top closer photo"
-    onerror="this.parentNode.textContent='No Photo';"
-    style="width:135%;height:135%;object-fit:cover;object-position:center 42%;transform:translateY(0%);display:block;border-radius:0;">`;
+          <img
+            src="${img}"
+            alt="Top closer photo"
+            onerror="this.parentNode.textContent='No Photo';"
+            style="width:135%;height:135%;object-fit:cover;object-position:center 42%;transform:translateY(0%);display:block;border-radius:0;">
+        `;
+      } else {
+        photoWrap.textContent = "No Photo";
       }
+    }
 
     renderCampaignBars(chart);
     renderLatestSales(sales);
@@ -698,7 +702,6 @@ async function loadDashboard() {
     setText(".closer-meta", "Check sheet sharing and URL access");
   }
 }
-
 loadDashboard();
 setInterval(loadDashboard, 60000);
 </script>
