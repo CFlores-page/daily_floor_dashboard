@@ -64,42 +64,43 @@
 
     .header {
       grid-area: header;
-      padding: 28px 34px;
-      display: flex;
-      justify-content: space-between;
+      padding: 0;
+      display: block;
     }
-
+    
     .date-banner {
+      width: 100%;
+      min-height: 116px;
+      padding: 24px 38px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 22px 38px;
-      border-radius: 24px;
-      background: linear-gradient(90deg, rgba(52,77,112,0.95), rgba(29,44,66,0.95));
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.20);
     }
     
     .banner-date {
       font-size: 64px;
       font-weight: 800;
       letter-spacing: -0.03em;
+      line-height: 1;
     }
-
+    
     .banner-logo {
-      width: 230px;
-      height: 70px;
+      width: 260px;
+      height: 72px;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
+      flex-shrink: 0;
     }
     
     .banner-logo img {
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
+      display: block;
       filter: drop-shadow(0 4px 14px rgba(0,0,0,0.22));
     }
+    
     .metric {
       padding: 20px;
       display: flex;
@@ -459,16 +460,15 @@
 <main class="dashboard">
 
   <section class="panel header">
-    <div class="date-banner">
-    <span class="banner-date">Loading...</span>
-
+  <div class="date-banner">
+    <span class="banner-date">Loading... </span>
     <div class="banner-logo">
-    <img
-      src="https://drive.google.com/thumbnail?id=1-AD9JlC3WpJpovCL6WiG99jY-i3rigtO&sz=w1000"
-      alt="Company Logo">
+      <img
+        src="https://drive.google.com/thumbnail?id=1-AD9JlC3WpJpovCL6WiG99jY-i3rigtO&sz=w1000"
+        alt="NetCenter Logo">
     </div>
   </div>
-  </section>
+</section>
 
   <section class="panel metric sales-today">
     <div class="metric-label">Total Sales</div>
@@ -711,7 +711,7 @@ async function loadDashboard() {
 
     const photoWrap = document.querySelector(".closer-photo");
     const rawPhotoUrl = topCloserData?.[3]?.[0] || "";
-    const img = rawPhotoUrl;
+    const img = String(rawPhotoUrl || "").trim();
 
     if (photoWrap) {
       if (img) {
@@ -731,7 +731,7 @@ async function loadDashboard() {
     renderLatestSales(sales);
   } catch (error) {
     console.error("Dashboard load error:", error);
-    setText(".date-banner", "Connection error");
+    setText(".banner-date", "Connection error");
     setText(".closer-name", "Unable to load");
     setText(".closer-meta", "Check sheet sharing and URL access");
   }
