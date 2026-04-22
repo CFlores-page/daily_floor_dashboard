@@ -70,10 +70,36 @@
     }
 
     .date-banner {
-      font-size: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 38px;
+      border-radius: 24px;
+      background: linear-gradient(90deg, rgba(52,77,112,0.95), rgba(29,44,66,0.95));
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.20);
+    }
+    
+    .banner-date {
+      font-size: 64px;
       font-weight: 800;
+      letter-spacing: -0.03em;
     }
 
+    .banner-logo {
+      width: 230px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .banner-logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 14px rgba(0,0,0,0.22));
+    }
     .metric {
       padding: 20px;
       display: flex;
@@ -433,7 +459,15 @@
 <main class="dashboard">
 
   <section class="panel header">
-    <div class="date-banner">Loading...</div>
+    <div class="date-banner">
+    <span class="banner-date">Loading...</span>
+
+    <div class="banner-logo">
+    <img
+      src="https://drive.google.com/thumbnail?id=1-AD9JlC3WpJpovCL6WiG99jY-i3rigtO&sz=w1000"
+      alt="Company Logo">
+    </div>
+  </div>
   </section>
 
   <section class="panel metric sales-today">
@@ -665,7 +699,7 @@ async function loadDashboard() {
       getSheet("H2:I6")
     ]);
 
-    setText(".date-banner", todayLabel());
+    document.querySelector(".banner-date").textContent = todayLabel();
     setText(".sales-today .metric-value", metrics?.[0]?.[0], "0");
     setText(".volume-today .metric-value", metrics?.[1]?.[0], "$0.00");
     setText(".average-today .metric-value", metrics?.[2]?.[0], "$0.00");
