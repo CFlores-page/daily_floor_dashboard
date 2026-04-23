@@ -732,10 +732,15 @@ async function getSheet(range) {
 }
 
 function driveImage(url) {
-  const id = (String(url || "").match(/[-\\w]{25,}/) || [])[0];
-  return id
-    ? `https://drive.google.com/thumbnail?id=${id}&sz=w1000`
-    : "";
+  const raw = String(url || "").trim();
+  if (!raw) return "";
+
+  if (raw.includes("thumbnail?id=")) return raw;
+
+  const match = raw.match(/\/d\/([^/]+)/);
+  if (!match) return raw;
+
+  return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1600`;
 }
 
 function todayLabel() {
@@ -891,7 +896,7 @@ function buildCarouselSlides(grid, enabledRow) {
   
     const accentClass = campaignClass(slide.accent || "");
     const bg = String(slide.background || "").trim();
-    const fg = String(slide.imageUrl || "").trim();
+    const fg = driveImage(slide.imageUrl);
   
     const backgroundStyle = bg
       ? `background-image:
