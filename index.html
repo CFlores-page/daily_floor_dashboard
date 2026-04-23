@@ -846,7 +846,7 @@ function boolFromCell(value) {
   return v === "TRUE" || v === "VERDADERO" || v === "1" || v === "YES";
 }
 
-function buildCarouselSlides(grid) {
+function buildCarouselSlides(grid, enabledRow) {
   if (!grid || !grid.length) return [];
 
   const colCount = Math.max(...grid.map(r => r.length), 0);
@@ -861,7 +861,7 @@ function buildCarouselSlides(grid) {
       background: grid[4]?.[c] || "",
       imageUrl: grid[5]?.[c] || "",
       accent: grid[6]?.[c] || "",
-      enabled: grid[7]?.[c] || ""
+      enabled: enabledRow?.[0]?.[c] || false
     };
 
     if (boolFromCell(slide.enabled)) {
@@ -960,12 +960,13 @@ function startCarousel(slides) {
   
 async function loadDashboard() {
   try {
-    const [metrics, topCloserData, sales, chart, carouselGrid] = await Promise.all([
+    const [metrics, topCloserData, sales, chart, carouselGrid, carouselEnabled] = await Promise.all([
   getSheet("B2:B4"),
   getSheet("A7:A11"),
   getSheet("A13:E22"),
   getSheet("H2:I6"),
-  getSheet("L2:P9")
+  getSheet("L2:P8"),
+  getSheet("L9:P9")
 ]);
 
     document.querySelector(".banner-date").textContent = todayLabel();
@@ -998,7 +999,7 @@ async function loadDashboard() {
 
     renderCampaignBars(chart);
     renderLatestSales(sales);
-    startCarousel(buildCarouselSlides(carouselGrid));
+    startCarousel(buildCarouselSlides(carouselGrid, carouselEnabled));
     
   } catch (error) {
     console.error("Dashboard load error:", error);
