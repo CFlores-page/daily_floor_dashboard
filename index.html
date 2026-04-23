@@ -349,36 +349,6 @@
       font-weight: 700;
     }
 
-    .pulse-box {
-      flex: 1;
-      border-radius: var(--radius-lg);
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .pulse-line {
-      padding: 14px 16px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.05);
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.4;
-    }
-
-     .carousel-shell {
-      flex: 1;
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.04);
-      overflow: hidden;
-      position: relative;
-      min-height: 320px;
-    }
-
     .pulse-panel {
       grid-area: pulse;
       padding: 0;
@@ -901,12 +871,12 @@ function buildCarouselSlides(grid, enabledRow) {
   return slides;
 }
 
-  function renderCarouselSlide(slide) {
+   function renderCarouselSlide(slide) {
     const stage = document.getElementById("carousel-stage");
     if (!stage) return;
   
     const accentClass = campaignClass(slide.accent || "");
-    const bg = String(slide.background || "").trim();
+    const bg = driveImage(slide.background);
     const fg = driveImage(slide.imageUrl);
   
     const backgroundStyle = bg
@@ -926,12 +896,12 @@ function buildCarouselSlides(grid, enabledRow) {
     stage.innerHTML = `
       <div class="carousel-card ${accentClass}" style="${backgroundStyle}">
         <div class="carousel-overlay"></div>
+        ${fgBlock}
         <div class="carousel-content">
           ${title}
           ${body}
           ${subtitle}
         </div>
-        ${fgBlock}
       </div>
     `;
   }
