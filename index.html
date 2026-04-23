@@ -890,7 +890,12 @@ function buildCarouselSlides(grid, enabledRow) {
     const body = slide.body ? `<div class="carousel-body">${slide.body}</div>` : `<div class="carousel-body"></div>`;
     const subtitle = slide.subtitle ? `<div class="carousel-subtitle">${slide.subtitle}</div>` : `<div class="carousel-subtitle"></div>`;
     const fgBlock = fg
-      ? `<div class="carousel-foreground"><img src="${fg}" alt="${slide.title || "Slide image"}"></div>`
+      ? `<div class="carousel-foreground">
+           <img
+             src="${fg}"
+             alt=""
+             onerror="this.style.display='none';">
+         </div>`
       : "";
   
     stage.innerHTML = `
