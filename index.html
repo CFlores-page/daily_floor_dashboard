@@ -848,19 +848,24 @@ function boolFromCell(value) {
 function buildCarouselSlides(grid, enabledRow) {
   if (!grid || !grid.length) return [];
 
-  const colCount = Math.max(...grid.map(r => r.length), 0);
   const slides = [];
+  const colCount = grid[0]?.length || 0;
 
-  for (let c = 0; c < colCount; c++) {
+  for (let c = 1; c < colCount; c++) {
+    const getRowValue = (label) => {
+      const row = grid.find(r => String(r[0] || "").trim().toUpperCase() === label);
+      return row?.[c] || "";
+    };
+
     const slide = {
-      type: grid[0]?.[c] || "",
-      title: grid[1]?.[c] || "",
-      subtitle: grid[2]?.[c] || "",
-      body: grid[3]?.[c] || "",
-      background: grid[4]?.[c] || "",
-      imageUrl: grid[5]?.[c] || "",
-      accent: grid[6]?.[c] || "",
-      enabled: enabledRow?.[0]?.[c] || false
+      type: getRowValue("TYPE"),
+      title: getRowValue("TITLE"),
+      subtitle: getRowValue("SUBTITLE"),
+      body: getRowValue("BODY"),
+      background: getRowValue("BACKGROUND"),
+      imageUrl: getRowValue("IMAGE URL"),
+      accent: getRowValue("ACCENT / CAMPAIGN"),
+      enabled: enabledRow?.[0]?.[c - 1] || false
     };
 
     if (boolFromCell(slide.enabled)) {
@@ -967,7 +972,7 @@ async function loadDashboard() {
   getSheet("A7:A11"),
   getSheet("A13:E22"),
   getSheet("H2:I6"),
-  getSheet("L2:P8"),
+  getSheet("K2:P8"),
   getSheet("L9:P9")
 ]);
 
