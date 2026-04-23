@@ -260,14 +260,6 @@
       gap: 18px;
     }
 
-    .pulse-panel {
-      grid-area: pulse;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
     .latest-panel {
       grid-area: latest;
       padding: 24px;
@@ -377,10 +369,18 @@
       position: relative;
       min-height: 320px;
     }
+
+    .pulse-panel {
+      grid-area: pulse;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+    }
     
     .carousel-stage {
       width: 100%;
       height: 100%;
+      min-height: 480px;
       position: relative;
     }
     
@@ -388,78 +388,65 @@
       position: relative;
       width: 100%;
       height: 100%;
-      min-height: 320px;
-      background:
-        linear-gradient(145deg, rgba(18,30,48,0.94), rgba(34,49,74,0.92));
+      min-height: 480px;
+      background: linear-gradient(145deg, rgba(18,30,48,0.94), rgba(34,49,74,0.92));
       background-size: cover;
       background-position: center;
-      display: flex;
-      align-items: flex-end;
       overflow: hidden;
     }
     
     .carousel-overlay {
       position: absolute;
       inset: 0;
-      background:
-        linear-gradient(180deg, rgba(8,14,24,0.08) 0%, rgba(8,14,24,0.55) 55%, rgba(8,14,24,0.88) 100%);
-    }
-    
-    .carousel-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: inherit;
-      pointer-events: none;
+      background: linear-gradient(180deg, rgba(8,14,24,0.18) 0%, rgba(8,14,24,0.40) 45%, rgba(8,14,24,0.72) 100%);
     }
     
     .carousel-content {
-      position: relative;
+      position: absolute;
+      inset: 0;
       z-index: 2;
-      width: 100%;
-      padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-    }
-    
-    .carousel-kicker {
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
+      padding: 28px 26px 48px;
     }
     
     .carousel-title {
+      width: 100%;
       font-size: 28px;
       font-weight: 900;
       line-height: 1.02;
-    }
-    
-    .carousel-subtitle {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--accent);
+      text-align: center;
+      margin-top: 0;
     }
     
     .carousel-body {
-      font-size: 15px;
+      font-size: 18px;
       line-height: 1.45;
       color: #edf3ff;
-      max-width: 95%;
+      max-width: 82%;
       white-space: pre-wrap;
+      text-align: center;
     }
-
-      .carousel-card.default {
-    box-shadow: inset 0 0 0 1px rgba(142,197,255,0.08);
+    
+    .carousel-subtitle {
+      width: 100%;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+    }
+    
+    .carousel-kicker {
+      display: none;
     }
     
     .carousel-foreground {
       position: absolute;
-      right: 18px;
-      bottom: 18px;
+      right: 24px;
+      bottom: 24px;
       width: 110px;
       height: 110px;
       border-radius: 20px;
@@ -467,7 +454,7 @@
       border: 1px solid rgba(255,255,255,0.16);
       background: rgba(255,255,255,0.06);
       box-shadow: 0 14px 30px rgba(0,0,0,0.26);
-      z-index: 2;
+      z-index: 3;
     }
     
     .carousel-foreground img {
@@ -477,24 +464,40 @@
       display: block;
     }
     
+    .carousel-card.default {
+      box-shadow: inset 0 0 0 1px rgba(142,197,255,0.08);
+    }
+    
     .carousel-card.tafer {
-      box-shadow: inset 0 0 0 1px rgba(109,158,235,0.10);
+      box-shadow:
+        inset 0 0 0 1px rgba(109,158,235,0.12),
+        inset 0 0 120px rgba(109,158,235,0.08);
     }
+    
     .carousel-card.villagroup {
-      box-shadow: inset 0 0 0 1px rgba(246,178,107,0.10);
+      box-shadow:
+        inset 0 0 0 1px rgba(246,178,107,0.12),
+        inset 0 0 120px rgba(246,178,107,0.08);
     }
+    
     .carousel-card.balfer {
-      box-shadow: inset 0 0 0 1px rgba(147,196,125,0.10);
+      box-shadow:
+        inset 0 0 0 1px rgba(147,196,125,0.12),
+        inset 0 0 120px rgba(147,196,125,0.08);
     }
+    
     .carousel-card.revenue-team {
-      box-shadow: inset 0 0 0 1px rgba(142,124,195,0.10);
+      box-shadow:
+        inset 0 0 0 1px rgba(142,124,195,0.12),
+        inset 0 0 120px rgba(142,124,195,0.08);
     }
     
     .carousel-dots {
       position: absolute;
-      left: 24px;
+      left: 50%;
       bottom: 18px;
-      z-index: 3;
+      transform: translateX(-50%);
+      z-index: 4;
       display: flex;
       gap: 8px;
     }
@@ -511,7 +514,6 @@
       width: 24px;
       background: rgba(255,255,255,0.88);
     }
-
     
     .table-shell {
       overflow: hidden;
@@ -651,21 +653,17 @@
   </section>
 
   <section class="panel pulse-panel">
-  <h2>Announcements</h2>
-  <div class="carousel-shell">
-    <div class="carousel-stage" id="carousel-stage">
-      <div class="carousel-card">
-        <div class="carousel-overlay"></div>
-        <div class="carousel-content">
-          <div class="carousel-kicker">Loading...</div>
-          <div class="carousel-title">Loading...</div>
-          <div class="carousel-subtitle">Loading...</div>
-          <div class="carousel-body">Loading...</div>
-        </div>
+  <div class="carousel-stage" id="carousel-stage">
+    <div class="carousel-card">
+      <div class="carousel-overlay"></div>
+      <div class="carousel-content">
+        <div class="carousel-title">Loading...</div>
+        <div class="carousel-body">Loading...</div>
+        <div class="carousel-subtitle">Loading...</div>
       </div>
     </div>
-    <div class="carousel-dots" id="carousel-dots"></div>
   </div>
+  <div class="carousel-dots" id="carousel-dots"></div>
 </section>
 
   <section class="panel latest-panel">
@@ -879,42 +877,40 @@ function buildCarouselSlides(grid, enabledRow) {
   return slides;
 }
 
-function renderCarouselSlide(slide) {
-  const stage = document.getElementById("carousel-stage");
-  const dots = document.getElementById("carousel-dots");
-  if (!stage) return;
-
-  const accentClass = campaignClass(slide.accent || slide.type || "");
-  const bg = String(slide.background || "").trim();
-  const fg = String(slide.imageUrl || "").trim();
-
-  const backgroundStyle = bg
-    ? `background-image:
-         linear-gradient(180deg, rgba(8,14,24,0.10), rgba(8,14,24,0.70)),
-         url('${bg}');`
-    : `background:
-         linear-gradient(145deg, rgba(18,30,48,0.94), rgba(34,49,74,0.92));`;
-
-  const typeLabel = slide.type || "Slide";
-  const subtitle = slide.subtitle ? `<div class="carousel-subtitle">${slide.subtitle}</div>` : "";
-  const body = slide.body ? `<div class="carousel-body">${slide.body}</div>` : "";
-  const fgBlock = fg
-    ? `<div class="carousel-foreground"><img src="${fg}" alt="${slide.title || "Slide image"}"></div>`
-    : "";
-
-  stage.innerHTML = `
-    <div class="carousel-card ${accentClass}" style="${backgroundStyle}">
-      <div class="carousel-overlay"></div>
-      <div class="carousel-content">
-        <div class="carousel-kicker">${typeLabel}</div>
-        <div class="carousel-title">${slide.title || ""}</div>
-        ${subtitle}
-        ${body}
+  function renderCarouselSlide(slide) {
+    const stage = document.getElementById("carousel-stage");
+    if (!stage) return;
+  
+    const accentClass = campaignClass(slide.accent || "");
+    const bg = String(slide.background || "").trim();
+    const fg = String(slide.imageUrl || "").trim();
+  
+    const backgroundStyle = bg
+      ? `background-image:
+           linear-gradient(180deg, rgba(8,14,24,0.10), rgba(8,14,24,0.55)),
+           url('${bg}');`
+      : `background:
+           linear-gradient(145deg, rgba(18,30,48,0.94), rgba(34,49,74,0.92));`;
+  
+    const title = slide.title ? `<div class="carousel-title">${slide.title}</div>` : `<div class="carousel-title"></div>`;
+    const body = slide.body ? `<div class="carousel-body">${slide.body}</div>` : `<div class="carousel-body"></div>`;
+    const subtitle = slide.subtitle ? `<div class="carousel-subtitle">${slide.subtitle}</div>` : `<div class="carousel-subtitle"></div>`;
+    const fgBlock = fg
+      ? `<div class="carousel-foreground"><img src="${fg}" alt="${slide.title || "Slide image"}"></div>`
+      : "";
+  
+    stage.innerHTML = `
+      <div class="carousel-card ${accentClass}" style="${backgroundStyle}">
+        <div class="carousel-overlay"></div>
+        <div class="carousel-content">
+          ${title}
+          ${body}
+          ${subtitle}
+        </div>
+        ${fgBlock}
       </div>
-      ${fgBlock}
-    </div>
-  `;
-}
+    `;
+  }
 
 let carouselSlides = [];
 let carouselIndex = 0;
