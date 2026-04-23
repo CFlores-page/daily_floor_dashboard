@@ -368,6 +368,147 @@
       line-height: 1.4;
     }
 
+     .carousel-shell {
+      flex: 1;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+      overflow: hidden;
+      position: relative;
+      min-height: 320px;
+    }
+    
+    .carousel-stage {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    
+    .carousel-card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 320px;
+      background:
+        linear-gradient(145deg, rgba(18,30,48,0.94), rgba(34,49,74,0.92));
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+    
+    .carousel-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(8,14,24,0.08) 0%, rgba(8,14,24,0.55) 55%, rgba(8,14,24,0.88) 100%);
+    }
+    
+    .carousel-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: inherit;
+      pointer-events: none;
+    }
+    
+    .carousel-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .carousel-kicker {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    
+    .carousel-title {
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.02;
+    }
+    
+    .carousel-subtitle {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    
+    .carousel-body {
+      font-size: 15px;
+      line-height: 1.45;
+      color: #edf3ff;
+      max-width: 95%;
+      white-space: pre-wrap;
+    }
+    
+    .carousel-foreground {
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      width: 110px;
+      height: 110px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.26);
+      z-index: 2;
+    }
+    
+    .carousel-foreground img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .carousel-card.tafer {
+      box-shadow: inset 0 0 0 1px rgba(109,158,235,0.10);
+    }
+    .carousel-card.villagroup {
+      box-shadow: inset 0 0 0 1px rgba(246,178,107,0.10);
+    }
+    .carousel-card.balfer {
+      box-shadow: inset 0 0 0 1px rgba(147,196,125,0.10);
+    }
+    .carousel-card.revenue-team {
+      box-shadow: inset 0 0 0 1px rgba(142,124,195,0.10);
+    }
+    
+    .carousel-dots {
+      position: absolute;
+      left: 24px;
+      bottom: 18px;
+      z-index: 3;
+      display: flex;
+      gap: 8px;
+    }
+    
+    .carousel-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.24);
+      transition: all 0.25s ease;
+    }
+    
+    .carousel-dot.active {
+      width: 24px;
+      background: rgba(255,255,255,0.88);
+    }
+
+    
     .table-shell {
       overflow: hidden;
       border-radius: var(--radius-lg);
@@ -506,13 +647,22 @@
   </section>
 
   <section class="panel pulse-panel">
-    <h2>Sales Pulse</h2>
-    <div class="pulse-box">
-      <div class="pulse-line">Pulse line 1 goes here.</div>
-      <div class="pulse-line">Pulse line 2 goes here.</div>
-      <div class="pulse-line">Pulse line 3 goes here.</div>
+  <h2>Spotlight Carousel</h2>
+  <div class="carousel-shell">
+    <div class="carousel-stage" id="carousel-stage">
+      <div class="carousel-card">
+        <div class="carousel-overlay"></div>
+        <div class="carousel-content">
+          <div class="carousel-kicker">Loading...</div>
+          <div class="carousel-title">Loading...</div>
+          <div class="carousel-subtitle">Loading...</div>
+          <div class="carousel-body">Loading...</div>
+        </div>
+      </div>
     </div>
-  </section>
+    <div class="carousel-dots" id="carousel-dots"></div>
+  </div>
+</section>
 
   <section class="panel latest-panel">
     <h2>Most Recent Sales</h2>
@@ -690,14 +840,133 @@ function renderCampaignBars(rows) {
   }).join("");
 }
 
+function boolFromCell(value) {
+  if (typeof value === "boolean") return value;
+  const v = String(value || "").trim().toUpperCase();
+  return v === "TRUE" || v === "VERDADERO" || v === "1" || v === "YES";
+}
+
+function buildCarouselSlides(grid) {
+  if (!grid || !grid.length) return [];
+
+  const colCount = Math.max(...grid.map(r => r.length), 0);
+  const slides = [];
+
+  for (let c = 0; c < colCount; c++) {
+    const slide = {
+      type: grid[0]?.[c] || "",
+      title: grid[1]?.[c] || "",
+      subtitle: grid[2]?.[c] || "",
+      body: grid[3]?.[c] || "",
+      background: grid[4]?.[c] || "",
+      imageUrl: grid[5]?.[c] || "",
+      accent: grid[6]?.[c] || "",
+      enabled: grid[7]?.[c] || ""
+    };
+
+    if (boolFromCell(slide.enabled)) {
+      slides.push(slide);
+    }
+  }
+
+  return slides;
+}
+
+function renderCarouselSlide(slide) {
+  const stage = document.getElementById("carousel-stage");
+  const dots = document.getElementById("carousel-dots");
+  if (!stage) return;
+
+  const accentClass = campaignClass(slide.accent || slide.type || "");
+  const bg = String(slide.background || "").trim();
+  const fg = String(slide.imageUrl || "").trim();
+
+  const backgroundStyle = bg
+    ? `background-image:
+         linear-gradient(180deg, rgba(8,14,24,0.10), rgba(8,14,24,0.70)),
+         url('${bg}');`
+    : `background:
+         linear-gradient(145deg, rgba(18,30,48,0.94), rgba(34,49,74,0.92));`;
+
+  const typeLabel = slide.type || "Slide";
+  const subtitle = slide.subtitle ? `<div class="carousel-subtitle">${slide.subtitle}</div>` : "";
+  const body = slide.body ? `<div class="carousel-body">${slide.body}</div>` : "";
+  const fgBlock = fg
+    ? `<div class="carousel-foreground"><img src="${fg}" alt="${slide.title || "Slide image"}"></div>`
+    : "";
+
+  stage.innerHTML = `
+    <div class="carousel-card ${accentClass}" style="${backgroundStyle}">
+      <div class="carousel-overlay"></div>
+      <div class="carousel-content">
+        <div class="carousel-kicker">${typeLabel}</div>
+        <div class="carousel-title">${slide.title || ""}</div>
+        ${subtitle}
+        ${body}
+      </div>
+      ${fgBlock}
+    </div>
+  `;
+}
+
+let carouselSlides = [];
+let carouselIndex = 0;
+let carouselTimer = null;
+
+function renderCarouselDots() {
+  const dots = document.getElementById("carousel-dots");
+  if (!dots) return;
+
+  dots.innerHTML = carouselSlides
+    .map((_, i) => `<div class="carousel-dot ${i === carouselIndex ? "active" : ""}"></div>`)
+    .join("");
+}
+
+function startCarousel(slides) {
+  carouselSlides = slides || [];
+  carouselIndex = 0;
+
+  if (carouselTimer) {
+    clearInterval(carouselTimer);
+    carouselTimer = null;
+  }
+
+  if (!carouselSlides.length) {
+    renderCarouselSlide({
+      type: "Spotlight",
+      title: "No active slides",
+      subtitle: "",
+      body: "Enable a slide in TODAY! L:P.",
+      background: "",
+      imageUrl: "",
+      accent: "",
+      enabled: true
+    });
+    renderCarouselDots();
+    return;
+  }
+
+  renderCarouselSlide(carouselSlides[0]);
+  renderCarouselDots();
+
+  if (carouselSlides.length > 1) {
+    carouselTimer = setInterval(() => {
+      carouselIndex = (carouselIndex + 1) % carouselSlides.length;
+      renderCarouselSlide(carouselSlides[carouselIndex]);
+      renderCarouselDots();
+    }, 8000);
+  }
+}
+  
 async function loadDashboard() {
   try {
-    const [metrics, topCloserData, sales, chart] = await Promise.all([
-      getSheet("B2:B4"),
-      getSheet("A7:A11"),
-      getSheet("A13:E22"),
-      getSheet("H2:I6")
-    ]);
+    const [metrics, topCloserData, sales, chart, carouselGrid] = await Promise.all([
+  getSheet("B2:B4"),
+  getSheet("A7:A11"),
+  getSheet("A13:E22"),
+  getSheet("H2:I6"),
+  getSheet("L2:P9")
+]);
 
     document.querySelector(".banner-date").textContent = todayLabel();
     setText(".sales-today .metric-value", metrics?.[0]?.[0], "0");
@@ -729,6 +998,8 @@ async function loadDashboard() {
 
     renderCampaignBars(chart);
     renderLatestSales(sales);
+    startCarousel(buildCarouselSlides(carouselGrid));
+    
   } catch (error) {
     console.error("Dashboard load error:", error);
     setText(".banner-date", "Connection error");
