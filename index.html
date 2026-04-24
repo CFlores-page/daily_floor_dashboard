@@ -29,6 +29,13 @@
 
     * { box-sizing: border-box; }
 
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
     body {
       margin: 0;
       width: 100%;
@@ -60,6 +67,8 @@
     }
 
     .panel {
+      min-width: 0;
+      min-height: 0;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
@@ -274,6 +283,8 @@
 
     .chart-panel {
       grid-area: chart;
+      min-height: 0;
+      min-width: 0;
       padding: 24px;
       display: flex;
       flex-direction: column;
@@ -282,6 +293,9 @@
 
     .latest-panel {
       grid-area: latest;
+      min-height: 0;
+      min-width: 0;
+      overflow: hidden;
       padding: 24px;
       display: flex;
       flex-direction: column;
@@ -363,6 +377,8 @@
 
     .pulse-panel {
       grid-area: pulse;
+      min-height: 0;
+      min-width: 0;
       padding: 0;
       position: relative;
       overflow: hidden;
@@ -588,6 +604,9 @@
     
     
     .table-shell {
+      flex: 1;
+      min-height: 0;
+      max-height: 100%;
       overflow-y: auto;
       overflow-x: hidden;
     
@@ -686,24 +705,25 @@
     ========================= */
 
     @media (min-width: 3000px) and (min-height: 1600px) {
+      html,
       body {
+        width: 100%;
+        height: 100%;
         overflow: hidden;
       }
 
       .dashboard {
         height: 100vh;
         min-height: 100vh;
-        padding: 26px;
-        gap: 22px;
-
+        max-height: 100vh;
+        padding: 24px;
+        gap: 20px;
         grid-template-columns: 1.15fr 1.15fr 1.1fr 1.35fr;
-
         grid-template-rows:
-          140px
-          170px
-          minmax(0, 1.1fr)
-          minmax(0, 0.85fr);
-
+          135px
+          165px
+          minmax(0, 1fr)
+          minmax(0, 0.72fr);
         grid-template-areas:
           "header header header header"
           "sales volume average closer"
@@ -711,132 +731,84 @@
           "latest latest latest pulse";
       }
 
-      /* Header */
-      .date-banner {
-        padding: 22px 38px;
+      .dashboard > * {
+        min-height: 0;
+        min-width: 0;
       }
 
-      .banner-date {
-        font-size: 82px;
-      }
-
-      .banner-subnote {
-        font-size: 20px;
-      }
-
+      .date-banner { padding: 20px 36px; }
+      .banner-date { font-size: 76px; }
+      .banner-subnote { font-size: 18px; }
       .banner-logo {
         width: 520px;
-        height: 110px;
-        background-size: 500px auto;
+        height: 96px;
+        background-size: 470px auto;
         background-position: right center;
       }
 
-      /* Metric cards */
-      .metric {
-        padding: 26px;
-      }
+      .metric { padding: 24px; }
+      .metric-label { font-size: 17px; }
+      .metric-value { font-size: 56px; }
 
-      .metric-label {
-        font-size: 18px;
-      }
+      .top-closer { padding: 22px 26px 24px; }
+      .closer-title { font-size: 19px; margin-bottom: 16px; }
+      .closer-name { font-size: 40px; max-width: 600px; width: 96%; }
+      .closer-meta { font-size: 23px; }
+      .closer-photo img { max-width: 72%; max-height: 82%; }
 
-      .metric-value {
-        font-size: 60px;
-      }
-
-      /* Top closer */
-      .top-closer {
-        padding: 24px 28px 28px;
-      }
-
-      .closer-title {
-        font-size: 20px;
-        margin-bottom: 18px;
-      }
-
-      .closer-name {
-        font-size: 42px;
-        max-width: 560px;
-        width: 96%;
-      }
-
-      .closer-meta {
-        font-size: 24px;
-      }
-
-      .closer-photo img {
-        max-width: 74%;
-        max-height: 84%;
-      }
-
-      /* Panels */
       .chart-panel,
-      .latest-panel {
-        padding: 26px;
-      }
+      .latest-panel { padding: 24px; }
+      h2 { font-size: 31px; }
 
-      h2 {
-        font-size: 32px;
-      }
-
-      /* Bars: force bottom-up growth */
       .chart-shell {
-        display: flex;
+        display: grid;
         align-items: stretch;
         min-height: 0;
         height: 100%;
+        overflow: hidden;
       }
 
       .bars {
-        flex: 1;
         height: 100%;
-        align-items: end;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        align-items: stretch;
       }
 
       .bar-wrap {
         height: 100%;
-        justify-content: end;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        align-items: end;
+        justify-items: center;
       }
 
-      .bar {
-        align-self: flex-end;
-        max-width: 160px;
-      }
+      .bar-value { font-size: 17px; align-self: end; }
+      .bar { align-self: end; max-width: 155px; }
+      .bar-label { font-size: 17px; align-self: start; }
 
-      .bar-label {
-        font-size: 18px;
-      }
-
-      .bar-value {
-        font-size: 18px;
-      }
-
-      /* Table */
       .latest-panel {
         min-height: 0;
+        overflow: hidden;
       }
 
       .table-shell {
+        flex: 1;
         min-height: 0;
+        max-height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
       }
 
       th,
       td {
-        font-size: 21px;
-        padding: 16px 20px;
+        font-size: 19px;
+        padding: 12px 18px;
       }
 
-      th {
-        font-size: 17px;
-      }
+      th { font-size: 15px; }
+      .unit-pill { min-width: 135px; font-size: 16px; padding: 8px 16px; }
 
-      .unit-pill {
-        min-width: 150px;
-        font-size: 18px;
-        padding: 10px 18px;
-      }
-
-      /* Carousel */
       .pulse-panel,
       .carousel-stage,
       .carousel-card {
@@ -844,37 +816,17 @@
         height: 100%;
       }
 
-      .carousel-title {
-        font-size: 46px;
-      }
-
-      .carousel-body {
-        font-size: 28px;
-        max-width: 76%;
-      }
-
-      .carousel-subtitle {
-        font-size: 24px;
-      }
-
-      .carousel-content {
-        padding: 30px 30px 54px;
-      }
-
+      .carousel-title { font-size: 40px; }
+      .carousel-body { font-size: 24px; max-width: 78%; }
+      .carousel-subtitle { font-size: 22px; }
+      .carousel-content { padding: 28px 28px 50px; }
       .carousel-foreground {
-        width: min(82%, 620px);
-        height: min(72%, 560px);
-        bottom: 58px;
+        width: min(82%, 560px);
+        height: min(72%, 500px);
+        bottom: 54px;
       }
-
-      .carousel-dot {
-        width: 12px;
-        height: 12px;
-      }
-
-      .carousel-dot.active {
-        width: 34px;
-      }
+      .carousel-dot { width: 11px; height: 11px; }
+      .carousel-dot.active { width: 32px; }
     }
 
   </style>
