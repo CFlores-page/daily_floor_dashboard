@@ -300,27 +300,31 @@
       border: 1px solid rgba(255,255,255,0.1);
       background: rgba(255,255,255,0.04);
       padding: 24px 18px 18px;
-      display: grid;
-      align-items: end;
+      display: flex;
+      align-items: stretch;
       min-height: 0;
       height: 100%;
     }
 
-    .bars {
-      height: 100%;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-      align-items: end;
+    .bar {
+      width: 100%;
+      max-width: 120px;
+      border-radius: 18px 18px 8px 8px;
+      min-height: 32px;
+      align-self: end;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.25),
+        0 10px 24px rgba(0,0,0,0.18);
     }
+  
 
     .bar-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: end;
-      gap: 10px;
       height: 100%;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      align-items: end;
+      justify-items: center;
+      gap: 10px;
     }
 
     .bar-value {
@@ -588,10 +592,18 @@
 
 
     .table-shell {
-      overflow: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
       border-radius: var(--radius-lg);
       border: 1px solid rgba(255,255,255,0.1);
       background: rgba(255,255,255,0.04);
+
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    
+    .table-shell::-webkit-scrollbar {
+      display: none;
     }
 
     table {
