@@ -332,7 +332,11 @@
     .bar-wrap {
       height: 100%;
       display: grid;
-      grid-template-rows: auto 1fr auto;
+      rid-template-rows: 
+      135px
+      125px
+      minmax(0, 1fr)
+      minmax(0, 0.82fr);
       align-items: end;
       justify-items: center;
       gap: 10px;
@@ -740,9 +744,18 @@
       background-position: right center;
     }
   
-    .metric { padding: 24px; }
-    .metric-label { font-size: 17px; }
-    .metric-value { font-size: 56px; }
+    .metric {
+      padding: 18px 24px;
+    }
+    
+    .metric-label {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    
+    .metric-value {
+      font-size: 50px;
+    }
   
     .top-closer { padding: 22px 26px 24px; }
     .closer-title { font-size: 19px; margin-bottom: 16px; }
