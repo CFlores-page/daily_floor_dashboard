@@ -88,6 +88,14 @@
       letter-spacing: -0.03em;
       line-height: 1;
     }
+
+    .banner-subnote {
+      font-size: clamp(10px, 0.8vw, 14px);
+      font-weight: 500;
+      opacity: .75;
+      margin-top: 6px;
+      letter-spacing: .04em;
+    }
     
      .banner-logo {
       width: 320px;
@@ -793,15 +801,32 @@ function driveImage(url) {
   return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1600`;
 }
 
-function todayLabel() {
-  return new Intl.DateTimeFormat("en-US", {
+function todayLabel(hasSalesToday) {
+  const d = new Date();
+
+  if (!hasSalesToday) {
+    d.setDate(d.getDate() - 1);
+  }
+
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
     year: "numeric"
-  }).format(new Date());
-}
+  }).format(d);
 
+  if (hasSalesToday) {
+    return formattedDate;
+  }
+
+  return `
+    ${formattedDate}
+    <div class="banner-subnote">
+      No new sales today
+    </div>
+  `;
+}
+  
 function setText(selector, value, fallback = "") {
   const el = document.querySelector(selector);
   if (el) el.textContent = value || fallback;
@@ -1036,7 +1061,8 @@ function startCarousel(slides) {
   
 async function loadDashboard() {
   try {
-    const [metrics, topCloserData, sales, chart, carouselGrid, carouselEnabled] = await Promise.all([
+    const [truthCell, metrics, topCloserData, sales, chart, carouselGrid, carouselEnabled] = await Promise.all([
+  getSheet("E1"),
   getSheet("B2:B4"),
   getSheet("A7:A11"),
   getSheet("A13:E22"),
@@ -1044,8 +1070,8 @@ async function loadDashboard() {
   getSheet("K2:P8"),
   getSheet("L9:P9")
 ]);
-
-    document.querySelector(".banner-date").textContent = todayLabel();
+    const hasSalesToday = boolFromCell(truthCell?.[0]?.[0]);
+    document.querySelector(".banner-date").innerHTML = todayLabel(hasSalesToday);
     setText(".sales-today .metric-value", metrics?.[0]?.[0], "0");
     setText(".volume-today .metric-value", metrics?.[1]?.[0], "$0.00");
     setText(".average-today .metric-value", metrics?.[2]?.[0], "$0.00");
