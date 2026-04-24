@@ -678,10 +678,167 @@
       background: rgba(142,124,195,0.12);
       border-color: rgba(142,124,195,0.20);
     }
+
+    body.kiosk-4k {
+      overflow: hidden;
+    }
+    
+    body.kiosk-4k .dashboard {
+      height: 100vh;
+      min-height: 100vh;
+      padding: 30px;
+      gap: 26px;
+    
+      grid-template-columns: 1.15fr 1.15fr 1.1fr 1.35fr;
+    
+      grid-template-rows:
+        170px
+        210px
+        minmax(620px, 1fr)
+        minmax(470px, 0.9fr);
+    
+      grid-template-areas:
+        "header header header header"
+        "sales volume average closer"
+        "chart chart chart closer"
+        "latest latest latest pulse";
+    }
+    
+    /* Header */
+    body.kiosk-4k .date-banner {
+      padding: 26px 42px;
+    }
+    
+    body.kiosk-4k .banner-date {
+      font-size: 88px;
+    }
+    
+    body.kiosk-4k .banner-subnote {
+      font-size: 20px;
+    }
+    
+    body.kiosk-4k .banner-logo {
+      width: 520px;
+      height: 120px;
+      background-size: 500px auto;
+      background-position: right center;
+    }
+    
+    /* Metric cards */
+    body.kiosk-4k .metric {
+      padding: 28px;
+    }
+    
+    body.kiosk-4k .metric-label {
+      font-size: 18px;
+    }
+    
+    body.kiosk-4k .metric-value {
+      font-size: 62px;
+    }
+    
+    /* Top closer */
+    body.kiosk-4k .top-closer {
+      padding: 26px 28px 30px;
+    }
+    
+    body.kiosk-4k .closer-title {
+      font-size: 20px;
+      margin-bottom: 22px;
+    }
+    
+    body.kiosk-4k .closer-name {
+      font-size: 46px;
+      max-width: 520px;
+      width: 96%;
+    }
+    
+    body.kiosk-4k .closer-meta {
+      font-size: 24px;
+    }
+    
+    body.kiosk-4k .closer-photo img {
+      max-width: 76%;
+      max-height: 86%;
+    }
+    
+    /* Panels */
+    body.kiosk-4k .chart-panel,
+    body.kiosk-4k .latest-panel {
+      padding: 28px;
+    }
+    
+    body.kiosk-4k h2 {
+      font-size: 34px;
+    }
+    
+    /* Bars */
+    body.kiosk-4k .bars {
+      gap: 26px;
+    }
+    
+    body.kiosk-4k .bar {
+      max-width: 160px;
+    }
+    
+    body.kiosk-4k .bar-label {
+      font-size: 18px;
+    }
+    
+    body.kiosk-4k .bar-value {
+      font-size: 18px;
+    }
+    
+    /* Table */
+    body.kiosk-4k th,
+    body.kiosk-4k td {
+      font-size: 22px;
+      padding: 18px 22px;
+    }
+    
+    body.kiosk-4k .unit-pill {
+      min-width: 150px;
+      font-size: 18px;
+      padding: 10px 18px;
+    }
+    
+    /* Carousel */
+    body.kiosk-4k .carousel-title {
+      font-size: 48px;
+    }
+    
+    body.kiosk-4k .carousel-body {
+      font-size: 28px;
+      max-width: 76%;
+    }
+    
+    body.kiosk-4k .carousel-subtitle {
+      font-size: 24px;
+    }
+    
+    body.kiosk-4k .carousel-content {
+      padding: 34px 30px 58px;
+    }
+    
+    body.kiosk-4k .carousel-foreground {
+      width: min(82%, 620px);
+      height: min(74%, 620px);
+      bottom: 64px;
+    }
+    
+    body.kiosk-4k .carousel-dot {
+      width: 12px;
+      height: 12px;
+    }
+    
+    body.kiosk-4k .carousel-dot.active {
+      width: 34px;
+    }
+    
   </style>
 </head>
-<body>
-
+<body class="kiosk-4k">
+  
 <main class="dashboard">
 
   <section class="panel header">
@@ -1104,7 +1261,7 @@ async function loadDashboard() {
             src="${img}"
             alt="Top closer photo"
             onerror="this.parentNode.textContent='No Photo';"
-            style="width:135%;height:135%;object-fit:cover;object-position:center 42%;transform:translateY(0%);display:block;border-radius:0;">
+            style="width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;object-position:center bottom;display:block;border-radius:0;">
         `;
       } else {
         photoWrap.textContent = "No Photo";
