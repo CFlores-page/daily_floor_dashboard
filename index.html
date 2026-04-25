@@ -567,49 +567,35 @@
       }
     }
 
-    @media (max-width: 1100px) and (min-height: 1000px) and (orientation: portrait) {
-        .dashboard {
-          grid-template-columns: 2fr 1fr;
-          grid-template-rows:
-            auto
-            120px
-            120px
-            120px
-            360px
-            420px
-            420px;
-          grid-template-areas:
-            "header header"
-            "sales closer"
-            "volume closer"
-            "average closer"
-            "chart chart"
-            "latest latest"
-            "pulse pulse";
-        }
-      
-        .top-closer {
-          min-height: 100%;
-        }
-      
-        .closer-photo {
-          max-height: none;
-        }
-      
-        .closer-photo img {
-          width: auto;
-          height: 100%;
-          max-width: 100%;
-          max-height: 100%;
-          object-fit: contain;
-          object-position: center bottom;
-        }
-      
-        .closer-name {
-          font-size: clamp(20px, 2.5vw, 30px);
-          max-width: 280px;
-        }
+   @media (max-width: 1100px) and (min-height: 1000px) and (orientation: portrait) {
+      .dashboard {
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows:
+          auto
+          120px
+          120px
+          120px
+          360px
+          420px
+          420px;
+        grid-template-areas:
+          "header header"
+          "sales closer"
+          "volume closer"
+          "average closer"
+          "chart closer"
+          "latest latest"
+          "pulse pulse";
       }
+    
+      .top-closer {
+        min-height: 100%;
+      }
+    
+      .chart-panel {
+        min-height: 360px;
+      }
+    }
     
     @media (max-width: 800px) and (max-height: 999px) {
       .dashboard {
