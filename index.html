@@ -526,6 +526,55 @@
       background: rgba(255,255,255,0.88);
     }
 
+    @media (max-width: 1500px) and (min-width: 900px) {
+      .dashboard {
+        min-height: auto;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows:
+          auto
+          120px
+          120px
+          120px
+          360px
+          420px;
+        grid-template-areas:
+          "header header"
+          "sales closer"
+          "volume closer"
+          "average closer"
+          "chart chart"
+          "latest pulse";
+      }
+    
+      .top-closer {
+        min-height: 100%;
+      }
+    
+      .metric {
+        min-height: 0;
+        padding: 20px 24px;
+      }
+    
+      .chart-panel {
+        min-height: 360px;
+      }
+    
+      .latest-panel,
+      .pulse-panel {
+        min-height: 420px;
+      }
+    
+      .closer-photo img {
+        max-width: 70%;
+        max-height: 72%;
+      }
+    
+      .closer-name {
+        max-width: 360px;
+        font-size: clamp(24px, 2.4vw, 34px);
+      }
+    }
+    
     @media (max-width: 1400px) {
       .dashboard {
         padding: 12px;
