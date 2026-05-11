@@ -414,12 +414,12 @@ h2 {
   position: absolute;
   inset: 0;
   z-index: 3;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
+  justify-items: center;
   text-align: center;
-  padding: 20px 22px 34px;
+  padding: 22px 22px 34px;
 }
 
 .carousel-title {
@@ -429,15 +429,17 @@ h2 {
   line-height: 1.02;
   text-align: center;
   margin-top: 0;
+  align-self: start;
 }
 
 .carousel-body {
   font-size: clamp(14px, 1.1vw, 18px);
-  line-height: 1.45;
+  line-height: 1.35;
   color: #edf3ff;
   max-width: 82%;
-  white-space: pre-wrap;
+  white-space: normal;
   text-align: center;
+  align-self: center;
 }
 
 .carousel-subtitle {
