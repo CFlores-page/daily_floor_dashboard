@@ -170,19 +170,19 @@ body {
   grid-area: lastsale;
 }
 
-.last-sale.active {
-  border-color: rgba(120, 220, 160, 0.35);
-  box-shadow: 0 0 28px rgba(120, 220, 160, 0.12);
+.last-sale.active .metric-value {
+  color: #eafff1;
+  text-shadow: 0 0 18px rgba(120, 220, 160, 0.45);
 }
 
-.last-sale.slowing {
-  border-color: rgba(255, 196, 92, 0.30);
-  box-shadow: 0 0 24px rgba(255, 196, 92, 0.10);
+.last-sale.slowing .metric-value {
+  color: #fff5dc;
+  text-shadow: 0 0 18px rgba(255, 196, 92, 0.45);
 }
 
-.last-sale.cold {
-  border-color: rgba(255, 120, 120, 0.30);
-  box-shadow: 0 0 28px rgba(255, 120, 120, 0.12);
+.last-sale.cold .metric-value {
+  color: #ffe4e4;
+  text-shadow: 0 0 18px rgba(255, 120, 120, 0.45);
 }
     
 .top-closer {
@@ -1379,10 +1379,14 @@ function formatElapsedTime(ms) {
   const seconds = totalSeconds % 60;
 
   if (hours > 0) {
-    return `${hours}h ${String(minutes).padStart(2, "0")}m`;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   }
 
-  return `${String(minutes).padStart(2, "0")}m ${String(seconds).padStart(2, "0")}s`;
+  if (minutes > 0) {
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  }
+
+  return `${seconds}s`;
 }
 
 function updateLastSaleVisualState(diffMs) {
