@@ -602,21 +602,45 @@ tbody tr:nth-child(even) {
   background: rgba(255,255,255,0.025);
 }
 
-tbody.auto-scroll {
-  position: relative;
-  z-index: 1;
-  animation: salesScroll 26s linear infinite;
+tbody tr {
+  transition:
+    transform 0.55s ease,
+    opacity 0.55s ease,
+    background 0.55s ease,
+    box-shadow 0.55s ease;
 }
 
-@keyframes salesScroll {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-50%);
-  }
+tbody tr.new-sale-row {
+  animation: newSaleSlideIn 1.15s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+tbody tr.new-sale-row td {
+  background: rgba(142, 197, 255, 0.16);
+  box-shadow:
+    inset 4px 0 0 var(--accent),
+    0 0 24px rgba(142, 197, 255, 0.22);
+}
+
+@keyframes newSaleSlideIn {
+  0% {
+    transform: translateX(-120px);
+    opacity: 0;
+    filter: brightness(1.8);
+  }
+
+  45% {
+    transform: translateX(0);
+    opacity: 1;
+    filter: brightness(1.45);
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+  
 .amount {
   text-align: right;
   font-weight: 700;
@@ -855,6 +879,7 @@ const dashboardState = {
   barsBuilt: false,
   bars: {},
   latestSalesKey: "",
+  latestSalesRows: [],
   topCloserKey: "",
   carouselKey: ""
 };
@@ -1163,27 +1188,88 @@ function rowHtml(r) {
   `;
 }
 
-function updateLatestSales(rows) {
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function saleKey(r) {
+  const date = String(r[0] || "").trim();
+  const cert = String(r[2] || "").trim();
+  const amount = String(r[4] || "").trim();
+
+  return `${date}|${cert}|${amount}`;
+}
+
+function renderSalesRows(items, highlightKeys = new Set()) {
+  return items.map(item => {
+    const html = rowHtml(item.raw);
+
+    if (highlightKeys.has(item.key)) {
+      return html.replace("<tr>", `<tr class="new-sale-row">`);
+    }
+
+    return html;
+  }).join("");
+}
+
+async function playNewSalesQueue(newItems, finalRows) {
   const tbody = document.querySelector(".latest-panel tbody");
   if (!tbody) return;
 
-  const cleanedRows = rows.filter(r => r.some(cell => String(cell).trim() !== ""));
-  const key = JSON.stringify(cleanedRows);
+  const currentRows = [...dashboardState.latestSalesRows];
 
-  if (dashboardState.initialized && key === dashboardState.latestSalesKey) return;
+  // Sheet is newest-first. Reverse so oldest new sale enters first,
+  // and newest sale ends on top.
+  const queue = [...newItems].reverse();
 
-  const html = cleanedRows.map(rowHtml).join("");
+  for (const sale of queue) {
+    currentRows.unshift(sale);
 
-  tbody.classList.remove("auto-scroll");
-  tbody.innerHTML = html + html;
+    const visibleRows = currentRows.slice(0, 10);
+    tbody.innerHTML = renderSalesRows(visibleRows, new Set([sale.key]));
 
-  void tbody.offsetWidth;
-
-  if (cleanedRows.length > 5) {
-    tbody.classList.add("auto-scroll");
+    await wait(900);
   }
 
-  dashboardState.latestSalesKey = key;
+  tbody.innerHTML = renderSalesRows(finalRows);
+}
+
+async function updateLatestSales(rows) {
+  const tbody = document.querySelector(".latest-panel tbody");
+  if (!tbody) return;
+
+  const cleanedRows = rows
+    .filter(r => r.some(cell => String(cell).trim() !== ""))
+    .map(r => ({
+      raw: r,
+      key: saleKey(r)
+    }));
+
+  const newKey = JSON.stringify(cleanedRows.map(r => r.key));
+
+  if (!dashboardState.initialized) {
+    tbody.innerHTML = renderSalesRows(cleanedRows);
+    dashboardState.latestSalesKey = newKey;
+    dashboardState.latestSalesRows = cleanedRows;
+    return;
+  }
+
+  if (newKey === dashboardState.latestSalesKey) return;
+
+  const previousKeys = new Set(
+    (dashboardState.latestSalesRows || []).map(item => item.key)
+  );
+
+  const newItems = cleanedRows.filter(item => !previousKeys.has(item.key));
+
+  if (newItems.length > 0) {
+    await playNewSalesQueue(newItems, cleanedRows);
+  } else {
+    tbody.innerHTML = renderSalesRows(cleanedRows);
+  }
+
+  dashboardState.latestSalesKey = newKey;
+  dashboardState.latestSalesRows = cleanedRows;
 }
 
 function buildCarouselSlides(grid, enabledRow) {
@@ -1332,7 +1418,7 @@ async function refreshDashboardData() {
     updateMetrics(metrics);
     updateCampaignBars(chart);
     updateTopCloser(topCloserData);
-    updateLatestSales(sales);
+    await updateLatestSales(sales);
     updateCarousel(carouselGrid, carouselEnabled);
 
     dashboardState.initialized = true;
