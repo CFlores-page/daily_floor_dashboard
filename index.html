@@ -62,9 +62,9 @@ body {
     minmax(0, 1fr);
   grid-template-areas:
     "header header header header header header header header header header header header"
-    "sales sales sales volume volume volume average average lastsale lastsale closer closer"
-    "chart chart chart chart chart chart chart chart chart closer closer closer"
-    "latest latest latest latest latest latest latest latest latest pulse pulse pulse";
+    "sales sales volume volume average average lastsale lastsale closer closer closer closer"
+    "chart chart chart chart chart chart chart chart closer closer closer closer"
+    "latest latest latest latest latest latest latest latest pulse pulse pulse pulse";
 }
 
 .panel {
@@ -791,12 +791,12 @@ tbody tr.new-sale-row td {
       minmax(220px, auto)
       minmax(180px, auto);
     grid-template-areas:
-      "header header"
-      "sales volume"
-      "average closer"
-      "chart chart"
-      "latest pulse";
-  }
+    "header header"
+    "sales volume"
+    "average lastsale"
+    "closer closer"
+    "chart chart"
+    "latest pulse";
 }
 
 @media (max-width: 800px) {
