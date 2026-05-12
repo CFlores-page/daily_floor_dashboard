@@ -125,6 +125,8 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .metric-label {
@@ -133,6 +135,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 8px;
+  text-align: center;
 }
 
 .metric-value {
@@ -560,8 +563,21 @@ table {
   border-collapse: collapse;
 }
 
-thead th {
+thead {
+  position: relative;
+  z-index: 20;
   background: #18263b;
+}
+
+thead th {
+  position: relative;
+  z-index: 21;
+  background: #18263b;
+}
+
+tbody {
+  position: relative;
+  z-index: 1;
 }
 
 th,
@@ -587,6 +603,8 @@ tbody tr:nth-child(even) {
 }
 
 tbody.auto-scroll {
+  position: relative;
+  z-index: 1;
   animation: salesScroll 26s linear infinite;
 }
 
