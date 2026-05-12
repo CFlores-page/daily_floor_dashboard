@@ -62,7 +62,7 @@ body {
     minmax(0, 1fr);
   grid-template-areas:
     "header header header header"
-    "sales volume average closer"
+    "sales volume average lastsale"
     "chart chart chart closer"
     "latest latest latest pulse";
 }
@@ -165,7 +165,26 @@ body {
 .average-today {
   grid-area: average;
 }
+ 
+.last-sale {
+  grid-area: lastsale;
+}
 
+.last-sale.active {
+  border-color: rgba(120, 220, 160, 0.35);
+  box-shadow: 0 0 28px rgba(120, 220, 160, 0.12);
+}
+
+.last-sale.slowing {
+  border-color: rgba(255, 196, 92, 0.30);
+  box-shadow: 0 0 24px rgba(255, 196, 92, 0.10);
+}
+
+.last-sale.cold {
+  border-color: rgba(255, 120, 120, 0.30);
+  box-shadow: 0 0 28px rgba(255, 120, 120, 0.12);
+}
+    
 .top-closer {
   grid-area: closer;
   height: 100%;
@@ -832,6 +851,11 @@ tbody tr.new-sale-row td {
     <div class="metric-value">Loading... </div>
   </section>
 
+  <section class="panel metric last-sale">
+    <div class="metric-label">Last Sale</div>
+    <div class="metric-value" id="lastSaleTimer">--:--</div>
+  </section>
+
   <section class="panel top-closer">
     <div class="closer-title">Top Closer Today</div>
     <div class="closer-center">
@@ -916,6 +940,9 @@ const dashboardState = {
 
 const numberState = new Map();
 
+let lastSaleTimestamp = null;
+let lastSaleTimerInterval = null;
+  
 async function getSheet(range) {
   const url =
     `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(SHEET_NAME)}&range=${encodeURIComponent(range)}&t=${Date.now()}`;
@@ -1330,6 +1357,94 @@ async function updateLatestSales(rows) {
   dashboardState.latestSalesRows = cleanedRows;
 }
 
+function parseSaleDate(value) {
+  const raw = String(value || "").trim();
+
+  if (!raw) return null;
+
+  // Handles formats like: 5/11/2026 18:16:34
+  const parsed = new Date(raw);
+
+  if (!Number.isNaN(parsed.getTime())) {
+    return parsed;
+  }
+
+  return null;
+}
+
+function formatElapsedTime(ms) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${String(minutes).padStart(2, "0")}m`;
+  }
+
+  return `${String(minutes).padStart(2, "0")}m ${String(seconds).padStart(2, "0")}s`;
+}
+
+function updateLastSaleVisualState(diffMs) {
+  const card = document.querySelector(".last-sale");
+  if (!card) return;
+
+  card.classList.remove("active", "slowing", "cold");
+
+  const minutes = diffMs / 60000;
+
+  if (minutes <= 30) {
+    card.classList.add("active");
+  } else if (minutes <= 90) {
+    card.classList.add("slowing");
+  } else {
+    card.classList.add("cold");
+  }
+}
+
+function renderLastSaleTimer() {
+  const el = document.getElementById("lastSaleTimer");
+  if (!el) return;
+
+  if (!lastSaleTimestamp) {
+    el.textContent = "--:--";
+    return;
+  }
+
+  const diffMs = Date.now() - lastSaleTimestamp.getTime();
+
+  el.textContent = formatElapsedTime(diffMs);
+  updateLastSaleVisualState(diffMs);
+}
+
+function setLastSaleTimestampFromRows(rows) {
+  const cleanedRows = rows.filter(r => r.some(cell => String(cell).trim() !== ""));
+  const latestSaleDate = parseSaleDate(cleanedRows?.[0]?.[0]);
+
+  if (!latestSaleDate) return;
+
+  const previousTime = lastSaleTimestamp?.getTime();
+  const newTime = latestSaleDate.getTime();
+
+  lastSaleTimestamp = latestSaleDate;
+
+  if (previousTime !== newTime) {
+    renderLastSaleTimer();
+
+    const timer = document.getElementById("lastSaleTimer");
+    if (timer) {
+      timer.classList.remove("pop");
+      void timer.offsetWidth;
+      timer.classList.add("pop");
+      setTimeout(() => timer.classList.remove("pop"), 350);
+    }
+  }
+
+  if (!lastSaleTimerInterval) {
+    lastSaleTimerInterval = setInterval(renderLastSaleTimer, 1000);
+  }
+}
+  
 function buildCarouselSlides(grid, enabledRow) {
   if (!grid || !grid.length) return [];
 
@@ -1458,6 +1573,7 @@ function updateCarousel(carouselGrid, carouselEnabled) {
   dashboardState.carouselKey = key;
 }
 
+  
 async function refreshDashboardData() {
   try {
     const [truthCell, metrics, topCloserData, sales, chart, carouselGrid, carouselEnabled] = await Promise.all([
@@ -1475,6 +1591,7 @@ async function refreshDashboardData() {
 
     updateMetrics(metrics);
     updateCampaignBars(chart);
+    setLastSaleTimestampFromRows(sales);
     await updateTopCloser(topCloserData);
     await updateLatestSales(sales);
     updateCarousel(carouselGrid, carouselEnabled);
