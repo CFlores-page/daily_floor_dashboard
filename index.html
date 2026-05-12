@@ -1589,10 +1589,30 @@ async function refreshDashboardData() {
     const hasSalesToday = boolFromCell(truthCell?.[0]?.[0]);
     document.querySelector(".banner-date").innerHTML = todayLabel(hasSalesToday);
 
-    updateMetrics(metrics);
-    updateCampaignBars(chart);
+    const latestSaleDate = parseSaleDate(
+      sales.filter(r => r.some(cell => String(cell).trim() !== ""))?.[0]?.[0]
+    );
+    
+    const latestSaleIsToday =
+      latestSaleDate &&
+      latestSaleDate.toDateString() === new Date().toDateString();
+    
+    const incomingSalesCount = Number(metrics?.[0]?.[0]) || 0;
+    
+    const looksLikeFallback =
+      dashboardState.initialized &&
+      latestSaleIsToday &&
+      incomingSalesCount < dashboardState.metrics.sales;
+    
+    if (!looksLikeFallback) {
+      updateMetrics(metrics);
+      updateCampaignBars(chart);
+      await updateTopCloser(topCloserData);
+    } else {
+      console.warn("Skipped stale fallback metrics/top closer/chart update.");
+    }
+    
     setLastSaleTimestampFromRows(sales);
-    await updateTopCloser(topCloserData);
     await updateLatestSales(sales);
     updateCarousel(carouselGrid, carouselEnabled);
 
