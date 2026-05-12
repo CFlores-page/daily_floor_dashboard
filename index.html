@@ -140,6 +140,17 @@ body {
   font-weight: 800;
 }
 
+.metric-value,
+.bar-value {
+  transition: transform 0.25s ease, text-shadow 0.25s ease;
+}
+
+.metric-value.pop,
+.bar-value.pop {
+  transform: scale(1.08);
+  text-shadow: 0 0 18px rgba(142, 197, 255, 0.55);
+}
+
 .sales-today {
   grid-area: sales;
 }
@@ -283,10 +294,9 @@ body {
 
 .latest-panel {
   grid-area: latest;
-  padding: 16px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   overflow: hidden;
 }
 
@@ -342,9 +352,11 @@ h2 {
 .bar {
   width: 100%;
   max-width: 120px;
+  height: 0%;
   min-height: 32px;
   flex-shrink: 0;
   border-radius: 18px 18px 8px 8px;
+  transition: height 1.4s cubic-bezier(0.22, 1, 0.36, 1);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.25),
     0 10px 24px rgba(0,0,0,0.18);
@@ -533,13 +545,10 @@ h2 {
 .table-shell {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   border-radius: var(--radius-lg);
   border: 1px solid rgba(255,255,255,0.1);
   background: rgba(255,255,255,0.04);
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
 .table-shell::-webkit-scrollbar {
@@ -552,7 +561,10 @@ table {
 }
 
 thead {
-  background: rgba(255,255,255,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: rgba(255,255,255,0.10);
 }
 
 th,
@@ -575,6 +587,19 @@ tbody tr {
 
 tbody tr:nth-child(even) {
   background: rgba(255,255,255,0.025);
+}
+
+tbody.auto-scroll {
+  animation: salesScroll 26s linear infinite;
+}
+
+@keyframes salesScroll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
 }
 
 .amount {
@@ -634,7 +659,7 @@ tbody tr:nth-child(even) {
       78px
       96px
       400px
-      minmax(0, 1fr);  
+      minmax(0, 1fr);
   }
 
   .date-banner {
@@ -773,7 +798,6 @@ tbody tr:nth-child(even) {
 </section>
 
   <section class="panel latest-panel">
-    <h2>Most Recent Sales</h2>
     <div class="table-shell">
       <table>
         <thead>
@@ -804,12 +828,30 @@ tbody tr:nth-child(even) {
 <script>
 const SHEET_ID = "1x8nGAfiI9bmz5G-35uQXWIoBV91CF8VqlUwc05aX8Rg";
 const SHEET_NAME = "TODAY";
+const REFRESH_MS = 10000;
+
+const dashboardState = {
+  initialized: false,
+  metrics: {
+    sales: null,
+    volume: null,
+    average: null
+  },
+  barsBuilt: false,
+  bars: {},
+  latestSalesKey: "",
+  topCloserKey: "",
+  carouselKey: ""
+};
+
+const numberState = new Map();
 
 async function getSheet(range) {
   const url =
-    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(SHEET_NAME)}&range=${encodeURIComponent(range)}`;
+    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(SHEET_NAME)}&range=${encodeURIComponent(range)}&t=${Date.now()}`;
 
-  const res = await fetch(url);
+  const res = await fetch(url, { cache: "no-store" });
+
   if (!res.ok) {
     throw new Error(`Failed to fetch sheet range ${range}: ${res.status}`);
   }
@@ -832,7 +874,6 @@ async function getSheet(range) {
 function driveImage(url) {
   const raw = String(url || "").trim();
   if (!raw) return "";
-
   if (raw.includes("thumbnail?id=")) return raw;
 
   const match = raw.match(/\/d\/([^/]+)/);
@@ -855,10 +896,7 @@ function todayLabel(hasSalesToday) {
     year: "numeric"
   }).format(d);
 
-
-  if (hasSalesToday) {
-    return formattedDate;
-  }
+  if (hasSalesToday) return formattedDate;
 
   return `
     ${formattedDate}
@@ -867,7 +905,7 @@ function todayLabel(hasSalesToday) {
     </div>
   `;
 }
-  
+
 function setText(selector, value, fallback = "") {
   const el = document.querySelector(selector);
   if (el) el.textContent = value || fallback;
@@ -912,72 +950,225 @@ function campaignClass(name) {
   return "default";
 }
 
-function applyTopCloserTheme(rawCampaign) {
-  const card = document.querySelector(".top-closer");
-  if (!card) return;
-
-  card.classList.remove("tafer", "villagroup", "balfer", "revenue-team");
-  card.classList.add(campaignClass(rawCampaign));
-}
-
-function renderLatestSales(rows) {
-  const tbody = document.querySelector(".latest-panel tbody");
-  if (!tbody) return;
-
-  tbody.innerHTML = rows
-    .filter(r => r.some(cell => String(cell).trim() !== ""))
-    .map(r => {
-      const date = r[0] || "";
-      const campaign = normalizeCampaign(r[1] || "");
-      const cert = r[2] || "";
-      const closer = r[3] || "";
-      const amount = r[4] || "";
-      const cClass = campaignClass(campaign);
-
-      return `
-        <tr>
-          <td>${date}</td>
-          <td class="unit-cell"><span class="unit-pill ${cClass}">${campaign}</span></td>
-          <td>${cert}</td>
-          <td>${closer}</td>
-          <td class="amount">${amount}</td>
-        </tr>
-      `;
-    })
-    .join("");
-}
-
-function renderCampaignBars(rows) {
-  const shell = document.getElementById("campaign-bars");
-  if (!shell) return;
-
-  const cleaned = rows
-    .filter(r => r.some(cell => String(cell).trim() !== ""))
-    .filter(r => String(r[0] || "").trim().toUpperCase() !== "CAMPAIGN")
-    .map(r => ({
-      name: String(r[0] || "").trim(),
-      value: parseMoney(r[1] || 0)
-    }));
-
-  const max = Math.max(...cleaned.map(r => r.value), 0);
-  const safeMax = max > 0 ? max : 1;
-
-  shell.innerHTML = cleaned.map(row => {
-    const pct = Math.max(12, Math.round((row.value / safeMax) * 100));
-    return `
-      <div class="bar-wrap">
-        <div class="bar-value">${formatMoney(row.value)}</div>
-        <div class="bar ${campaignClass(row.name)}" style="height: ${pct}%;"></div>
-        <div class="bar-label">${row.name}</div>
-      </div>
-    `;
-  }).join("");
-}
-
 function boolFromCell(value) {
   if (typeof value === "boolean") return value;
   const v = String(value || "").trim().toUpperCase();
   return v === "TRUE" || v === "VERDADERO" || v === "1" || v === "YES";
+}
+
+function animateNumber(selector, targetValue, options = {}) {
+  const el = document.querySelector(selector);
+  if (!el) return;
+
+  const {
+    money = false,
+    duration = 1200
+  } = options;
+
+  const target = money ? parseMoney(targetValue) : Number(targetValue) || 0;
+  const start = numberState.has(selector) ? numberState.get(selector) : 0;
+  const startTime = performance.now();
+
+  el.classList.remove("pop");
+  void el.offsetWidth;
+  el.classList.add("pop");
+
+  function frame(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = start + (target - start) * eased;
+
+    el.textContent = money
+      ? formatMoney(current)
+      : Math.round(current).toLocaleString("en-US");
+
+    if (progress < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      numberState.set(selector, target);
+      setTimeout(() => el.classList.remove("pop"), 250);
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function updateMetrics(metrics) {
+  const sales = Number(metrics?.[0]?.[0]) || 0;
+  const volume = parseMoney(metrics?.[1]?.[0]);
+  const average = parseMoney(metrics?.[2]?.[0]);
+
+  if (!dashboardState.initialized || sales !== dashboardState.metrics.sales) {
+    animateNumber(".sales-today .metric-value", sales, {
+      money: false,
+      duration: 900
+    });
+  }
+
+  if (!dashboardState.initialized || volume !== dashboardState.metrics.volume) {
+    animateNumber(".volume-today .metric-value", volume, {
+      money: true,
+      duration: 1300
+    });
+  }
+
+  if (!dashboardState.initialized || average !== dashboardState.metrics.average) {
+    animateNumber(".average-today .metric-value", average, {
+      money: true,
+      duration: 1300
+    });
+  }
+
+  dashboardState.metrics.sales = sales;
+  dashboardState.metrics.volume = volume;
+  dashboardState.metrics.average = average;
+}
+
+function cleanChartRows(rows) {
+  return rows
+    .filter(r => r.some(cell => String(cell).trim() !== ""))
+    .filter(r => String(r[0] || "").trim().toUpperCase() !== "CAMPAIGN")
+    .map(r => ({
+      name: normalizeCampaign(r[0]),
+      value: parseMoney(r[1] || 0),
+      className: campaignClass(r[0])
+    }));
+}
+
+function buildCampaignBars(rows) {
+  const shell = document.getElementById("campaign-bars");
+  if (!shell) return;
+
+  const cleaned = cleanChartRows(rows);
+
+  shell.innerHTML = cleaned.map((row, index) => `
+    <div class="bar-wrap" data-campaign="${row.className}">
+      <div class="bar-value" id="bar-value-${index}">$0.00</div>
+      <div class="bar ${row.className}" id="bar-${index}" style="height: 0%;"></div>
+      <div class="bar-label">${row.name}</div>
+    </div>
+  `).join("");
+
+  dashboardState.barsBuilt = true;
+}
+
+function updateCampaignBars(rows) {
+  if (!dashboardState.barsBuilt) {
+    buildCampaignBars(rows);
+  }
+
+  const cleaned = cleanChartRows(rows);
+  const max = Math.max(...cleaned.map(r => r.value), 0);
+  const safeMax = max > 0 ? max : 1;
+
+  cleaned.forEach((row, index) => {
+    const key = row.className;
+    const newHeight = Math.max(12, Math.round((row.value / safeMax) * 100));
+    const oldValue = dashboardState.bars[key]?.value;
+
+    if (!dashboardState.initialized || oldValue !== row.value) {
+      const bar = document.getElementById(`bar-${index}`);
+
+      setTimeout(() => {
+        if (bar) {
+          bar.style.height = `${newHeight}%`;
+        }
+
+        animateNumber(`#bar-value-${index}`, row.value, {
+          money: true,
+          duration: 1300
+        });
+      }, 120 * index);
+    }
+
+    dashboardState.bars[key] = {
+      value: row.value,
+      height: newHeight
+    };
+  });
+}
+
+function applyTopCloserTheme(rawCampaign) {
+  const card = document.querySelector(".top-closer");
+  if (!card) return;
+
+  card.classList.remove("tafer", "villagroup", "balfer", "revenue-team", "default");
+  card.classList.add(campaignClass(rawCampaign));
+}
+
+function updateTopCloser(topCloserData) {
+  const name = topCloserData?.[1]?.[0] || "No sales yet";
+  const meta = topCloserData?.[2]?.[0] || "No sales yet";
+  const rawPhotoUrl = topCloserData?.[3]?.[0] || "";
+  const campaign = topCloserData?.[4]?.[0] || "";
+  const key = JSON.stringify({ name, meta, rawPhotoUrl, campaign });
+
+  if (dashboardState.initialized && key === dashboardState.topCloserKey) return;
+
+  setText(".closer-name", name);
+  setText(".closer-meta", meta);
+  applyTopCloserTheme(campaign);
+
+  const photoWrap = document.querySelector(".closer-photo");
+  const img = String(rawPhotoUrl || "").trim();
+
+  if (photoWrap) {
+    if (img) {
+      photoWrap.innerHTML = `
+        <img
+          src="${img}"
+          alt="Top closer photo"
+          onerror="this.parentNode.textContent='No Photo';"
+          style="width:135%;height:135%;object-fit:cover;object-position:center 48%;transform:translateY(3%);display:block;border-radius:0;">
+      `;
+    } else {
+      photoWrap.textContent = "No Photo";
+    }
+  }
+
+  dashboardState.topCloserKey = key;
+}
+
+function rowHtml(r) {
+  const date = r[0] || "";
+  const campaign = normalizeCampaign(r[1] || "");
+  const cert = r[2] || "";
+  const closer = r[3] || "";
+  const amount = r[4] || "";
+  const cClass = campaignClass(campaign);
+
+  return `
+    <tr>
+      <td>${date}</td>
+      <td class="unit-cell"><span class="unit-pill ${cClass}">${campaign}</span></td>
+      <td>${cert}</td>
+      <td>${closer}</td>
+      <td class="amount">${amount}</td>
+    </tr>
+  `;
+}
+
+function updateLatestSales(rows) {
+  const tbody = document.querySelector(".latest-panel tbody");
+  if (!tbody) return;
+
+  const cleanedRows = rows.filter(r => r.some(cell => String(cell).trim() !== ""));
+  const key = JSON.stringify(cleanedRows);
+
+  if (dashboardState.initialized && key === dashboardState.latestSalesKey) return;
+
+  const html = cleanedRows.map(rowHtml).join("");
+
+  tbody.classList.remove("auto-scroll");
+  tbody.innerHTML = html + html;
+
+  void tbody.offsetWidth;
+
+  if (cleanedRows.length > 5) {
+    tbody.classList.add("auto-scroll");
+  }
+
+  dashboardState.latestSalesKey = key;
 }
 
 function buildCarouselSlides(grid, enabledRow) {
@@ -1011,45 +1202,43 @@ function buildCarouselSlides(grid, enabledRow) {
   return slides;
 }
 
-   function renderCarouselSlide(slide) {
-    const stage = document.getElementById("carousel-stage");
-    if (!stage) return;
+function renderCarouselSlide(slide) {
+  const stage = document.getElementById("carousel-stage");
+  if (!stage) return;
 
-    const accentClass = campaignClass(slide.accent || "");
-    const bg = driveImage(slide.background);
-    const fg = driveImage(slide.imageUrl);
+  const accentClass = campaignClass(slide.accent || "");
+  const bg = driveImage(slide.background);
+  const fg = driveImage(slide.imageUrl);
 
-    const backgroundStyle = bg
-      ? `background-image:
-           linear-gradient(180deg, rgba(8,14,24,0.10), rgba(8,14,24,0.55)),
-           url('${bg}');`
-      : `background:
-           linear-gradient(145deg, rgba(18,30,48,0.94), rgba(34,49,74,0.92));`;
+  const backgroundStyle = bg
+    ? `background-image:
+         linear-gradient(180deg, rgba(8,14,24,0.10), rgba(8,14,24,0.55)),
+         url('${bg}');`
+    : `background:
+         linear-gradient(145deg, rgba(18,30,48,0.94), rgba(34,49,74,0.92));`;
 
-    const title = slide.title ? `<div class="carousel-title">${slide.title}</div>` : `<div class="carousel-title"></div>`;
-    const body = slide.body ? `<div class="carousel-body">${slide.body}</div>` : `<div class="carousel-body"></div>`;
-    const subtitle = slide.subtitle ? `<div class="carousel-subtitle">${slide.subtitle}</div>` : `<div class="carousel-subtitle"></div>`;
-    const fgBlock = fg
-      ? `<div class="carousel-foreground">
-           <img
-             src="${fg}"
-             alt=""
-             onerror="this.style.display='none';">
-         </div>`
-      : "";
+  const title = slide.title ? `<div class="carousel-title">${slide.title}</div>` : `<div class="carousel-title"></div>`;
+  const body = slide.body ? `<div class="carousel-body">${slide.body}</div>` : `<div class="carousel-body"></div>`;
+  const subtitle = slide.subtitle ? `<div class="carousel-subtitle">${slide.subtitle}</div>` : `<div class="carousel-subtitle"></div>`;
 
-    stage.innerHTML = `
-      <div class="carousel-card ${accentClass}" style="${backgroundStyle}">
-        <div class="carousel-overlay"></div>
-        ${fgBlock}
-        <div class="carousel-content">
-          ${title}
-          ${body}
-          ${subtitle}
-        </div>
+  const fgBlock = fg
+    ? `<div class="carousel-foreground">
+         <img src="${fg}" alt="" onerror="this.style.display='none';">
+       </div>`
+    : "";
+
+  stage.innerHTML = `
+    <div class="carousel-card ${accentClass}" style="${backgroundStyle}">
+      <div class="carousel-overlay"></div>
+      ${fgBlock}
+      <div class="carousel-content">
+        ${title}
+        ${body}
+        ${subtitle}
       </div>
-    `;
-  }
+    </div>
+  `;
+}
 
 let carouselSlides = [];
 let carouselIndex = 0;
@@ -1100,59 +1289,49 @@ function startCarousel(slides) {
   }
 }
 
-async function loadDashboard() {
+function updateCarousel(carouselGrid, carouselEnabled) {
+  const slides = buildCarouselSlides(carouselGrid, carouselEnabled);
+  const key = JSON.stringify(slides);
+
+  if (dashboardState.initialized && key === dashboardState.carouselKey) return;
+
+  startCarousel(slides);
+  dashboardState.carouselKey = key;
+}
+
+async function refreshDashboardData() {
   try {
     const [truthCell, metrics, topCloserData, sales, chart, carouselGrid, carouselEnabled] = await Promise.all([
-  getSheet("E1"),
-  getSheet("B2:B4"),
-  getSheet("A7:A11"),
-  getSheet("A13:E22"),
-  getSheet("H2:I6"),
-  getSheet("K2:P8"),
-  getSheet("L9:P9")
-]);
+      getSheet("E1"),
+      getSheet("B2:B4"),
+      getSheet("A7:A11"),
+      getSheet("A13:E22"),
+      getSheet("H2:I6"),
+      getSheet("K2:P8"),
+      getSheet("L9:P9")
+    ]);
+
     const hasSalesToday = boolFromCell(truthCell?.[0]?.[0]);
     document.querySelector(".banner-date").innerHTML = todayLabel(hasSalesToday);
-    setText(".sales-today .metric-value", metrics?.[0]?.[0], "0");
-    setText(".volume-today .metric-value", metrics?.[1]?.[0], "$0.00");
-    setText(".average-today .metric-value", metrics?.[2]?.[0], "$0.00");
 
-    setText(".closer-name", topCloserData?.[1]?.[0], "No sales yet");
-    setText(".closer-meta", topCloserData?.[2]?.[0], "No sales yet");
+    updateMetrics(metrics);
+    updateCampaignBars(chart);
+    updateTopCloser(topCloserData);
+    updateLatestSales(sales);
+    updateCarousel(carouselGrid, carouselEnabled);
 
-    applyTopCloserTheme(topCloserData?.[4]?.[0] || "");
-
-    const photoWrap = document.querySelector(".closer-photo");
-    const rawPhotoUrl = topCloserData?.[3]?.[0] || "";
-    const img = String(rawPhotoUrl || "").trim();
-
-    if (photoWrap) {
-      if (img) {
-        photoWrap.innerHTML = `
-          <img
-            src="${img}"
-            alt="Top closer photo"
-            onerror="this.parentNode.textContent='No Photo';"
-            style="width:135%;height:135%;object-fit:cover;object-position:center 48%;transform:translateY(3%);display:block;border-radius:0;">
-        `;
-      } else {
-        photoWrap.textContent = "No Photo";
-      }
-    }
-
-    renderCampaignBars(chart);
-    renderLatestSales(sales);
-    startCarousel(buildCarouselSlides(carouselGrid, carouselEnabled));
+    dashboardState.initialized = true;
 
   } catch (error) {
-    console.error("Dashboard load error:", error);
+    console.error("Dashboard refresh error:", error);
     setText(".banner-date", "Connection error");
     setText(".closer-name", "Unable to load");
     setText(".closer-meta", "Check sheet sharing and URL access");
   }
 }
-loadDashboard();
-setInterval(loadDashboard, 60000);
+
+refreshDashboardData();
+setInterval(refreshDashboardData, REFRESH_MS);
 </script>
 
 </body>
