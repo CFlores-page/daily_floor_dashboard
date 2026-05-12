@@ -797,26 +797,88 @@ tbody tr.new-sale-row td {
     "closer closer"
     "chart chart"
     "latest pulse";
+  }
 }
-
+    
 @media (max-width: 800px) {
+  html,
+  body {
+    overflow: auto;
+  }
+
   .dashboard {
-    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 38% 62%;
+    grid-template-rows: auto auto auto auto auto auto;
     grid-template-areas:
-      "header"
-      "sales"
-      "volume"
-      "average"
-      "closer"
-      "chart"
-      "latest"
-      "pulse";
-    grid-template-rows: auto;
+      "header header"
+      "sales closer"
+      "volume closer"
+      "average closer"
+      "lastsale closer"
+      "latest latest"
+      "pulse pulse";
+    gap: 14px;
+    padding: 14px;
+  }
+
+  .chart-panel {
+    display: none;
+  }
+
+  .header {
+    min-height: 72px;
+    border-radius: 999px;
+  }
+
+  .date-banner {
+    padding: 10px 18px;
+  }
+
+  .banner-date {
+    font-size: 22px;
+  }
+
+  .banner-logo {
+    width: 120px;
+    height: 42px;
+    background-size: 110px auto;
+  }
+
+  .metric {
+    min-height: 72px;
+    padding: 10px;
+    border-radius: 22px;
+  }
+
+  .metric-label {
+    font-size: 9px;
+  }
+
+  .metric-value {
+    font-size: 20px;
+  }
+
+  .top-closer {
+    min-height: 360px;
+    border-radius: 42px;
+  }
+
+  .latest-panel {
+    min-height: 360px;
+    border-radius: 42px;
+  }
+
+  .pulse-panel {
+    min-height: 260px;
+    border-radius: 42px;
   }
 
   .carousel-stage,
   .carousel-card {
-    min-height: 360px;
+    min-height: 260px;
   }
 }
   </style>
