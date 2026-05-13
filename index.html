@@ -997,14 +997,16 @@ const dashboardState = {
   latestSalesKey: "",
   latestSalesRows: [],
   topCloserKey: "",
-  carouselKey: ""
+  carouselKey: "",
+  displayDateKey: ""
 };
 
 const numberState = new Map();
 
 let lastSaleTimestamp = null;
 let lastSaleTimerInterval = null;
-  
+let refreshInProgress = false;
+
 async function getSheet(range) {
   const url =
     `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(SHEET_NAME)}&range=${encodeURIComponent(range)}&t=${Date.now()}`;
@@ -1039,6 +1041,14 @@ function driveImage(url) {
   if (!match) return raw;
 
   return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1600`;
+}
+
+function dateKey(date) {
+  if (!date) return "";
+
+  // Force date comparison to Mexico central time, fixed UTC-6.
+  const mexicoTime = new Date(date.getTime() - (6 * 60 * 60 * 1000));
+  return mexicoTime.toISOString().slice(0, 10);
 }
 
 function todayLabel(hasSalesToday) {
@@ -1364,9 +1374,6 @@ async function playNewSalesQueue(newItems, finalRows) {
   if (!tbody) return;
 
   const currentRows = [...dashboardState.latestSalesRows];
-
-  // Sheet is newest-first. Reverse so oldest new sale enters first,
-  // and newest sale ends on top.
   const queue = [...newItems].reverse();
 
   for (const sale of queue) {
@@ -1423,13 +1430,11 @@ function parseSaleDate(value) {
   const raw = String(value || "").trim();
   if (!raw) return null;
 
-  // Expected format: M/D/YYYY HH:mm:ss
   const match = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})$/);
   if (!match) return null;
 
   const [, month, day, year, hour, minute, second] = match;
 
-  // Mexico central time, fixed UTC-6. Mexico no longer uses DST in most areas.
   return new Date(Date.UTC(
     Number(year),
     Number(month) - 1,
@@ -1487,7 +1492,7 @@ function renderLastSaleTimer() {
   }
 
   const saleIsToday =
-    lastSaleTimestamp.toDateString() === new Date().toDateString();
+    dateKey(lastSaleTimestamp) === dateKey(new Date());
 
   if (!saleIsToday) {
     el.textContent = "--:--";
@@ -1512,7 +1517,7 @@ function setLastSaleTimestampFromRows(rows, hasSalesToday) {
   }
 
   const latestSaleIsToday =
-    latestSaleDate.toDateString() === new Date().toDateString();
+    dateKey(latestSaleDate) === dateKey(new Date());
 
   if (!latestSaleIsToday) {
     lastSaleTimestamp = null;
@@ -1541,7 +1546,7 @@ function setLastSaleTimestampFromRows(rows, hasSalesToday) {
     lastSaleTimerInterval = setInterval(renderLastSaleTimer, 1000);
   }
 }
-  
+
 function buildCarouselSlides(grid, enabledRow) {
   if (!grid || !grid.length) return [];
 
@@ -1670,8 +1675,10 @@ function updateCarousel(carouselGrid, carouselEnabled) {
   dashboardState.carouselKey = key;
 }
 
-  
 async function refreshDashboardData() {
+  if (refreshInProgress) return;
+  refreshInProgress = true;
+
   try {
     const [truthCell, metrics, topCloserData, sales, chart, carouselGrid, carouselEnabled] = await Promise.all([
       getSheet("E1"),
@@ -1684,31 +1691,42 @@ async function refreshDashboardData() {
     ]);
 
     const hasSalesToday = boolFromCell(truthCell?.[0]?.[0]);
-    document.querySelector(".banner-date").innerHTML = todayLabel(hasSalesToday);
 
     const latestSaleDate = parseSaleDate(
       sales.filter(r => r.some(cell => String(cell).trim() !== ""))?.[0]?.[0]
     );
-    
+
+    const todayKey = dateKey(new Date());
+    const latestSaleKey = dateKey(latestSaleDate);
+
     const latestSaleIsToday =
       latestSaleDate &&
-      latestSaleDate.toDateString() === new Date().toDateString();
-    
+      latestSaleKey === todayKey;
+
     const incomingSalesCount = Number(metrics?.[0]?.[0]) || 0;
-    
+    const previousSalesCount = dashboardState.metrics.sales ?? 0;
+
+    const currentlyDisplayingToday =
+      dashboardState.displayDateKey === todayKey;
+
     const looksLikeFallback =
       dashboardState.initialized &&
+      currentlyDisplayingToday &&
       latestSaleIsToday &&
-      incomingSalesCount < dashboardState.metrics.sales;
-    
+      incomingSalesCount < previousSalesCount;
+
+    document.querySelector(".banner-date").innerHTML = todayLabel(hasSalesToday);
+
     if (!looksLikeFallback) {
       updateMetrics(metrics);
       updateCampaignBars(chart);
       await updateTopCloser(topCloserData);
+
+      dashboardState.displayDateKey = latestSaleIsToday ? todayKey : "fallback";
     } else {
       console.warn("Skipped stale fallback metrics/top closer/chart update.");
     }
-    
+
     setLastSaleTimestampFromRows(sales, hasSalesToday);
     await updateLatestSales(sales);
     updateCarousel(carouselGrid, carouselEnabled);
@@ -1720,12 +1738,14 @@ async function refreshDashboardData() {
     setText(".banner-date", "Connection error");
     setText(".closer-name", "Unable to load");
     setText(".closer-meta", "Check sheet sharing and URL access");
+
+  } finally {
+    refreshInProgress = false;
   }
 }
 
 refreshDashboardData();
 setInterval(refreshDashboardData, REFRESH_MS);
 </script>
-
 </body>
 </html>
