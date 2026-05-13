@@ -1222,31 +1222,39 @@ function buildCampaignBars(rows) {
 }
 
 function updateCampaignBars(rows) {
+  const cleaned = cleanChartRows(rows);
+
   if (!dashboardState.barsBuilt) {
     buildCampaignBars(rows);
   }
 
-  const cleaned = cleanChartRows(rows);
   const max = Math.max(...cleaned.map(r => r.value), 0);
   const safeMax = max > 0 ? max : 1;
 
   cleaned.forEach((row, index) => {
     const key = row.className;
     const newHeight = Math.max(12, Math.round((row.value / safeMax) * 100));
-    const oldValue = dashboardState.bars[key]?.value;
+    const oldState = dashboardState.bars[key] || {};
+    const valueChanged = oldState.value !== row.value;
+    const heightChanged = oldState.height !== newHeight;
 
-    if (!dashboardState.initialized || oldValue !== row.value) {
-      const bar = document.getElementById(`bar-${index}`);
+    const bar = document.getElementById(`bar-${index}`);
 
+    if (!dashboardState.initialized || valueChanged || heightChanged) {
       setTimeout(() => {
         if (bar) {
           bar.style.height = `${newHeight}%`;
         }
 
-        animateNumber(`#bar-value-${index}`, row.value, {
-          money: true,
-          duration: 1300
-        });
+        if (valueChanged || !dashboardState.initialized) {
+          animateNumber(`#bar-value-${index}`, row.value, {
+            money: true,
+            duration: 1300
+          });
+        } else {
+          const valueEl = document.getElementById(`bar-value-${index}`);
+          if (valueEl) valueEl.textContent = formatMoney(row.value);
+        }
       }, 120 * index);
     }
 
