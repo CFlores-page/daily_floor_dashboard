@@ -1476,10 +1476,22 @@ function updateLastSaleVisualState(diffMs) {
 
 function renderLastSaleTimer() {
   const el = document.getElementById("lastSaleTimer");
+  const card = document.querySelector(".last-sale");
+
   if (!el) return;
 
   if (!lastSaleTimestamp) {
     el.textContent = "--:--";
+    if (card) card.classList.remove("active", "slowing", "cold");
+    return;
+  }
+
+  const saleIsToday =
+    lastSaleTimestamp.toDateString() === new Date().toDateString();
+
+  if (!saleIsToday) {
+    el.textContent = "--:--";
+    if (card) card.classList.remove("active", "slowing", "cold");
     return;
   }
 
@@ -1489,11 +1501,24 @@ function renderLastSaleTimer() {
   updateLastSaleVisualState(diffMs);
 }
 
-function setLastSaleTimestampFromRows(rows) {
+function setLastSaleTimestampFromRows(rows, hasSalesToday) {
   const cleanedRows = rows.filter(r => r.some(cell => String(cell).trim() !== ""));
   const latestSaleDate = parseSaleDate(cleanedRows?.[0]?.[0]);
 
-  if (!latestSaleDate) return;
+  if (!hasSalesToday || !latestSaleDate) {
+    lastSaleTimestamp = null;
+    renderLastSaleTimer();
+    return;
+  }
+
+  const latestSaleIsToday =
+    latestSaleDate.toDateString() === new Date().toDateString();
+
+  if (!latestSaleIsToday) {
+    lastSaleTimestamp = null;
+    renderLastSaleTimer();
+    return;
+  }
 
   const previousTime = lastSaleTimestamp?.getTime();
   const newTime = latestSaleDate.getTime();
@@ -1684,7 +1709,7 @@ async function refreshDashboardData() {
       console.warn("Skipped stale fallback metrics/top closer/chart update.");
     }
     
-    setLastSaleTimestampFromRows(sales);
+    setLastSaleTimestampFromRows(sales, hasSalesToday);
     await updateLatestSales(sales);
     updateCarousel(carouselGrid, carouselEnabled);
 
