@@ -784,35 +784,79 @@ tbody tr.new-sale-row td {
   .dashboard {
     height: auto;
     min-height: 100vh;
-    grid-template-columns: 1fr 1fr;
+    padding: 10px;
+    gap: 10px;
+    grid-template-columns: 280px 1fr;
     grid-template-rows:
-      minmax(76px, auto)
-      110px
-      110px
-      520px
-      260px
+      90px
+      120px
+      120px
+      120px
+      120px
+      280px
       360px
       260px;
     grid-template-areas:
       "header header"
-      "sales volume"
-      "average lastsale"
-      "closer closer"
+      "sales closer"
+      "volume closer"
+      "average closer"
+      "lastsale closer"
       "chart chart"
       "latest latest"
       "pulse pulse";
   }
 
+  .metric {
+    min-height: 0;
+    padding: 12px;
+  }
+
+  .metric-label {
+    font-size: 13px;
+    line-height: 1.15;
+  }
+
+  .metric-value {
+    font-size: clamp(28px, 4vw, 42px);
+  }
+
   .top-closer {
-    min-height: 520px;
+    min-height: 510px;
+    padding: 18px;
+  }
+
+  .closer-title {
+    text-align: center;
+    font-size: 22px;
+    letter-spacing: 0.22em;
+  }
+
+  .closer-photo img {
+    max-width: 76%;
+    max-height: 74%;
+  }
+
+  .closer-name {
+    font-size: clamp(34px, 5vw, 52px);
+  }
+
+  .closer-meta {
+    font-size: 20px;
   }
 
   .chart-panel {
-    min-height: 260px;
+    min-height: 280px;
+    padding: 14px;
+  }
+
+  .bars {
+    padding: 8px 12px 4px;
   }
 
   .latest-panel {
     min-height: 360px;
+    padding: 12px;
   }
 
   .table-shell {
