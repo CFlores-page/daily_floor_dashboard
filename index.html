@@ -787,16 +787,44 @@ tbody tr.new-sale-row td {
     grid-template-columns: 1fr 1fr;
     grid-template-rows:
       minmax(76px, auto)
-      minmax(95px, auto)
-      minmax(220px, auto)
-      minmax(180px, auto);
+      110px
+      110px
+      520px
+      260px
+      360px
+      260px;
     grid-template-areas:
-    "header header"
-    "sales volume"
-    "average lastsale"
-    "closer closer"
-    "chart chart"
-    "latest pulse";
+      "header header"
+      "sales volume"
+      "average lastsale"
+      "closer closer"
+      "chart chart"
+      "latest latest"
+      "pulse pulse";
+  }
+
+  .top-closer {
+    min-height: 520px;
+  }
+
+  .chart-panel {
+    min-height: 260px;
+  }
+
+  .latest-panel {
+    min-height: 360px;
+  }
+
+  .table-shell {
+    overflow: auto;
+  }
+
+  table {
+    min-width: 900px;
+  }
+
+  .pulse-panel {
+    min-height: 260px;
   }
 }
     
