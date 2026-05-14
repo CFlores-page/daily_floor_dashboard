@@ -263,6 +263,7 @@ body {
   align-items: flex-end;
   justify-content: center;
   overflow: visible;
+  padding-top: 12px;
   border: none;
   background: transparent;
   box-shadow: none;
@@ -833,8 +834,8 @@ tbody tr.new-sale-row td {
   }
 
   .closer-photo img {
-    max-width: 76%;
-    max-height: 74%;
+    max-width: 64%;
+    max-height: 86%;
   }
 
   .closer-name {
@@ -1371,7 +1372,7 @@ async function updateTopCloser(topCloserData) {
             src="${img}"
             alt="Top closer photo"
             onerror="this.parentNode.textContent='No Photo';"
-            style="width:135%;height:135%;object-fit:cover;object-position:center 48%;transform:translateY(3%);display:block;border-radius:0;">
+            style="width:auto;height:100%;max-width:100%;object-fit:contain;object-position:center bottom;transform:translateY(0);display:block;border-radius:0;">
         `;
       } else {
         photoWrap.textContent = "No Photo";
