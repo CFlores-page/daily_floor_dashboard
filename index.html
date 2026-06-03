@@ -957,9 +957,86 @@ tbody tr.new-sale-row td {
     min-height: 260px;
   }
 }
+
+.maintenance-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background:
+    radial-gradient(circle at top left, rgba(142, 197, 255, 0.22), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(255, 120, 120, 0.18), transparent 28%),
+    rgba(4, 10, 20, 0.92);
+  backdrop-filter: blur(18px);
+  color: #f5f7fb;
+  text-align: center;
+}
+
+.maintenance-overlay.active {
+  display: flex;
+}
+
+.maintenance-card {
+  width: min(860px, 92vw);
+  padding: 48px 56px;
+  border-radius: 36px;
+  background: linear-gradient(145deg, rgba(18, 30, 48, 0.96), rgba(34, 49, 74, 0.94));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 28px 90px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.maintenance-kicker {
+  font-size: clamp(12px, 1vw, 16px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.maintenance-title {
+  font-size: clamp(42px, 5vw, 78px);
+  font-weight: 950;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  margin-bottom: 22px;
+}
+
+.maintenance-message {
+  font-size: clamp(18px, 1.6vw, 26px);
+  line-height: 1.35;
+  color: var(--muted);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.maintenance-subnote {
+  margin-top: 28px;
+  font-size: clamp(13px, 1vw, 16px);
+  color: rgba(245, 247, 251, 0.62);
+}
+
   </style>
 </head>
 <body>
+
+<div class="maintenance-overlay" id="maintenance-overlay">
+  <div class="maintenance-card">
+    <div class="maintenance-kicker">Dashboard Status</div>
+    <div class="maintenance-title">Down for Maintenance</div>
+    <div class="maintenance-message">
+      We are updating the sales floor dashboard. Please check back shortly.
+    </div>
+    <div class="maintenance-subnote">
+      This screen will return automatically once maintenance mode is turned off.
+    </div>
+  </div>
+</div>
 
 <main class="dashboard">
 
@@ -1106,6 +1183,15 @@ async function getSheet(range) {
   );
 
   return rows;
+}
+
+function updateMaintenanceOverlay(value) {
+  const overlay = document.getElementById("maintenance-overlay");
+  if (!overlay) return;
+
+  const maintenanceMode = boolFromCell(value);
+
+  overlay.classList.toggle("active", maintenanceMode);
 }
 
 function driveImage(url) {
@@ -1764,8 +1850,9 @@ async function refreshDashboardData() {
   refreshInProgress = true;
 
   try {
-    const [truthCell, metrics, topCloserData, sales, chart, carouselGrid, carouselEnabled] = await Promise.all([
+    const [truthCell, maintenanceCell, metrics, topCloserData, sales, chart, carouselGrid, carouselEnabled] = await Promise.all([
       getSheet("E1"),
+      getSheet("E2"),
       getSheet("B2:B4"),
       getSheet("A7:A11"),
       getSheet("A13:E22"),
@@ -1773,6 +1860,8 @@ async function refreshDashboardData() {
       getSheet("K2:P8"),
       getSheet("L9:P9")
     ]);
+
+    updateMaintenanceOverlay(maintenanceCell?.[0]?.[0]);
 
     const hasSalesToday = boolFromCell(truthCell?.[0]?.[0]);
 
