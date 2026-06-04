@@ -17,14 +17,17 @@
   --radius-xl: 28px;
   --radius-lg: 22px;
 
-  --tafer-top: #9fc3f5;
-  --tafer-bottom: #6d9eeb;
-  --villagroup-top: #f8c693;
-  --villagroup-bottom: #f6b26b;
+  --elite-top: #9fc3f5;
+  --elite-bottom: #6d9eeb;
+
+  --premier-top: #f8c693;
+  --premier-bottom: #f6b26b;
+
   --balfer-top: #b2d69f;
   --balfer-bottom: #93c47d;
-  --revenue-top: #b0a3d8;
-  --revenue-bottom: #8e7cc3;
+
+  --loyalty-top: #b0a3d8;
+  --loyalty-bottom: #8e7cc3;
 }
 
 * {
@@ -197,14 +200,14 @@ body {
   overflow: visible;
 }
 
-.top-closer.tafer {
+.top-closer.elite {
   background:
     radial-gradient(circle at top center, rgba(109,158,235,0.26), transparent 42%),
     linear-gradient(145deg, rgba(18,35,62,0.98), rgba(28,52,90,0.98));
   border-color: rgba(109,158,235,0.32);
 }
 
-.top-closer.villagroup {
+.top-closer.premier {
   background:
     radial-gradient(circle at top center, rgba(246,178,107,0.24), transparent 42%),
     linear-gradient(145deg, rgba(50,35,18,0.98), rgba(74,50,24,0.98));
@@ -218,7 +221,7 @@ body {
   border-color: rgba(147,196,125,0.30);
 }
 
-.top-closer.revenue-team {
+.top-closer.loyalty {
   background:
     radial-gradient(circle at top center, rgba(142,124,195,0.24), transparent 42%),
     linear-gradient(145deg, rgba(38,28,56,0.98), rgba(56,40,82,0.98));
@@ -414,20 +417,20 @@ h2 {
     0 10px 24px rgba(0,0,0,0.18);
 }
 
-.bar.tafer {
-  background: linear-gradient(180deg, var(--tafer-top), var(--tafer-bottom));
+.bar.elite {
+  background: linear-gradient(180deg, var(--elite-top), var(--elite-bottom));
 }
 
-.bar.villagroup {
-  background: linear-gradient(180deg, var(--villagroup-top), var(--villagroup-bottom));
+.bar.premier {
+  background: linear-gradient(180deg, var(--premier-top), var(--premier-bottom));
 }
 
 .bar.balfer {
   background: linear-gradient(180deg, var(--balfer-top), var(--balfer-bottom));
 }
 
-.bar.revenue-team {
-  background: linear-gradient(180deg, var(--revenue-top), var(--revenue-bottom));
+.bar.loyalty {
+  background: linear-gradient(180deg, var(--loyalty-top), var(--loyalty-bottom));
 }
 
 .bar-label {
@@ -547,13 +550,13 @@ h2 {
   box-shadow: inset 0 0 0 1px rgba(142,197,255,0.08);
 }
 
-.carousel-card.tafer {
+.carousel-card.elite {
   box-shadow:
     inset 0 0 0 1px rgba(109,158,235,0.12),
     inset 0 0 120px rgba(109,158,235,0.08);
 }
 
-.carousel-card.villagroup {
+.carousel-card.premier {
   box-shadow:
     inset 0 0 0 1px rgba(246,178,107,0.12),
     inset 0 0 120px rgba(246,178,107,0.08);
@@ -565,7 +568,7 @@ h2 {
     inset 0 0 120px rgba(147,196,125,0.08);
 }
 
-.carousel-card.revenue-team {
+.carousel-card.loyalty {
   box-shadow:
     inset 0 0 0 1px rgba(142,124,195,0.12),
     inset 0 0 120px rgba(142,124,195,0.08);
@@ -715,14 +718,14 @@ tbody tr.new-sale-row td {
   white-space: nowrap;
 }
 
-.unit-pill.tafer {
-  color: var(--tafer-top);
+.unit-pill.elite {
+  color: var(--elite-top);
   background: rgba(109,158,235,0.12);
   border-color: rgba(109,158,235,0.20);
 }
 
-.unit-pill.villagroup {
-  color: var(--villagroup-bottom);
+.unit-pill.premier {
+  color: var(--premier-bottom);
   background: rgba(246,178,107,0.12);
   border-color: rgba(246,178,107,0.20);
 }
@@ -733,8 +736,8 @@ tbody tr.new-sale-row td {
   border-color: rgba(147,196,125,0.20);
 }
 
-.unit-pill.revenue-team {
-  color: var(--revenue-top);
+.unit-pill.loyalty {
+  color: var(--loyalty-top);
   background: rgba(142,124,195,0.12);
   border-color: rgba(142,124,195,0.20);
 }
@@ -1286,10 +1289,10 @@ function formatMoney(value) {
 function normalizeCampaign(name) {
   const raw = String(name || "").trim().toUpperCase();
 
-  if (raw.includes("REVENUE TEAM")) return "REVENUE TEAM";
-  if (raw.includes("VILLAGROUP")) return "VILLAGROUP";
-  if (raw.includes("BALFER")) return "BALFER";
-  if (raw.includes("TAFER")) return "TAFER";
+  if (raw === "ELITE") return "ELITE";
+  if (raw === "PREMIER") return "PREMIER";
+  if (raw === "BALFER") return "BALFER";
+  if (raw === "LOYALTY") return "LOYALTY";
 
   return raw;
 }
@@ -1298,10 +1301,10 @@ function campaignClass(name) {
   const raw = String(name || "").trim().toUpperCase();
 
   if (raw === "DEFAULT" || raw === "") return "default";
-  if (raw.includes("TAFER")) return "tafer";
-  if (raw.includes("VILLAGROUP")) return "villagroup";
-  if (raw.includes("BALFER")) return "balfer";
-  if (raw.includes("REVENUE TEAM")) return "revenue-team";
+  if (raw === "ELITE") return "elite";
+  if (raw === "PREMIER") return "premier";
+  if (raw === "BALFER") return "balfer";
+  if (raw === "LOYALTY") return "loyalty";
 
   return "default";
 }
@@ -1456,7 +1459,7 @@ function applyTopCloserTheme(rawCampaign) {
   const card = document.querySelector(".top-closer");
   if (!card) return;
 
-  card.classList.remove("tafer", "villagroup", "balfer", "revenue-team", "default");
+  card.classList.remove("elite", "premier", "balfer", "loyalty", "default");
   card.classList.add(campaignClass(rawCampaign));
 }
 
