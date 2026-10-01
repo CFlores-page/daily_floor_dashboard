@@ -20,24 +20,105 @@ const numberState = new Map();
 let lastSaleTimestamp = null;
 let lastSaleTimerInterval = null;
 let refreshInProgress = false;
+
 async function getSheet(range) {
+  // TEST MODE
+  // Return fake sheet-shaped data instead of contacting Google.
+  if (typeof TEST_MODE !== "undefined" && TEST_MODE) {
+    return getTestSheetRange(range);
+  }
+
+  // PRODUCTION MODE
   const url =
-    `https\://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(SHEET_NAME)}&range=${encodeURIComponent(range)}&t=${Date.now()}`;
+    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(SHEET_NAME)}&range=${encodeURIComponent(range)}&t=${Date.now()}`;
+
   const res = await fetch(url, { cache: "no-store" });
+
   if (!res.ok) {
     throw new Error(`Failed to fetch sheet range ${range}: ${res.status}`);
   }
+
   const txt = await res.text();
   const match = txt.match(/setResponse\(([^;]+)\);/);
+
   if (!match) {
     throw new Error(`Unexpected response while reading range ${range}`);
   }
+
   const json = JSON.parse(match[1]);
+
   const rows = (json.table?.rows || []).map(r =>
     (r.c || []).map(x => x ? (x.f || x.v || "") : "")
   );
+
   return rows;
 }
+
+function getTestSheetRange(range) {
+  switch (range) {
+    case "E1":
+      return [[TEST_DATA.hasSalesToday]];
+
+    case "E2":
+      return [[TEST_DATA.maintenance]];
+
+    case "B2:B4":
+      return [
+        [TEST_DATA.metrics.sales],
+        [TEST_DATA.metrics.volume],
+        [TEST_DATA.metrics.average]
+      ];
+
+    case "A7:A11":
+      return [
+        ["TOP CLOSER"],
+        [TEST_DATA.topCloser.name],
+        [TEST_DATA.topCloser.meta],
+        [TEST_DATA.topCloser.photo],
+        [TEST_DATA.topCloser.campaign]
+      ];
+
+    case "A13:E22":
+      return TEST_DATA.sales;
+
+    case "H2:I6":
+      return [
+        ["CAMPAIGN", "VOLUME"],
+        ...TEST_DATA.chart
+      ];
+
+    case "K2:P8":
+      return buildTestCarouselGrid();
+
+    case "L9:P9":
+      return buildTestCarouselEnabledRow();
+
+    default:
+      console.warn(`No test data configured for range: ${range}`);
+      return [];
+  }
+}
+
+function buildTestCarouselGrid() {
+  const slides = TEST_DATA.carousel || [];
+
+  return [
+    ["TYPE", ...slides.map(s => s.type || "")],
+    ["TITLE", ...slides.map(s => s.title || "")],
+    ["SUBTITLE", ...slides.map(s => s.subtitle || "")],
+    ["BODY", ...slides.map(s => s.body || "")],
+    ["BACKGROUND", ...slides.map(s => s.background || "")],
+    ["IMAGE URL", ...slides.map(s => s.imageUrl || "")],
+    ["ACCENT / CAMPAIGN", ...slides.map(s => s.accent || "")]
+  ];
+}
+
+function buildTestCarouselEnabledRow() {
+  return [[
+    ...(TEST_DATA.carousel || []).map(s => s.enabled !== false)
+  ]];
+}
+
 function updateMaintenanceOverlay(value) {
   const overlay = document.getElementById("maintenance-overlay");
   const dashboard = document.querySelector(".dashboard");

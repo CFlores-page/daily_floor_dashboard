@@ -1,0 +1,1631 @@
+@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap');
+/* =========================================================
+   NETCENTER — HALLOWEEN THEME
+   Phase 1: typography, colors and borders
+   ========================================================= */
+:root {
+  /* Typography */
+  --hw-font-display: "Creepster", cursive;
+  --hw-font-heading: "Oswald", sans-serif;
+  --hw-font-data: "Inter", sans-serif;
+  /* Environment */
+  --hw-bg: #08060c;
+  --hw-bg-purple: #150b1c;
+  /* Panels */
+  --hw-panel-top: rgba(27, 17, 35, 0.96);
+  --hw-panel-bottom: rgba(13, 9, 18, 0.98);
+  /* Orange */
+  --hw-orange: #df6518;
+  --hw-orange-bright: #ff8a22;
+  --hw-orange-hot: #ff9d32;
+  --hw-orange-dark: #762809;
+  /* Purple */
+  --hw-purple: #9d63d5;
+  --hw-purple-light: #bd8aef;
+  --hw-purple-dark: #40204f;
+  /* Text */
+  --hw-text: #fff4e8;
+  --hw-muted: #bcaec2;
+  --hw-dim: #817586;
+  /* Borders */
+  --hw-border: rgba(223, 101, 24, 0.62);
+  --hw-border-soft: rgba(223, 101, 24, 0.35);
+}
+/* =========================================================
+   ENVIRONMENT
+   ========================================================= */
+body {
+  font-family: var(--hw-font-data);
+  color: var(--hw-text);
+  background:
+    radial-gradient(
+      circle at 12% 0%,
+      rgba(104, 47, 128, 0.20),
+      transparent 31%
+    ),
+    radial-gradient(
+      circle at 92% 10%,
+      rgba(172, 59, 13, 0.10),
+      transparent 27%
+    ),
+    linear-gradient(
+      145deg,
+      var(--hw-bg),
+      var(--hw-bg-purple)
+    );
+}
+/* =========================================================
+   PANELS
+   ========================================================= */
+.panel {
+  background:
+    linear-gradient(
+      180deg,
+      var(--hw-panel-top),
+      var(--hw-panel-bottom)
+    );
+  border: 1px solid var(--hw-border);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.42),
+    0 0 7px rgba(223, 101, 24, 0.10),
+    inset 0 1px 0 rgba(255, 180, 105, 0.06);
+}
+/* =========================================================
+   DATE / MAIN DISPLAY
+   ========================================================= */
+.banner-date {
+  font-family: var(--hw-font-display);
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  background:
+    linear-gradient(
+      180deg,
+      #ffe4a3 0%,
+      #ffbd50 28%,
+      #f47b20 65%,
+      #c94a0d 100%
+    );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--hw-orange-dark);
+  filter:
+    drop-shadow(0 2px 0 rgba(60, 15, 2, 0.85))
+    drop-shadow(0 0 6px rgba(255, 107, 20, 0.22));
+}
+/* =========================================================
+   KPI CARDS
+   ========================================================= */
+.metric-label {
+  font-family: var(--hw-font-heading);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  color: var(--hw-purple-light);
+  text-shadow:
+    0 0 7px rgba(157, 99, 213, 0.22);
+}
+.metric-value {
+  font-family: var(--hw-font-data);
+  font-weight: 800;
+  color: var(--hw-text);
+}
+.last-sale .metric-value {
+  color: #ffb04b;
+  text-shadow:
+    0 0 8px rgba(255, 122, 24, 0.30);
+}
+/* =========================================================
+   CHART
+   ========================================================= */
+.chart-panel h2 {
+  font-family: var(--hw-font-heading);
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  color: var(--hw-text);
+}
+/* =========================================================
+   TOP CLOSER
+   ========================================================= */
+.closer-title {
+  font-family: var(--hw-font-heading);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  color: var(--hw-purple-light);
+}
+.closer-name {
+  font-family: var(--hw-font-heading);
+  font-weight: 700;
+  color: var(--hw-text);
+}
+.closer-meta {
+  font-family: var(--hw-font-data);
+  color: var(--hw-purple-light);
+}
+/* =========================================================
+   TABLE
+   ========================================================= */
+.latest-panel th {
+  font-family: var(--hw-font-heading);
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  color: var(--hw-orange-hot);
+}
+.latest-panel td {
+  font-family: var(--hw-font-data);
+  color: var(--hw-text);
+}
+.latest-panel tbody tr {
+  border-color: rgba(223, 101, 24, 0.14);
+}
+/* =========================================================
+   CAROUSEL / ANNOUNCEMENTS
+   ========================================================= */
+.carousel-title {
+  font-family: var(--hw-font-display);
+  font-weight: 400;
+  letter-spacing: 0.025em;
+  color: var(--hw-orange-hot);
+  text-shadow:
+    0 1px 0 var(--hw-orange-dark),
+    0 0 6px rgba(255, 122, 24, 0.20);
+}
+.carousel-body {
+  font-family: var(--hw-font-data);
+  color: var(--hw-text);
+}
+.carousel-subtitle {
+  font-family: var(--hw-font-heading);
+  color: var(--hw-purple-light);
+  letter-spacing: 0.04em;
+}
+/* =========================================================
+   TABLE / PANEL INTERNAL BORDERS
+   ========================================================= */
+.table-shell {
+  border-color: var(--hw-border-soft);
+}
+.latest-panel thead {
+  border-color: var(--hw-border-soft);
+}
+/* =========================================================
+   POTION CHART BARS — V2
+   Dark glass + irregular bubbling
+   ========================================================= */
+.bar {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  /* Glass depth — deliberately restrained */
+  box-shadow:
+    inset 2px 0 3px rgba(255, 255, 255, 0.12),
+    inset -3px 0 5px rgba(0, 0, 0, 0.18),
+    inset 0 2px 3px rgba(255, 255, 255, 0.16),
+    inset 0 -10px 16px rgba(0, 0, 0, 0.18);
+  filter: saturate(1.08) brightness(0.94);
+}
+/* ---------------------------------------------------------
+   BUBBLES
+   Different sizes + positions + background heights prevent
+   them from travelling upward as obvious horizontal rows.
+   --------------------------------------------------------- */
+.bar::before {
+  content: "";
+  position: absolute;
+  /* Extend the animated layer beyond the actual bar */
+  inset: -100% 0 0 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.30) 0 2px,
+      transparent 2.8px
+    ),
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.20) 0 3px,
+      transparent 3.8px
+    ),
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.26) 0 1.5px,
+      transparent 2.3px
+    ),
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.16) 0 2.5px,
+      transparent 3.4px
+    ),
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.22) 0 1.8px,
+      transparent 2.6px
+    );
+  /*
+    Each bubble field has a DIFFERENT tile size.
+    This destroys the "bubble rows" effect.
+  */
+  background-size:
+    37px 83px,
+    53px 121px,
+    71px 157px,
+    43px 109px,
+    61px 139px;
+  background-position:
+    7px 17px,
+    29px 61px,
+    14px 103px,
+    37px 42px,
+    22px 131px;
+  animation:
+    potion-bubble-field 8s linear infinite;
+  opacity: .70;
+}
+/* ---------------------------------------------------------
+   GLASS REFLECTION
+   --------------------------------------------------------- */
+.bar::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  bottom: 10px;
+  left: 7px;
+  width: 9%;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.26) 0%,
+      rgba(255,255,255,.12) 28%,
+      rgba(255,255,255,.035) 72%,
+      transparent 100%
+    );
+  opacity: .65;
+}
+/* ---------------------------------------------------------
+   IRREGULAR BUBBLE MOVEMENT
+   --------------------------------------------------------- */
+@keyframes potion-bubble-field {
+  0% {
+    background-position:
+      7px 17px,
+      29px 61px,
+      14px 103px,
+      37px 42px,
+      22px 131px;
+  }
+  25% {
+    background-position:
+      9px -9px,
+      26px 18px,
+      17px 58px,
+      34px 4px,
+      25px 89px;
+  }
+  50% {
+    background-position:
+      6px -38px,
+      31px -31px,
+      12px 11px,
+      39px -42px,
+      20px 43px;
+  }
+  75% {
+    background-position:
+      10px -67px,
+      27px -81px,
+      16px -39px,
+      35px -87px,
+      24px -5px;
+  }
+  100% {
+    background-position:
+      7px -112px,
+      29px -181px,
+      14px -211px,
+      37px -176px,
+      22px -147px;
+  }
+}
+/* =========================================================
+   POTION LIQUIDS
+   ========================================================= */
+/* ELITE — BLUE */
+.bar.elite,
+.bar[data-campaign="ELITE"] {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(128, 190, 255, .88) 0%,
+      rgba(64, 137, 224, .88) 40%,
+      rgba(27, 82, 169, .92) 100%
+    );
+  box-shadow:
+    0 0 7px rgba(65, 142, 238, .28),
+    0 0 18px rgba(65, 142, 238, .09),
+    inset 2px 0 3px rgba(255,255,255,.15),
+    inset -4px 0 6px rgba(5,30,80,.25),
+    inset 0 -12px 18px rgba(7,42,110,.22);
+}
+/* PREMIER — ORANGE */
+.bar.premier,
+.bar[data-campaign="PREMIER"] {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 184, 82, .90) 0%,
+      rgba(226, 112, 24, .90) 48%,
+      rgba(157, 58, 7, .94) 100%
+    );
+  box-shadow:
+    0 0 7px rgba(240, 119, 24, .30),
+    0 0 18px rgba(240, 119, 24, .09),
+    inset 2px 0 3px rgba(255,255,255,.15),
+    inset -4px 0 6px rgba(90,27,2,.25),
+    inset 0 -12px 18px rgba(104,34,3,.22);
+}
+/* BALFER — GREEN */
+.bar.balfer,
+.bar[data-campaign="BALFER"] {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(166, 220, 119, .88) 0%,
+      rgba(88, 170, 74, .90) 48%,
+      rgba(38, 108, 54, .94) 100%
+    );
+  box-shadow:
+    0 0 7px rgba(96, 191, 87, .27),
+    0 0 18px rgba(96, 191, 87, .08),
+    inset 2px 0 3px rgba(255,255,255,.15),
+    inset -4px 0 6px rgba(12,62,30,.25),
+    inset 0 -12px 18px rgba(16,74,34,.22);
+}
+/* LOYALTY — PURPLE */
+.bar.loyalty,
+.bar[data-campaign="LOYALTY"] {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(190, 143, 235, .88) 0%,
+      rgba(132, 75, 193, .90) 48%,
+      rgba(74, 39, 128, .94) 100%
+    );
+  box-shadow:
+    0 0 7px rgba(154, 91, 218, .28),
+    0 0 18px rgba(154, 91, 218, .09),
+    inset 2px 0 3px rgba(255,255,255,.15),
+    inset -4px 0 6px rgba(46,19,83,.25),
+    inset 0 -12px 18px rgba(50,22,91,.22);
+}
+/* =========================================================
+   RIGHT RAIL — TOP CLOSER
+   ========================================================= */
+.top-closer {
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(111, 58, 139, 0.15),
+      transparent 42%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(28, 17, 36, 0.97),
+      rgba(12, 8, 17, 0.99)
+    );
+  border-color: rgba(223, 101, 24, 0.68);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.44),
+    0 0 9px rgba(223, 101, 24, 0.10),
+    inset 0 1px 0 rgba(255, 180, 105, 0.06);
+}
+/* Heading */
+.top-closer .closer-title {
+  color: var(--hw-purple-light);
+  text-shadow:
+    0 0 8px rgba(157, 99, 213, 0.24);
+}
+/* Name */
+.top-closer .closer-name {
+  font-family: var(--hw-font-display);
+  font-weight: 400;
+  letter-spacing: 0.025em;
+  color: transparent;
+  background:
+    linear-gradient(
+      180deg,
+      #ffe1a0 0%,
+      #ffb13f 32%,
+      #ef741b 68%,
+      #c94a0d 100%
+    );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke:
+    0.5px rgba(104, 34, 5, 0.75);
+  filter:
+    drop-shadow(0 1px 0 rgba(64, 17, 2, 0.85))
+    drop-shadow(0 0 5px rgba(255, 105, 18, 0.18));
+}
+/* Sales / volume */
+.top-closer .closer-meta {
+  color: var(--hw-purple-light);
+  text-shadow:
+    0 0 7px rgba(157, 99, 213, 0.20);
+}
+/* Placeholder when no image exists */
+.top-closer .closer-photo {
+  color: var(--hw-muted);
+}
+/* =========================================================
+   HALLOWEEN DISPLAY TEXT
+   Closer name + announcement title
+   ========================================================= */
+.top-closer .closer-name,
+.pulse-panel .carousel-title {
+  font-family: var(--hw-font-display);
+  font-weight: 400;
+  letter-spacing: 0.025em;
+  color: transparent;
+  background:
+    linear-gradient(
+      180deg,
+      #ffe1a0 0%,
+      #ffb13f 32%,
+      #ef741b 68%,
+      #c94a0d 100%
+    );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke:
+    0.5px rgba(104, 34, 5, 0.75);
+  filter:
+    drop-shadow(0 1px 0 rgba(64, 17, 2, 0.85))
+    drop-shadow(0 0 5px rgba(255, 105, 18, 0.18));
+}
+/* =========================================================
+   RIGHT RAIL — ANNOUNCEMENTS
+   ========================================================= */
+.pulse-panel {
+  background:
+    radial-gradient(
+      circle at 50% 25%,
+      rgba(127, 60, 42, 0.10),
+      transparent 38%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(25, 15, 29, 0.98),
+      rgba(11, 8, 15, 0.99)
+    );
+  border-color: rgba(223, 101, 24, 0.68);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.44),
+    0 0 9px rgba(223, 101, 24, 0.10),
+    inset 0 1px 0 rgba(255, 180, 105, 0.06);
+}
+/* Main announcement */
+.pulse-panel .carousel-body {
+  color: var(--hw-text);
+  text-shadow:
+    0 2px 3px rgba(0, 0, 0, 0.55);
+}
+/* Bottom subtitle */
+.pulse-panel .carousel-subtitle {
+  color: var(--hw-purple-light);
+  text-shadow:
+    0 0 6px rgba(157, 99, 213, 0.18);
+}
+/* =========================================================
+   CAROUSEL DOTS
+   ========================================================= */
+.pulse-panel .carousel-dot {
+  background: rgba(255, 244, 232, 0.25);
+  border-color: rgba(255, 244, 232, 0.18);
+  box-shadow: none;
+}
+.pulse-panel .carousel-dot.active {
+  background: var(--hw-orange-bright);
+  border-color: rgba(255, 181, 91, 0.80);
+  box-shadow:
+    0 0 4px rgba(255, 138, 34, 0.75),
+    0 0 10px rgba(255, 105, 18, 0.28);
+}
+/* =========================================================
+   SALES TABLE — HALLOWEEN LEDGER
+   ========================================================= */
+.latest-panel {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(25, 15, 30, 0.97),
+      rgba(11, 8, 15, 0.99)
+    );
+  border-color: rgba(223, 101, 24, 0.68);
+}
+/* Inner table frame */
+.latest-panel .table-shell {
+  border: 1px solid rgba(223, 101, 24, 0.30);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(20, 14, 25, 0.72),
+      rgba(10, 8, 13, 0.78)
+    );
+  box-shadow:
+    inset 0 0 18px rgba(0, 0, 0, 0.18);
+}
+/* =========================================================
+   TABLE HEADER
+   ========================================================= */
+.latest-panel thead {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(39, 24, 47, 0.95),
+      rgba(25, 16, 31, 0.96)
+    );
+}
+.latest-panel th {
+  font-family: var(--hw-font-heading);
+  color: var(--hw-orange-hot);
+  border-bottom:
+    1px solid rgba(223, 101, 24, 0.42);
+  text-shadow:
+    0 0 6px rgba(255, 122, 24, 0.16);
+}
+/* =========================================================
+   ROWS
+   ========================================================= */
+.latest-panel tbody tr {
+  background:
+    rgba(34, 24, 39, 0.48);
+  border-bottom:
+    1px solid rgba(180, 110, 200, 0.10);
+  transition:
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+/* Alternating row */
+.latest-panel tbody tr:nth-child(even) {
+  background:
+    rgba(22, 17, 27, 0.62);
+}
+/* Very subtle warm highlight */
+.latest-panel tbody tr:hover {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(223, 101, 24, 0.09),
+      rgba(78, 39, 92, 0.13)
+    );
+  box-shadow:
+    inset 3px 0 0 rgba(255, 122, 24, 0.55);
+}
+/* =========================================================
+   DATA
+   ========================================================= */
+.latest-panel td {
+  font-family: var(--hw-font-data);
+  color: rgba(255, 244, 232, 0.92);
+}
+/* Amount column */
+.latest-panel td.amount {
+  color: #fff2df;
+  font-weight: 800;
+  text-shadow:
+    0 0 5px rgba(255, 138, 34, 0.08);
+}
+/* =========================================================
+   COMPONENT SURFACE CLEANUP
+   Kill remaining production-theme blue surfaces
+   ========================================================= */
+/* ---------------------------------------------------------
+   TOP CLOSER
+   --------------------------------------------------------- */
+.top-closer,
+.top-closer .closer-center,
+.top-closer .closer-row,
+.top-closer .closer-bottom,
+.top-closer .closer-photo {
+  background-color: transparent;
+  background-image: none;
+}
+.top-closer {
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(125, 66, 148, 0.18),
+      transparent 48%
+    ),
+    linear-gradient(
+      180deg,
+      #1b1022 0%,
+      #100a16 100%
+    );
+}
+/* ---------------------------------------------------------
+   ANNOUNCEMENTS
+   Slightly brighter / warmer than the closer card
+   --------------------------------------------------------- */
+.pulse-panel,
+.pulse-panel .carousel-stage,
+.pulse-panel .carousel-card,
+.pulse-panel .carousel-overlay,
+.pulse-panel .carousel-content {
+  background-color: transparent;
+  background-image: none;
+}
+.pulse-panel {
+  background:
+    radial-gradient(
+      ellipse at 50% 32%,
+      rgba(130, 65, 145, 0.20),
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse at 50% 100%,
+      rgba(215, 83, 17, 0.10),
+      transparent 48%
+    ),
+    linear-gradient(
+      180deg,
+      #211329 0%,
+      #160d1c 55%,
+      #100a15 100%
+    );
+}
+/* ---------------------------------------------------------
+   SALES TABLE
+   Remove navy header inherited from main.css
+   --------------------------------------------------------- */
+.latest-panel thead,
+.latest-panel thead tr,
+.latest-panel thead th {
+  background-color: transparent;
+  background-image: none;
+}
+.latest-panel thead tr {
+  background:
+    linear-gradient(
+      180deg,
+      #2a1932 0%,
+      #1b111f 100%
+    );
+}
+/* Keep individual header cells transparent so the row's
+   single gradient runs continuously across the table */
+.latest-panel thead th {
+  background: transparent;
+}
+/* =========================================================
+   RIGHT RAIL — FINAL THEME OVERRIDE
+   ========================================================= */
+/* TOP CLOSER */
+.dashboard > .panel.top-closer {
+  background-color: #100a16 !important;
+  background-image:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(125, 66, 148, 0.22),
+      transparent 48%
+    ),
+    linear-gradient(
+      180deg,
+      #1d1125 0%,
+      #100a16 100%
+    ) !important;
+  border-color: rgba(223, 101, 24, 0.68) !important;
+}
+/* ANNOUNCEMENTS */
+.dashboard > .panel.pulse-panel {
+  background:
+    linear-gradient(
+      180deg,
+      #24132c 0%,
+      #180e20 55%,
+      #100a16 100%
+    ) !important;
+  border-color: rgba(223, 101, 24, 0.68) !important;
+}
+/* Actual carousel surface */
+.pulse-panel .carousel-card,
+.pulse-panel .carousel-card.default,
+.pulse-panel .carousel-card.elite,
+.pulse-panel .carousel-card.premier,
+.pulse-panel .carousel-card.balfer,
+.pulse-panel .carousel-card.loyalty {
+  background:
+    radial-gradient(
+      circle at 50% 25%,
+      rgba(156, 80, 174, 0.20),
+      transparent 44%
+    ),
+    radial-gradient(
+      circle at 50% 105%,
+      rgba(223, 101, 24, 0.10),
+      transparent 42%
+    ),
+    linear-gradient(
+      180deg,
+      #281631 0%,
+      #1d1125 52%,
+      #120b18 100%
+    ) !important;
+  box-shadow: none !important;
+}
+/* Replace production navy overlay */
+.pulse-panel .carousel-overlay {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(22, 10, 28, 0.02) 0%,
+      rgba(18, 8, 23, 0.05) 55%,
+      rgba(8, 5, 12, 0.16) 100%
+    ) !important;
+}
+/* =========================================================
+   ANNOUNCEMENT TITLE — FINAL OVERRIDE
+   Match Top Closer name exactly
+   ========================================================= */
+.dashboard .pulse-panel .carousel-content .carousel-title {
+  font-family: var(--hw-font-display) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.025em !important;
+  color: transparent !important;
+  background: linear-gradient(
+    180deg,
+    #ffe1a0 0%,
+    #ffb13f 32%,
+    #ef741b 68%,
+    #c94a0d 100%
+  ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  -webkit-text-stroke:
+    0.5px rgba(104, 34, 5, 0.75) !important;
+  opacity: 1 !important;
+  filter:
+    drop-shadow(0 1px 0 rgba(64, 17, 2, 0.85))
+    drop-shadow(0 0 5px rgba(255, 105, 18, 0.18)) !important;
+  text-shadow: none !important;
+}
+/* =========================================================
+   FINAL CSS POLISH — HALLOWEEN
+   ========================================================= */
+/* =========================================================
+   1. UNIT PILLS — MINI POTION LABELS
+   ========================================================= */
+.latest-panel .unit-badge {
+  position: relative;
+  overflow: hidden;
+  border-width: 1px;
+  border-style: solid;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.14);
+  text-shadow:
+    0 0 5px currentColor;
+  transition:
+    box-shadow 180ms ease,
+    filter 180ms ease;
+}
+/* ELITE — blue potion */
+.latest-panel .unit-badge.elite {
+  color: #91c7ff;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(73, 151, 232, 0.32),
+      rgba(26, 75, 145, 0.25)
+    );
+  border-color: rgba(91, 170, 255, 0.48);
+  box-shadow:
+    0 0 7px rgba(63, 143, 255, 0.14),
+    inset 0 1px 0 rgba(205, 233, 255, 0.16);
+}
+/* PREMIER — orange potion */
+.latest-panel .unit-badge.premier {
+  color: #ffb15b;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(234, 125, 28, 0.32),
+      rgba(126, 55, 8, 0.25)
+    );
+  border-color: rgba(255, 145, 37, 0.50);
+  box-shadow:
+    0 0 7px rgba(255, 116, 22, 0.14),
+    inset 0 1px 0 rgba(255, 220, 171, 0.16);
+}
+/* BALFER — green potion */
+.latest-panel .unit-badge.balfer {
+  color: #a8df83;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(86, 166, 73, 0.31),
+      rgba(35, 92, 38, 0.25)
+    );
+  border-color: rgba(113, 197, 90, 0.46);
+  box-shadow:
+    0 0 7px rgba(92, 207, 80, 0.13),
+    inset 0 1px 0 rgba(218, 255, 194, 0.14);
+}
+/* LOYALTY — purple potion */
+.latest-panel .unit-badge.loyalty {
+  color: #c9a0ff;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(144, 82, 205, 0.34),
+      rgba(77, 40, 125, 0.26)
+    );
+  border-color: rgba(170, 105, 235, 0.50);
+  box-shadow:
+    0 0 7px rgba(159, 83, 235, 0.15),
+    inset 0 1px 0 rgba(237, 214, 255, 0.14);
+}
+/* Tiny glass reflection */
+.latest-panel .unit-badge::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 10%;
+  right: 10%;
+  height: 35%;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.11),
+      transparent
+    );
+  pointer-events: none;
+}
+/* =========================================================
+   2. POTION CHART — ENVIRONMENT
+   ========================================================= */
+.chart-panel {
+  position: relative;
+  overflow: hidden;
+}
+/* Very subtle atmospheric glow behind chart */
+.chart-panel::after {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -28px;
+  height: 85px;
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(119, 59, 143, 0.11) 0%,
+      rgba(221, 83, 18, 0.045) 42%,
+      transparent 72%
+    );
+  filter: blur(15px);
+  pointer-events: none;
+  z-index: 0;
+}
+/* Keep actual chart above atmosphere */
+.chart-panel h2,
+.chart-panel .chart-shell {
+  position: relative;
+  z-index: 1;
+}
+/* Amount labels — warm instead of sterile white */
+.chart-panel .bar-value {
+  color: rgba(255, 238, 219, 0.88);
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.85),
+    0 0 5px rgba(255, 125, 31, 0.08);
+}
+/* =========================================================
+   3. TOP CLOSER — ATMOSPHERE
+   ========================================================= */
+.dashboard > .panel.top-closer {
+  position: relative;
+  overflow: hidden;
+}
+/* Purple spotlight behind eventual person cutout */
+.dashboard > .panel.top-closer::before {
+  content: "";
+  position: absolute;
+  width: 85%;
+  height: 60%;
+  left: 7.5%;
+  top: 19%;
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(131, 68, 157, 0.16) 0%,
+      rgba(84, 40, 105, 0.07) 42%,
+      transparent 72%
+    );
+  filter: blur(12px);
+  pointer-events: none;
+}
+/* Keep closer content above spotlight */
+.top-closer .closer-title,
+.top-closer .closer-center {
+  position: relative;
+  z-index: 1;
+}
+/* Slightly stronger themed title */
+.top-closer .closer-title {
+  color: #c58ae9;
+  text-shadow:
+    0 0 6px rgba(174, 96, 219, 0.20);
+}
+/* =========================================================
+   4. HALLOWEEN DATA-CHANGE ANIMATIONS
+   ========================================================= */
+/* KPI changes */
+@keyframes halloweenKpiPulse {
+  0% {
+    text-shadow: none;
+  }
+  35% {
+    text-shadow:
+      0 0 5px rgba(255, 177, 62, 0.72),
+      0 0 12px rgba(255, 102, 17, 0.34);
+  }
+  100% {
+    text-shadow: none;
+  }
+}
+/* New sale row */
+@keyframes halloweenNewSale {
+  0% {
+    background:
+      rgba(255, 111, 20, 0.22);
+    box-shadow:
+      inset 4px 0 0 rgba(255, 137, 32, 0.95),
+      0 0 15px rgba(255, 87, 10, 0.16);
+  }
+  45% {
+    background:
+      rgba(110, 52, 127, 0.18);
+    box-shadow:
+      inset 3px 0 0 rgba(214, 95, 24, 0.58);
+  }
+  100% {
+    background:
+      rgba(34, 24, 39, 0.48);
+    box-shadow: none;
+  }
+}
+/*
+   These selectors intentionally override the production
+   animation classes if dashboard.js applies them.
+*/
+.halloween-kpi-pulse,
+.metric-value.value-updated {
+  animation:
+    halloweenKpiPulse 850ms ease-out !important;
+}
+.latest-panel tbody tr.new-sale,
+.latest-panel tbody tr.row-new {
+  animation:
+    halloweenNewSale 1.6s ease-out !important;
+}
+/* =========================================================
+   5. LAST SALE TIMER STATES
+   Replace production traffic-light glow
+   ========================================================= */
+.last-sale .metric-value {
+  transition:
+    color 300ms ease,
+    text-shadow 300ms ease;
+}
+/* Fresh sale */
+.last-sale .metric-value.timer-fresh,
+.last-sale .metric-value.fresh {
+  color: #fff1df !important;
+  text-shadow:
+    0 0 5px rgba(255, 171, 68, 0.22) !important;
+}
+/* Getting old */
+.last-sale .metric-value.timer-warning,
+.last-sale .metric-value.warning {
+  color: #ffc067 !important;
+  text-shadow:
+    0 0 5px rgba(255, 127, 24, 0.28),
+    0 0 11px rgba(255, 93, 15, 0.12) !important;
+}
+/* Long time without sale */
+.last-sale .metric-value.timer-danger,
+.last-sale .metric-value.danger {
+  color: #ff8c62 !important;
+  text-shadow:
+    0 0 5px rgba(255, 79, 31, 0.32),
+    0 0 12px rgba(152, 53, 154, 0.13) !important;
+}
+/* =========================================================
+   SALES TABLE — SUBTLE HALLOWEEN NEON PILLS
+   ========================================================= */
+.unit-pill {
+  position: relative;
+  overflow: visible;
+  background: rgba(255, 255, 255, 0.035) !important;
+  border: 1px solid currentColor !important;
+  box-shadow:
+    0 0 4px currentColor,
+    0 0 8px color-mix(in srgb, currentColor 35%, transparent) !important;
+  text-shadow:
+    0 0 5px currentColor;
+  /* kill previous glass reflection */
+}
+.unit-pill::before {
+  display: none !important;
+}
+/* ELITE */
+.unit-pill.elite {
+  color: #69b8ff !important;
+  background:
+    rgba(45, 103, 160, 0.16) !important;
+  box-shadow:
+    0 0 4px rgba(80, 170, 255, 0.75),
+    0 0 9px rgba(80, 170, 255, 0.24) !important;
+}
+/* PREMIER */
+.unit-pill.premier {
+  color: #ff9b32 !important;
+  background:
+    rgba(160, 72, 18, 0.15) !important;
+  box-shadow:
+    0 0 4px rgba(255, 137, 35, 0.75),
+    0 0 9px rgba(255, 115, 20, 0.24) !important;
+}
+/* BALFER */
+.unit-pill.balfer {
+  color: #82e46b !important;
+  background:
+    rgba(54, 125, 45, 0.15) !important;
+  box-shadow:
+    0 0 4px rgba(103, 225, 79, 0.72),
+    0 0 9px rgba(75, 210, 65, 0.22) !important;
+}
+/* LOYALTY */
+.unit-pill.loyalty {
+  color: #bd82ff !important;
+  background:
+    rgba(102, 55, 145, 0.15) !important;
+  box-shadow:
+    0 0 4px rgba(178, 103, 255, 0.75),
+    0 0 9px rgba(151, 71, 255, 0.24) !important;
+}
+/* =========================================================
+   HALLOWEEN HEADER DEPTH — CLEAN VERSION
+   ========================================================= */
+.header { position: relative; overflow: hidden; isolation: isolate; }
+/* BACK CLOUDS — slow atmospheric layer */
+.header::before {
+  content: ""; position: absolute; left: -50%; bottom: -50%; width: 200%; height: 160%;
+  background-image: url("../../assets/themes/halloween/clouds-back.png");
+  background-repeat: repeat-x; background-position: center bottom; background-size: auto 150%;
+  opacity: 0.90; z-index: 0; pointer-events: none;
+  animation: halloween-clouds-back 100s linear infinite;
+}
+/* MOON */
+.header-moon-layer {
+  position: absolute; top: 50%; right: 15%; width: 26%; height: 240%; transform: translateY(-50%);
+  background-image: url("../../assets/themes/halloween/header-moon.png");
+  background-repeat: no-repeat; background-position: center; background-size: contain;
+  z-index: 1; pointer-events: none;
+}
+.date-banner { position: relative; z-index: auto; }
+.banner-logo { position: relative; z-index: 3; }
+/* FRONT CLOUDS — faster foreground parallax layer */
+.header-front-layer {
+  position: absolute; inset: 0;
+  background-image: url("../../assets/themes/halloween/header-front.png");
+  background-repeat: repeat-x; background-size: auto 145%; background-position: 0 78%;
+  opacity: 1; z-index: 4; pointer-events: none;
+  animation: halloween-front-drift 38s linear infinite;
+}
+.banner-date { position: relative; z-index: 10; }
+@keyframes halloween-clouds-back {
+  from { transform: translateX(0); }
+  to { transform: translateX(-25%); }
+}
+@keyframes halloween-front-drift {
+  from { background-position-x: 0; }
+  to { background-position-x: -1200px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .header::before, .header-front-layer { animation: none; }
+}
+
+/* =========================================================
+   VOLUME CHART — CEMETERY BACKGROUND
+   ========================================================= */
+
+.chart-panel {
+  position: relative;
+  overflow: hidden;
+
+  background-image:
+    linear-gradient(
+      rgba(10, 5, 18, 0.22),
+      rgba(10, 5, 18, 0.12)
+    ),
+    url("../../assets/themes/halloween/bar-chart-background.png");
+
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
+
+/* =========================================================
+   TOP CLOSER — HALLOWEEN HERO
+   background -> photo -> border -> text
+   ========================================================= */
+
+.dashboard > .panel.top-closer {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Existing atmospheric glow */
+.dashboard > .panel.top-closer::before {
+  z-index: 0;
+}
+
+/* Main closer content */
+.top-closer .closer-center {
+  position: relative;
+  z-index: 1;
+}
+
+/* Actual closer photo */
+.top-closer .closer-photo {
+  position: relative;
+  z-index: 2;
+}
+
+/* Decorative Halloween border */
+.dashboard > .panel.top-closer::after {
+  content: none;
+  position: absolute;
+  inset: 0;
+
+  background:
+  url("../../assets/themes/halloween/hero-border.png")
+  center / 100% 100%
+  no-repeat;
+
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* PERSON */
+.top-closer .closer-photo {
+  position: absolute;
+  left: 50%;
+  bottom: 45px;
+  width: 78%;
+  height: 78%;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+/* PERSON */
+.top-closer .closer-photo {
+  position: absolute;
+  left: 50%;
+  bottom: 45px;
+  width: 78%;
+  height: 78%;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+/* ACTUAL FOREGROUND BORDER */
+.top-closer .closer-hero-border {
+  position: absolute;
+  inset: 0;
+
+  background:
+    url("../../assets/themes/halloween/hero-border.png")
+    center / 100% 100%
+    no-repeat;
+
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* TITLE */
+.top-closer .closer-title {
+  z-index: 20;
+}
+
+/* NAME + SALES */
+.top-closer .closer-bottom {
+  z-index: 20;
+}
+
+/* =========================================================
+   TOP CLOSER — FINAL LAYER ORDER
+   background -> photo -> border -> text
+   ========================================================= */
+
+/* Entire closer content must sit ABOVE decorative border */
+.top-closer .closer-center {
+  position: relative;
+  z-index: 20;
+}
+
+/* Photo itself goes BELOW decorative border */
+.top-closer .closer-photo {
+  position: relative;
+  z-index: -1;
+}
+
+/* Border */
+.dashboard > .panel.top-closer::after {
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Title above everything */
+.top-closer .closer-title {
+  position: relative;
+  z-index: 30;
+  width: 100%;
+  text-align: center;
+}
+
+/* Name + sales/volume */
+.top-closer .closer-bottom {
+  position: relative;
+  z-index: 30;
+}
+
+.top-closer .closer-name,
+.top-closer .closer-meta {
+  position: relative;
+  z-index: 31;
+}
+
+/* TOP CLOSER TITLE — HALLOWEEN PLAQUE */
+.top-closer .closer-title {
+  position: relative;
+  z-index: 30;
+
+  width: max-content;
+  margin: 12px auto 0;
+  padding: 5px 20px 6px;
+
+  text-align: center;
+
+  color: #ffd18a;
+  font-family: var(--hw-font-heading);
+  font-weight: 700;
+  letter-spacing: 0.11em;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(39, 17, 46, 0.94),
+      rgba(15, 8, 21, 0.96)
+    );
+
+  border: 1px solid rgba(255, 125, 28, 0.75);
+  border-radius: 999px;
+
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.75),
+    0 0 8px rgba(255, 104, 20, 0.25),
+    inset 0 1px 0 rgba(255, 205, 135, 0.14);
+
+  text-shadow:
+    0 1px 2px #000,
+    0 0 5px rgba(255, 112, 25, 0.35);
+}
+
+/* =========================================================
+   TOP CLOSER — AUTHORITATIVE LAYER STACK
+   background < person < border < text
+   ========================================================= */
+
+.dashboard > .panel.top-closer {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Kill obsolete pseudo-element border */
+.dashboard > .panel.top-closer::after {
+  content: none !important;
+}
+
+/* PERSON */
+.top-closer .closer-photo {
+  position: absolute;
+  left: 50%;
+  bottom: 45px;
+
+  width: 78%;
+  height: 78%;
+
+  transform: translateX(-50%);
+
+  background-image: url("../../assets/test-img-br.png");
+  background-size: contain;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+
+  font-size: 0;
+  color: transparent;
+
+  z-index: 5 !important;
+}
+
+/* ACTUAL FOREGROUND BORDER */
+.top-closer .closer-hero-border {
+  position: absolute;
+  inset: 0;
+
+  background:
+    url("../../assets/themes/halloween/hero-border.png")
+    center / 100% 100%
+    no-repeat;
+
+  z-index: 10 !important;
+  pointer-events: none;
+}
+
+/* TOP CLOSER PLAQUE */
+.top-closer .closer-title {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+
+  width: max-content;
+  margin: 0;
+  transform: translateX(-50%);
+
+  z-index: 20 !important;
+}
+
+/* NAME + SALES */
+.top-closer .closer-bottom {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+
+  width: 90%;
+  transform: translateX(-50%);
+  text-align: center;
+
+  z-index: 20 !important;
+}
+
+.top-closer .closer-name,
+.top-closer .closer-meta {
+  position: relative;
+  z-index: 21;
+}
+
+/* =========================================================
+   TOP CLOSER — STACKING CONTEXT FIX
+   ========================================================= */
+
+/*
+  CRITICAL:
+  closer-center must NOT create a stacking context.
+  Its children need to compete directly with hero-border.
+*/
+.top-closer .closer-center {
+  position: static !important;
+  z-index: auto !important;
+}
+
+/* PERSON — behind foreground artwork */
+.top-closer .closer-photo {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 45px !important;
+
+  width: 78% !important;
+  height: 78% !important;
+
+  transform: translateX(-50%) !important;
+
+  background-image: url("../../assets/test-img-br.png") !important;
+  background-size: contain !important;
+  background-position: center bottom !important;
+  background-repeat: no-repeat !important;
+
+  z-index: 5 !important;
+}
+
+/* GATES / TREES / PUMPKINS — in front of person */
+.top-closer .closer-hero-border {
+  position: absolute !important;
+  inset: 0 !important;
+
+  background:
+    url("../../assets/themes/halloween/hero-border.png")
+    center / 100% 100%
+    no-repeat !important;
+
+  z-index: 10 !important;
+  pointer-events: none !important;
+}
+
+/* TEXT — above both */
+.top-closer .closer-title {
+  position: absolute !important;
+  z-index: 20 !important;
+}
+
+.top-closer .closer-bottom {
+  position: absolute !important;
+  z-index: 20 !important;
+}
+
+/* =========================================================
+   ANNOUNCEMENTS — HALLOWEEN NOTICE BOARD
+   ========================================================= */
+
+.pulse-panel {
+  position: relative;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(93, 47, 28, 0.45) 0%,
+      rgba(42, 20, 25, 0.75) 55%,
+      rgba(13, 8, 17, 0.96) 100%
+    );
+
+  border: 1px solid rgba(255, 111, 20, 0.75);
+
+  box-shadow:
+    inset 0 0 28px rgba(0, 0, 0, 0.75),
+    inset 0 0 4px rgba(255, 128, 32, 0.25);
+}
+
+/* Subtle inner notice-board frame */
+.pulse-panel::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+
+  border: 1px solid rgba(255, 142, 48, 0.28);
+  border-radius: 14px;
+
+  box-shadow:
+    inset 0 0 20px rgba(0, 0, 0, 0.55);
+
+  pointer-events: none;
+}
+
+/* ANNOUNCEMENTS heading */
+.pulse-panel .carousel-title {
+  position: relative;
+  z-index: 3;
+
+  width: max-content;
+  margin: 20px auto 0;
+  padding: 5px 18px 6px;
+
+  color: #ffad45;
+
+  font-family: var(--hw-font-heading);
+  font-size: 1.35rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+
+  text-shadow:
+    0 2px 2px #000,
+    0 0 7px rgba(255, 92, 12, 0.45);
+}
+
+/* Main announcement */
+.pulse-panel .carousel-body {
+  position: relative;
+  z-index: 3;
+
+  max-width: 82%;
+  margin: auto;
+
+  color: #f4e8dd;
+  text-align: center;
+  line-height: 1.45;
+
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.9);
+}
+
+/* Small footer/subtitle */
+.pulse-panel .carousel-subtitle {
+  position: relative;
+  z-index: 3;
+
+  color: #d591ff;
+  text-align: center;
+
+  opacity: 0.9;
+}
+
+/* Don't let existing carousel backgrounds cover our board */
+.pulse-panel .carousel-stage,
+.pulse-panel .carousel-card,
+.pulse-panel .carousel-overlay,
+.pulse-panel .carousel-content {
+  background: transparent;
+}
+
+/* =========================================================
+   HALLOWEEN KPI CARD ART
+   ========================================================= */
+
+.dashboard > .metric {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Decorative image layer */
+.dashboard > .metric::before {
+  content: "";
+  position: absolute;
+
+  left: 12px;
+  bottom: 5px;
+
+  width: 80px;
+  height: 80px;
+
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Keep KPI text above the artwork */
+.dashboard > .metric .metric-label,
+.dashboard > .metric .metric-value {
+  position: relative;
+  z-index: 2;
+}
+
+/* TOTAL SALES — JACK-O'-LANTERN */
+.dashboard > .sales-today::before {
+  background-image:
+    url("../../assets/themes/halloween/kpi-card-pumpkin.png");
+}
+
+/* TOTAL FLOOR VOLUME — CANDLE */
+.dashboard > .volume-today::before {
+  background-image:
+    url("../../assets/themes/halloween/kpi-card-candle.png");
+}
+
+/* AVERAGE SALE — GHOST */
+.dashboard > .average-today::before {
+  background-image:
+    url("../../assets/themes/halloween/kpi-card-ghost.png");
+}
+
+/* TIME SINCE LAST SALE — CLOCK */
+.dashboard > .last-sale::before {
+  background-image:
+    url("../../assets/themes/halloween/kpi-card-clock.png");
+}

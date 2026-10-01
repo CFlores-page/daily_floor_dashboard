@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Today Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/themes/halloween.css">
 </head>
 <body>
 
@@ -24,14 +25,24 @@
 <main class="dashboard">
 
   <section class="panel header">
+
+  <!-- HALLOWEEN: stationary moon layer -->
+  <div class="header-moon-layer"></div>
+
+  <!-- Existing header content -->
   <div class="date-banner">
-    <span class="banner-date">Loading... </span>
+    <span class="banner-date">Loading...</span>
+
     <div class="banner-logo">
       <img
         src="https://drive.google.com/thumbnail?id=1-AD9JlC3WpJpovCL6WiG99jY-i3rigtO&sz=w1000"
         alt="NetCenter Logo">
     </div>
   </div>
+
+  <!-- HALLOWEEN: moving foreground clouds -->
+  <div class="header-front-layer"></div>
+
 </section>
 
   <section class="panel metric sales-today">
@@ -65,6 +76,7 @@
         </div>
       </div>
     </div>
+    <div class="closer-hero-border" aria-hidden="true"></div>
   </section>
 
   <section class="panel chart-panel">
@@ -112,8 +124,9 @@
       </table>
     </div>
   </section>
-  
+
 </main>
-  <script src="dashboard.js"></script>
+  <script src="./js/test_data.js"></script>
+  <script src="./js/dashboard.js"></script>
 </body>
 </html>
