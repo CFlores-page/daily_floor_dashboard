@@ -1358,7 +1358,7 @@ body {
 
   transform: translateX(-50%);
 
-  background-image: url("../../assets/test-img-br.png");
+  
   background-size: contain;
   background-position: center bottom;
   background-repeat: no-repeat;
