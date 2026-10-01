@@ -1629,3 +1629,19 @@ body {
   background-image:
     url("../../assets/themes/halloween/kpi-card-clock.png");
 }
+
+/* =========================================================
+   LARGE DISPLAY — FORCE FOREGROUND ART LAYERS
+   ========================================================= */
+
+.header-front-layer {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.top-closer .closer-hero-border {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
