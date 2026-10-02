@@ -1654,25 +1654,35 @@ body {
     z-index: 3 !important;
 }
 
-/* Moving clouds MUST be above logo */
-.header .header-front-layer {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+/* FRONT CLOUDS — moving foreground parallax layer */
+.header-front-layer {
+  display: block !important;
+  visibility: visible !important;
 
-    position: absolute !important;
-    inset: 0 !important;
+  position: absolute !important;
+  inset: 0 !important;
 
-    background-image:
-        url("../../assets/themes/halloween/header-front.webp") !important;
-    background-repeat: repeat-x !important;
-    background-size: auto 145% !important;
-    background-position: 0 78% !important;
+  background-image: url("../../assets/themes/halloween/header-front.webp") !important;
+  background-repeat: repeat-x !important;
+  background-size: auto 145% !important;
+  background-position: 0 78%;
 
-    z-index: 4 !important;
-    pointer-events: none !important;
+  opacity: 1 !important;
+  z-index: 4 !important;
+  pointer-events: none !important;
 
-    animation: halloween-front-drift 38s linear infinite !important;
+  will-change: background-position;
+  animation: halloween-front-drift 38s linear infinite !important;
+}
+
+@keyframes halloween-front-drift {
+  from {
+    background-position: 0 78%;
+  }
+
+  to {
+    background-position: -1920px 78%;
+  }
 }
 
 /* Date remains above everything */
