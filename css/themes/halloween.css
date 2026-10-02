@@ -1108,7 +1108,7 @@ body {
 /* BACK CLOUDS — slow atmospheric layer */
 .header::before {
   content: ""; position: absolute; left: -50%; bottom: -50%; width: 200%; height: 160%;
-  background-image: url("../../assets/themes/halloween/clouds-back.png");
+  background-image: url("../../assets/themes/halloween/clouds-back.webp");
   background-repeat: repeat-x; background-position: center bottom; background-size: auto 150%;
   opacity: 0.90; z-index: 0; pointer-events: none;
   animation: halloween-clouds-back 100s linear infinite;
@@ -1116,7 +1116,7 @@ body {
 /* MOON */
 .header-moon-layer {
   position: absolute; top: 50%; right: 15%; width: 26%; height: 240%; transform: translateY(-50%);
-  background-image: url("../../assets/themes/halloween/header-moon.png");
+  background-image: url("../../assets/themes/halloween/header-moon.webp");
   background-repeat: no-repeat; background-position: center; background-size: contain;
   z-index: 1; pointer-events: none;
 }
@@ -1125,7 +1125,7 @@ body {
 /* FRONT CLOUDS — faster foreground parallax layer */
 .header-front-layer {
   position: absolute; inset: 0;
-  background-image: url("../../assets/themes/halloween/header-front.png");
+  background-image: url("../../assets/themes/halloween/header-front.webp");
   background-repeat: repeat-x; background-size: auto 145%; background-position: 0 78%;
   opacity: 1; z-index: 4; pointer-events: none;
   animation: halloween-front-drift 38s linear infinite;
@@ -1156,7 +1156,7 @@ body {
       rgba(10, 5, 18, 0.22),
       rgba(10, 5, 18, 0.12)
     ),
-    url("../../assets/themes/halloween/bar-chart-background.png");
+    url("../../assets/themes/halloween/bar-chart-background.webp");
 
   background-size: cover;
   background-position: center bottom;
@@ -1198,7 +1198,7 @@ body {
   inset: 0;
 
   background:
-  url("../../assets/themes/halloween/hero-border.png")
+  url("../../assets/themes/halloween/hero-border.webp")
   center / 100% 100%
   no-repeat;
 
@@ -1234,7 +1234,7 @@ body {
   inset: 0;
 
   background:
-    url("../../assets/themes/halloween/hero-border.png")
+    url("../../assets/themes/halloween/hero-border.webp")
     center / 100% 100%
     no-repeat;
 
@@ -1379,7 +1379,7 @@ body {
   inset: 0;
 
   background:
-    url("../../assets/themes/halloween/hero-border.png")
+    url("../../assets/themes/halloween/hero-border.webp")
     center / 100% 100%
     no-repeat;
 
@@ -1458,7 +1458,7 @@ body {
   inset: 0 !important;
 
   background:
-    url("../../assets/themes/halloween/hero-border.png")
+    url("../../assets/themes/halloween/hero-border.webp")
     center / 100% 100%
     no-repeat !important;
 
@@ -1609,39 +1609,114 @@ body {
 /* TOTAL SALES — JACK-O'-LANTERN */
 .dashboard > .sales-today::before {
   background-image:
-    url("../../assets/themes/halloween/kpi-card-pumpkin.png");
+    url("../../assets/themes/halloween/kpi-card-pumpkin.webp");
 }
 
 /* TOTAL FLOOR VOLUME — CANDLE */
 .dashboard > .volume-today::before {
   background-image:
-    url("../../assets/themes/halloween/kpi-card-candle.png");
+    url("../../assets/themes/halloween/kpi-card-candle.webp");
 }
 
 /* AVERAGE SALE — GHOST */
 .dashboard > .average-today::before {
   background-image:
-    url("../../assets/themes/halloween/kpi-card-ghost.png");
+    url("../../assets/themes/halloween/kpi-card-ghost.webp");
 }
 
 /* TIME SINCE LAST SALE — CLOCK */
 .dashboard > .last-sale::before {
   background-image:
-    url("../../assets/themes/halloween/kpi-card-clock.png");
+    url("../../assets/themes/halloween/kpi-card-clock.webp");
 }
 
 /* =========================================================
-   LARGE DISPLAY — FORCE FOREGROUND ART LAYERS
+   HALLOWEEN — FINAL FOREGROUND LAYER LOCK
+   Keep this at the VERY END of halloween.css
    ========================================================= */
 
-.header-front-layer {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+/* ---------- HEADER STACK ---------- */
+
+.header {
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
 }
 
+/* Moon / rear artwork */
+.header-moon-layer {
+    z-index: 1 !important;
+}
+
+/* Logo sits below foreground clouds */
+.header .banner-logo {
+    position: relative !important;
+    z-index: 3 !important;
+}
+
+/* Moving clouds MUST be above logo */
+.header .header-front-layer {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    position: absolute !important;
+    inset: 0 !important;
+
+    background-image:
+        url("../../assets/themes/halloween/header-front.webp") !important;
+    background-repeat: repeat-x !important;
+    background-size: auto 145% !important;
+    background-position: 0 78% !important;
+
+    z-index: 4 !important;
+    pointer-events: none !important;
+
+    animation: halloween-front-drift 38s linear infinite !important;
+}
+
+/* Date remains above everything */
+.header .banner-date {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+
+/* ---------- TOP CLOSER STACK ---------- */
+
+.top-closer {
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+}
+
+/* Person */
+.top-closer .closer-photo {
+    z-index: 5 !important;
+}
+
+/* Halloween gates / pumpkins / trees */
 .top-closer .closer-hero-border {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    position: absolute !important;
+    inset: 0 !important;
+
+    background-image:
+        url("../../assets/themes/halloween/hero-border.webp") !important;
+    background-position: center !important;
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat !important;
+
+    z-index: 10 !important;
+    pointer-events: none !important;
+}
+
+/* Text above border */
+.top-closer .closer-title,
+.top-closer .closer-bottom {
+    position: absolute !important;
+    z-index: 20 !important;
 }
