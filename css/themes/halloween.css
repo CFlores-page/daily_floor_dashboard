@@ -1656,23 +1656,36 @@ body {
 
 /* FRONT CLOUDS — moving foreground parallax layer */
 .header-front-layer {
-  display: block !important;
-  visibility: visible !important;
+    display: block !important;
+    visibility: visible !important;
 
-  position: absolute !important;
-  inset: 0 !important;
+    position: absolute !important;
 
-  background-image: url("../../assets/themes/halloween/header-front.webp") !important;
-  background-repeat: repeat-x !important;
-  background-size: auto 145% !important;
-  background-position: 0 78%;
+    left: -50% !important;
+    top: 0 !important;
 
-  opacity: 1 !important;
-  z-index: 4 !important;
-  pointer-events: none !important;
+    right: auto !important;
+    bottom: auto !important;
 
-  will-change: background-position;
-  animation: halloween-front-drift 38s linear infinite !important;
+    width: 200% !important;
+    height: 100% !important;
+
+    background-image:
+        url("../../assets/themes/halloween/header-front.webp") !important;
+
+    background-repeat: repeat-x !important;
+    background-size: auto 145% !important;
+    background-position: center 78% !important;
+
+    opacity: 1 !important;
+
+    z-index: 4 !important;
+    pointer-events: none !important;
+
+    will-change: transform !important;
+
+    animation:
+        halloween-front-magicinfo 38s linear infinite !important;
 }
 
 @keyframes halloween-front-drift {
@@ -1792,12 +1805,10 @@ body {
 
     position: absolute !important;
 
+    left: -50% !important;
     top: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
 
-    width: 100% !important;
+    width: 200% !important;
     height: 100% !important;
 
     background-image:
@@ -1805,27 +1816,24 @@ body {
 
     background-repeat: repeat-x !important;
     background-size: auto 145% !important;
-    background-position: 0 78% !important;
+    background-position: center 78% !important;
 
     opacity: 1 !important;
-
+ 
     z-index: 4 !important;
     pointer-events: none !important;
 
-    animation-name: qb50b-front-clouds !important;
-    animation-duration: 38s !important;
-    animation-timing-function: linear !important;
-    animation-iteration-count: infinite !important;
+    animation: halloween-front-magicinfo 38s linear infinite !important;
 }
 
 
-@keyframes qb50b-front-clouds {
-    0% {
-        background-position: 0px 78%;
+@keyframes halloween-front-magicinfo {
+    from {
+        transform: translateX(0);
     }
 
-    100% {
-        background-position: -1920px 78%;
+    to {
+        transform: translateX(-25%);
     }
 }
 
