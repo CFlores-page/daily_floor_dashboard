@@ -1789,7 +1789,7 @@ body {
 /* Main header contents */
 .date-banner {
     position: relative !important;
-    z-index: 2 !important;
+    z-index: auto !important;
 }
 
 .banner-logo {
