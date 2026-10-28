@@ -288,9 +288,28 @@ function updateCampaignBars(rows) {
   }
   const max = Math.max(...cleaned.map(r => r.value), 0);
   const safeMax = max > 0 ? max : 1;
+
+  const chartPanel = document.querySelector(".chart-panel");
+
+  const configuredScale = chartPanel
+    ? parseFloat(
+        getComputedStyle(chartPanel)
+          .getPropertyValue("--chart-height-scale")
+      )
+    : NaN;
+
+  const chartHeightScale =
+    Number.isFinite(configuredScale) &&
+    configuredScale > 0 &&
+    configuredScale <= 100
+      ? configuredScale
+      : 100;
   cleaned.forEach((row, index) => {
-    const key = row.className;
-    const newHeight = Math.max(12, Math.round((row.value / safeMax) * 100));
+    const key = row.className;    
+    const newHeight = Math.max(
+      12,
+      Math.round((row.value / safeMax) * chartHeightScale)
+    );
     const oldState = dashboardState.bars[key] || {};
     const valueChanged = oldState.value !== row.value;
     const heightChanged = oldState.height !== newHeight;
