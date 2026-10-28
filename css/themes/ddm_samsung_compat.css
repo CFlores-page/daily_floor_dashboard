@@ -79,3 +79,91 @@
     z-index: 25 !important;
   }
 }
+
+
+/* V31 — Samsung Tizen Anuncios fix */
+
+.dashboard > .panel.pulse-panel {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.dashboard > .panel.pulse-panel .carousel-stage,
+.dashboard > .panel.pulse-panel .carousel-card {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.dashboard > .panel.pulse-panel .carousel-overlay,
+.dashboard > .panel.pulse-panel .carousel-content {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.dashboard > .panel.pulse-panel .carousel-overlay {
+    pointer-events: none !important;
+}
+
+.dashboard > .panel.pulse-panel .carousel-content {
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-flex-direction: column !important;
+    flex-direction: column !important;
+    -webkit-align-items: center !important;
+    align-items: center !important;
+    -webkit-justify-content: flex-start !important;
+    justify-content: flex-start !important;
+    padding: 24px 18px 42px !important;
+    text-align: center !important;
+    overflow: hidden !important;
+    z-index: 3 !important;
+}
+
+.dashboard > .panel.pulse-panel .carousel-title {
+    position: relative !important;
+    width: 100% !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    -webkit-flex: 0 0 auto !important;
+    flex: 0 0 auto !important;
+}
+
+.dashboard > .panel.pulse-panel .carousel-body {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 88% !important;
+    min-width: 0 !important;
+    margin: auto 0 !important;
+    text-align: center !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    -webkit-flex: 0 1 auto !important;
+    flex: 0 1 auto !important;
+}
+
+.dashboard > .panel.pulse-panel .carousel-subtitle {
+    position: relative !important;
+    width: 100% !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    -webkit-flex: 0 0 auto !important;
+    flex: 0 0 auto !important;
+}
+
+.dashboard > .panel.pulse-panel::before {
+    top: 12px !important;
+    right: 12px !important;
+    bottom: 12px !important;
+    left: 12px !important;
+    pointer-events: none !important;
+}
