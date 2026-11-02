@@ -1656,36 +1656,23 @@ body {
 
 /* FRONT CLOUDS — moving foreground parallax layer */
 .header-front-layer {
-    display: block !important;
-    visibility: visible !important;
+  display: block !important;
+  visibility: visible !important;
 
-    position: absolute !important;
+  position: absolute !important;
+  inset: 0 !important;
 
-    left: -50% !important;
-    top: 0 !important;
+  background-image: url("../../assets/themes/halloween/header-front.webp") !important;
+  background-repeat: repeat-x !important;
+  background-size: auto 145% !important;
+  background-position: 0 78%;
 
-    right: auto !important;
-    bottom: auto !important;
+  opacity: 1 !important;
+  z-index: 4 !important;
+  pointer-events: none !important;
 
-    width: 200% !important;
-    height: 100% !important;
-
-    background-image:
-        url("../../assets/themes/halloween/header-front.webp") !important;
-
-    background-repeat: repeat-x !important;
-    background-size: auto 145% !important;
-    background-position: center 78% !important;
-
-    opacity: 1 !important;
-
-    z-index: 4 !important;
-    pointer-events: none !important;
-
-    will-change: transform !important;
-
-    animation:
-        halloween-front-magicinfo 38s linear infinite !important;
+  will-change: background-position;
+  animation: halloween-front-drift 38s linear infinite !important;
 }
 
 @keyframes halloween-front-drift {
@@ -1789,7 +1776,7 @@ body {
 /* Main header contents */
 .date-banner {
     position: relative !important;
-    z-index: auto !important;
+    z-index: 2 !important;
 }
 
 .banner-logo {
