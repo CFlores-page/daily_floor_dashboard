@@ -167,3 +167,28 @@
     left: 12px !important;
     pointer-events: none !important;
 }
+
+/* V32 — transparent candle edges on Samsung Tizen 6.5 / Chromium 85.
+   This legacy-engine fallback matches the existing inset compatibility gate.
+   Preserve the WebP background images; avoid filtering their transparent bounds. */
+@supports not (inset: 0px) {
+  .dashboard > .panel.chart-panel .bar-wrap .bar,
+  .dashboard > .panel.chart-panel .bar-wrap .bar-label {
+    border: 0 !important;
+    outline: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+  }
+
+  .dashboard > .panel.chart-panel .bar-wrap .bar::before,
+  .dashboard > .panel.chart-panel .bar-wrap .bar::after {
+    border: 0 !important;
+    outline: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+  }
+}
