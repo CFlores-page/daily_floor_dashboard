@@ -1,125 +1,113 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Today Dashboard</title>
-    <link rel="stylesheet" href="./css/main.css">
-</head>
-<body>
-
-<div class="maintenance-overlay" id="maintenance-overlay">
-  <div class="maintenance-card">
-    <div class="maintenance-kicker">Dashboard Status</div>
-    <div class="maintenance-title">Down for Maintenance</div>
-    <div class="maintenance-message">
-      We are updating the sales floor dashboard. Please check back shortly.
-    </div>
-    <div class="maintenance-subnote">
-      This screen will return automatically once maintenance mode is turned off.
-    </div>
-  </div>
-</div>
-
-<main class="dashboard">
-
-  <section class="panel header">
-
-
-  <div class="date-banner">
-    <span class="banner-date">Loading...</span>
-
-    <div class="banner-logo">
-      <img
-        src="https://drive.google.com/thumbnail?id=1-AD9JlC3WpJpovCL6WiG99jY-i3rigtO&sz=w1000"
-        alt="NetCenter Logo">
-    </div>
-  </div>
-
-
-</section>
-
-  <section class="panel metric sales-today">
-    <div class="metric-label">Total Sales</div>
-    <div class="metric-value">Loading...</div>
-  </section>
-
-  <section class="panel metric volume-today">
-    <div class="metric-label">Total Floor Volume</div>
-    <div class="metric-value">Loading...</div>
-  </section>
-
-  <section class="panel metric average-today">
-    <div class="metric-label">Average Sale Today</div>
-    <div class="metric-value">Loading... </div>
-  </section>
-
-  <section class="panel metric last-sale">
-    <div class="metric-label">Time Since Last Sale</div>
-    <div class="metric-value" id="lastSaleTimer">--:--</div>
-  </section>
-
-  <section class="panel top-closer">
-    <div class="closer-title">Top Closer Today</div>
-    <div class="closer-center">
-      <div class="closer-row">
-        <div class="closer-photo">Picture Here</div>
-        <div class="closer-bottom">
-          <div class="closer-name">Loading...</div>
-          <div class="closer-meta">Loading... </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Today Dashboard · Sales Arena</title>
+    <link rel="stylesheet" href="./css/arena.css?v=2" />
+  </head>
+  <body>
+    <main class="arena">
+      <header class="masthead">
+        <div class="brand">
+          <img
+            src="https://drive.google.com/thumbnail?id=1-AD9JlC3WpJpovCL6WiG99jY-i3rigtO&sz=w1000"
+            alt="NetCenter"
+          /><span>Sales floor</span>
         </div>
+        <div class="header-meta">
+          <span id="date">Loading dashboard…</span
+          ><span id="status" role="status">Connecting</span>
+        </div>
+      </header>
+      <section class="scoreboard" aria-label="Floor performance">
+        <div class="floor-total">
+          <h1>Total floor volume</h1>
+          <div id="volume">—</div>
+          <p id="day-note"></p>
+        </div>
+        <div class="score"><strong id="sales">—</strong><span>Sales</span></div>
+        <div class="score">
+          <strong id="average">—</strong><span>Average sale</span>
+        </div>
+        <div class="score timer">
+          <strong id="elapsed">—</strong
+          ><span id="timer-caption">Since last sale</span>
+        </div>
+      </section>
+      <section class="competition">
+        <div class="standings">
+          <div class="section-heading">
+            <h2>Unit standings</h2>
+            <span id="standings-period">Today</span>
+          </div>
+          <div id="lanes" class="lanes"></div>
+        </div>
+        <aside
+          class="spotlight"
+          id="spotlight"
+          data-unit="default"
+          aria-label="Top closer"
+        >
+          <div class="spotlight-heading">
+            Top closer <span id="closer-period">today</span>
+          </div>
+          <div class="unit-watermark" id="hero-unit" aria-hidden="true"></div>
+          <div class="portrait" id="portrait">
+            <span>Awaiting first sale</span>
+          </div>
+          <div class="hero-footer">
+            <span class="unit-tag" id="closer-unit"></span>
+            <h2 id="closer-name">No sales yet</h2>
+            <p id="closer-meta"></p>
+          </div>
+        </aside>
+      </section>
+      <section class="activity" aria-label="Sales activity">
+        <div id="timeline-view" class="timeline-view">
+          <div class="section-heading">
+            <h2>Recent sales</h2>
+            <span>Newest first</span>
+          </div>
+          <div id="timeline" class="timeline"></div>
+        </div>
+        <div id="sale-event" class="sale-event" hidden>
+          <div class="event-kicker">New sale<span id="event-unit"></span></div>
+          <div class="event-person" id="event-person"></div>
+          <div class="event-money">
+            <strong id="event-amount"></strong><span id="event-total"></span>
+          </div>
+          <div class="event-progress"></div>
+        </div>
+        <div id="announcement" class="announcement" hidden>
+          <div>
+            <span class="eyebrow">Announcements</span>
+            <h2 id="announcement-title"></h2>
+          </div>
+          <p id="announcement-body"></p>
+          <span id="announcement-subtitle"></span>
+          <img id="announcement-image" alt="" hidden />
+        </div>
+      </section>
+      <footer class="footer">
+        <span id="mode-label">NetCenter · Daily floor performance</span
+        ><span
+          >ELITE <i class="elite-dot"></i> PREMIER
+          <i class="premier-dot"></i> BALFER <i class="balfer-dot"></i> LOYALTY
+          <i class="loyalty-dot"></i
+        ></span>
+      </footer>
+    </main>
+    <div class="maintenance" id="maintenance" hidden>
+      <div>
+        <span class="eyebrow">Dashboard status</span>
+        <h2>Down for maintenance</h2>
+        <p>
+          We are updating the sales floor dashboard. Please check back shortly.
+        </p>
       </div>
     </div>
-  </section>
-
-  <section class="panel chart-panel">
-    <h2>Volume Today per Unit</h2>
-    <div class="chart-shell">
-      <div class="bars" id="campaign-bars"></div>
-    </div>
-  </section>
-
-  <section class="panel pulse-panel">
-  <div class="carousel-stage" id="carousel-stage">
-    <div class="carousel-card">
-      <div class="carousel-overlay"></div>
-      <div class="carousel-content">
-        <div class="carousel-title">Loading...</div>
-        <div class="carousel-body">Loading...</div>
-        <div class="carousel-subtitle">Loading...</div>
-      </div>
-    </div>
-  </div>
-  <div class="carousel-dots" id="carousel-dots"></div>
-</section>
-
-  <section class="panel latest-panel">
-    <div class="table-shell">
-      <table>
-        <thead>
-          <tr>
-            <th>Date/Time</th>
-            <th class="unit-cell">Sales Unit</th>
-            <th>Certificate</th>
-            <th>Closer</th>
-            <th class="amount">Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Loading...</td>
-            <td class="unit-cell">Loading...</td>
-            <td>Loading...</td>
-            <td>Loading...</td>
-            <td class="amount">Loading...</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-</main>
-  <script src="./js/test_data.js"></script>
-  <script src="./js/dashboard.js"></script>
-</body>
+    <script src="./js/arena-preview.js?v=1"></script>
+    <script src="./js/arena.js?v=3"></script>
+  </body>
 </html>
