@@ -309,20 +309,14 @@
     text("closer-name", closer.name || "No sales yet");
     text("closer-meta", closer.meta || "");
     const portrait = $("portrait");
-    portrait.textContent = "";
+    window.PortraitFit.clear(portrait);
     const url = safeImage(closer.photo);
     if (url) {
-      const img = document.createElement("img");
-      img.alt = closer.name ? `Top closer: ${closer.name}` : "Top closer";
-      img.onerror = () => {
-        portrait.textContent = "";
-        const note = document.createElement("span");
-        note.className = "missing-photo";
-        note.textContent = "Photo unavailable";
-        portrait.append(note);
-      };
-      img.src = url;
-      portrait.append(img);
+      window.PortraitFit.mount(
+        portrait,
+        url,
+        closer.name ? `Top closer: ${closer.name}` : "Top closer",
+      );
     } else {
       const note = document.createElement("span");
       note.className = "missing-photo";

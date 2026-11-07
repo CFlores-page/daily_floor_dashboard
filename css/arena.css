@@ -335,8 +335,8 @@ p {
 .portrait img {
   width: 94%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 35%;
+  object-fit: contain;
+  object-position: center bottom;
 }
 .portrait > span {
   color: var(--muted);
@@ -930,4 +930,20 @@ p {
   .transaction strong {
     font-size: 26px;
   }
+}
+
+/* Size and position the visible silhouette; mask any transparent canvas overflow. */
+.portrait {
+  overflow: hidden;
+}
+.portrait img.fitted-portrait {
+  position: absolute;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  object-fit: fill;
+}
+.portrait[data-fit="loading"] img.fitted-portrait {
+  visibility: hidden;
 }
