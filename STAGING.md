@@ -32,3 +32,7 @@ Original dashboard files and seasonal assets remain in the repository but are no
 Chromium desktop checks cover 1920×1080, 1366×768 and mobile width; live-adapter fixtures cover queueing, correction deduplication, maintenance, announcements and feed errors. The CSS uses explicit positioning rather than `inset`, and effects primarily animate transform/opacity. Actual Samsung Tizen 6.5 / Chromium 85 verification remains required; modern Chromium is not a TV emulator.
 
 The elapsed timer uses canonical GViz datetime components in the workbook's verified Mexico City timezone (UTC-6), with formatted timestamps supported as a fallback. It continues across midnight and refreshes immediately after loading. Future timestamps show “Sale time is ahead” rather than a fabricated zero; check the source timestamp and device clock if this appears.
+
+### Temporary source clock correction
+
+The source sales timestamps are currently reported one hour ahead. `SOURCE_CLOCK_AHEAD_MINUTES = 60` in `js/arena.js` subtracts that hour once, when live timestamps are parsed. The corrected instant drives both the timeline and elapsed timer, including date boundaries and event detection. Sample preview timestamps already use real time and bypass this correction. After the upstream clock is repaired, set the constant to `0` to prevent a double correction. No Sheet values are modified.

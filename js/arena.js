@@ -2,6 +2,9 @@
 (() => {
   "use strict";
   const SHEET_ID = "1x8nGAfiI9bmz5G-35uQXWIoBV91CF8VqlUwc05aX8Rg";
+  // Source sale timestamps currently run one hour ahead of real Mexico City time.
+  // Set to 0 after the upstream clock is corrected. Preview fixtures use real time.
+  const SOURCE_CLOCK_AHEAD_MINUTES = 60;
   const UNITS = ["ELITE", "PREMIER", "BALFER", "LOYALTY"];
   const $ = (id) => document.getElementById(id);
   const money = (n) =>
@@ -88,7 +91,10 @@
     const wall = new Date(Date.UTC(year, month - 1, day, hour, minute, second));
     if (wall.getUTCMonth() !== month - 1 || wall.getUTCDate() !== day)
       return null;
-    return new Date(wall.getTime() + 6 * 3600000);
+    const sourceCorrection = window.ArenaPreview.enabled
+      ? 0
+      : SOURCE_CLOCK_AHEAD_MINUTES * 60000;
+    return new Date(wall.getTime() + 6 * 3600000 - sourceCorrection);
   }
   function dayKey(d) {
     return new Date(d.getTime() - 6 * 3600000).toISOString().slice(0, 10);
@@ -539,7 +545,7 @@
       text("elapsed", "--:--");
       caption.textContent = "Sale time is ahead";
       timer.title =
-        "The latest sale timestamp is ahead of this device's clock. Check the sale timestamp and device clock; source timezone: Mexico City (UTC-6).";
+        "The latest sale timestamp is ahead of this device's clock. Check the sale timestamp and device clock; source timezone: Mexico City (UTC-6), with the configured source clock correction applied.";
       document.querySelector(".timer").className = "score timer cold";
       return;
     }
