@@ -5,6 +5,8 @@
   // Source sale timestamps currently run one hour ahead of real Mexico City time.
   // Set to 0 after the upstream clock is corrected. Preview fixtures use real time.
   const SOURCE_CLOCK_AHEAD_MINUTES = 60;
+  // Keep announcement support available, but leave the sales timeline on screen.
+  const ANNOUNCEMENTS_ENABLED = false;
   const UNITS = ["ELITE", "PREMIER", "BALFER", "LOYALTY"];
   const $ = (id) => document.getElementById(id);
   const money = (n) =>
@@ -586,6 +588,7 @@
     }
   }
   function showAnnouncement() {
+    if (!ANNOUNCEMENTS_ENABLED) return;
     const slides = state.snapshot && state.snapshot.slides;
     if (
       !slides ||
@@ -652,5 +655,5 @@
     updateTimer();
     if (state.lastSuccess) updateStatus();
   }, 1000);
-  setInterval(showAnnouncement, 60000);
+  if (ANNOUNCEMENTS_ENABLED) setInterval(showAnnouncement, 60000);
 })();
