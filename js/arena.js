@@ -44,13 +44,51 @@
     state.timers.push(id);
     return id;
   }
+  // GViz datetimes are wall-clock components, not browser-local dates.
+  // The source workbook is configured for America/Mexico_City (UTC-6).
   function parseDate(value) {
-    const m = String(value || "").match(
-      /^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})$/,
+    const raw = String(value || "").trim();
+    const gviz = raw.match(
+      /^Date\((\d{4}),(\d{1,2}),(\d{1,2})(?:,(\d{1,2}),(\d{1,2})(?:,(\d{1,2}))?)?\)$/,
     );
-    return m
-      ? new Date(Date.UTC(+m[3], +m[1] - 1, +m[2], +m[4] + 6, +m[5], +m[6]))
-      : null;
+    const display = raw.match(
+      /^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?$/i,
+    );
+    if (!gviz && !display) return null;
+    let year, month, day, hour, minute, second;
+    if (gviz) {
+      [, year, month, day, hour = "0", minute = "0", second = "0"] = gviz;
+      month = Number(month) + 1;
+    } else {
+      [, month, day, year, hour, minute, second = "0"] = display;
+      if (display[7]) {
+        if (+hour < 1 || +hour > 12) return null;
+        hour = (+hour % 12) + (display[7].toUpperCase() === "PM" ? 12 : 0);
+      }
+    }
+    [year, month, day, hour, minute, second] = [
+      year,
+      month,
+      day,
+      hour,
+      minute,
+      second,
+    ].map(Number);
+    if (
+      year < 1900 ||
+      month < 1 ||
+      month > 12 ||
+      day < 1 ||
+      day > 31 ||
+      hour > 23 ||
+      minute > 59 ||
+      second > 59
+    )
+      return null;
+    const wall = new Date(Date.UTC(year, month - 1, day, hour, minute, second));
+    if (wall.getUTCMonth() !== month - 1 || wall.getUTCDate() !== day)
+      return null;
+    return new Date(wall.getTime() + 6 * 3600000);
   }
   function dayKey(d) {
     return new Date(d.getTime() - 6 * 3600000).toISOString().slice(0, 10);
@@ -128,9 +166,16 @@
       if (data.status === "error" || !data.table)
         throw Error("Sheet unavailable");
       return (data.table.rows || []).map((row) =>
-        (row.c || []).map((cell) =>
-          cell ? (cell.f != null ? cell.f : cell.v != null ? cell.v : "") : "",
-        ),
+        (row.c || []).map((cell, column) => {
+          if (!cell) return "";
+          const type =
+            data.table.cols &&
+            data.table.cols[column] &&
+            data.table.cols[column].type;
+          if ((type === "datetime" || type === "date") && cell.v != null)
+            return cell.v;
+          return cell.f != null ? cell.f : cell.v != null ? cell.v : "";
+        }),
       );
     } finally {
       clearTimeout(timeout);
@@ -309,7 +354,7 @@
       timeline.append(p);
       return;
     }
-    state.sales.slice(0, 3).forEach((sale, i) => {
+    state.sales.slice(0, 5).forEach((sale, i) => {
       const card = document.createElement("article");
       card.className =
         "transaction" + (i === 0 && state.initialized ? " new-entry" : "");
@@ -391,7 +436,13 @@
     if (snapshot.maintenance) {
       cancelActivity();
     }
-    const rows = snapshot.sales.map(saleFromRow);
+    const rows = snapshot.sales
+      .map(saleFromRow)
+      .sort(
+        (a, b) =>
+          (b.date ? b.date.getTime() : -Infinity) -
+          (a.date ? a.date.getTime() : -Infinity),
+      );
     const latest = rows[0] && rows[0].date;
     const period = snapshot.hasSales
       ? "Today"
@@ -431,10 +482,9 @@
     });
     updateStandings(snapshot.chart, snapshot.hasSales);
     updateCloser(snapshot.closer, snapshot.hasSales);
-    state.latest =
-      snapshot.hasSales && latest && dayKey(latest) === dayKey(new Date())
-        ? latest
-        : null;
+    // Elapsed time is anchored to the newest actual transaction, even across midnight.
+    state.latest = latest || null;
+    updateTimer();
     const newSales = rows.filter((s) => !state.seen.has(s.key));
     if (state.initialized && !snapshot.maintenance && snapshot.hasSales) {
       state.queue.push(
@@ -475,12 +525,25 @@
     );
   }
   function updateTimer() {
+    const caption = $("timer-caption");
+    const timer = $("elapsed");
+    caption.textContent = "Since last sale";
+    timer.removeAttribute("title");
     if (!state.latest) {
       text("elapsed", "--:--");
       document.querySelector(".timer").className = "score timer";
       return;
     }
-    const seconds = Math.max(0, Math.floor((Date.now() - state.latest) / 1000));
+    const elapsedMs = Date.now() - state.latest.getTime();
+    if (elapsedMs < 0) {
+      text("elapsed", "--:--");
+      caption.textContent = "Sale time is ahead";
+      timer.title =
+        "The latest sale timestamp is ahead of this device's clock. Check the sale timestamp and device clock; source timezone: Mexico City (UTC-6).";
+      document.querySelector(".timer").className = "score timer cold";
+      return;
+    }
+    const seconds = Math.floor(elapsedMs / 1000);
     const h = Math.floor(seconds / 3600),
       m = Math.floor((seconds % 3600) / 60),
       s = seconds % 60;

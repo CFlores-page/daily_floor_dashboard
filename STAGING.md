@@ -11,7 +11,7 @@ Open this folder in VS Code and run Live Server on `index.html`.
 
 - Four units ranked by dollar volume, with stable tie ordering and true zero-length bars.
 - Existing unit colors retained: Elite blue, Premier peach, Balfer green, Loyalty lavender. No invented unit logos.
-- Three recent transactions form a horizontal timeline, newest on the left. Full Sheet names are kept; long timeline names truncate and expose their full text on hover.
+- Five recent transactions form a horizontal timeline, newest on the left. Full Sheet names are kept; long timeline names truncate and expose their full text on hover.
 - New transaction identities (timestamp, unit, certificate) trigger a five-second celebration. Initial loading, repeated polling, and amount/name corrections do not celebrate. Multiple arrivals queue oldest first. The timeline returns when the queue finishes.
 - Top Closer uses the existing Sheet name, photo, meta and unit. Photo presentation is controlled by CSS.
 - Enabled announcements appear in the bottom strip for eight seconds each minute when it is idle. Title, body, subtitle, background, optional foreground image and campaign accent come from the existing Sheet. New sales interrupt announcements. The TYPE field remains informational, as in the original dashboard.
@@ -30,3 +30,5 @@ Original dashboard files and seasonal assets remain in the repository but are no
 ## Validation
 
 Chromium desktop checks cover 1920×1080, 1366×768 and mobile width; live-adapter fixtures cover queueing, correction deduplication, maintenance, announcements and feed errors. The CSS uses explicit positioning rather than `inset`, and effects primarily animate transform/opacity. Actual Samsung Tizen 6.5 / Chromium 85 verification remains required; modern Chromium is not a TV emulator.
+
+The elapsed timer uses canonical GViz datetime components in the workbook's verified Mexico City timezone (UTC-6), with formatted timestamps supported as a fallback. It continues across midnight and refreshes immediately after loading. Future timestamps show “Sale time is ahead” rather than a fabricated zero; check the source timestamp and device clock if this appears.
