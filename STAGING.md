@@ -31,7 +31,7 @@ Original dashboard files and seasonal assets remain in the repository but are no
 
 Chromium desktop checks cover 1920×1080, 1366×768 and mobile width; live-adapter fixtures cover queueing, correction deduplication, maintenance, announcements and feed errors. The CSS uses explicit positioning rather than `inset`, and effects primarily animate transform/opacity. Actual Samsung Tizen 6.5 / Chromium 85 verification remains required; modern Chromium is not a TV emulator.
 
-The elapsed timer uses canonical GViz datetime components in the workbook's verified Mexico City timezone (UTC-6), with formatted timestamps supported as a fallback. It continues across midnight and refreshes immediately after loading. Future timestamps show “Sale time is ahead” rather than a fabricated zero; check the source timestamp and device clock if this appears.
+The elapsed timer uses canonical GViz datetime components in the workbook's verified Mexico City timezone (UTC-6), with formatted timestamps supported as a fallback. It shows `--:--` while previous-day results are displayed and until today's first sale. Both the Sheet's today-sales flag and a transaction dated today are required. The date is rechecked every second, so the timer clears at Mexico City midnight even if polling is delayed. Future timestamps show “Sale time is ahead” rather than a fabricated zero; check the source timestamp and device clock if this appears.
 
 ### Temporary source clock correction
 
