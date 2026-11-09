@@ -484,7 +484,7 @@
     });
     updateStandings(snapshot.chart, snapshot.hasSales);
     updateCloser(snapshot.closer, snapshot.hasSales);
-    // Elapsed time is anchored to the newest actual transaction, even across midnight.
+    // Keep the latest timestamp; updateTimer gates it to today's results on every tick.
     state.latest = latest || null;
     updateTimer();
     const newSales = rows.filter((s) => !state.seen.has(s.key));
@@ -531,7 +531,12 @@
     const timer = $("elapsed");
     caption.textContent = "Since last sale";
     timer.removeAttribute("title");
-    if (!state.latest) {
+    if (
+      !state.latest ||
+      !state.snapshot ||
+      !state.snapshot.hasSales ||
+      dayKey(state.latest) !== dayKey(new Date())
+    ) {
       text("elapsed", "--:--");
       document.querySelector(".timer").className = "score timer";
       return;
