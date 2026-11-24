@@ -1,0 +1,168 @@
+/* Black Friday | Phase 1: visual override. Load after arena.css. */
+:root {
+  --bg: #09090c;
+  --text: #f8f7f5;
+  --muted: #d2cbd0;
+  --line: #8f7047;
+  --bf-gold: #ffc84c;
+  --bf-gold-light: #fff1bd;
+  --bf-gold-edge: #c39a60;
+  --bf-panel: linear-gradient(155deg, #1b1d22, #101217 44%, #0c0d10);
+  --bf-frame: inset 0 1px 0 rgba(255,235,191,.20), inset 0 0 22px rgba(255,170,60,.045), 0 0 12px rgba(229,148,56,.14);
+  --elite: #259af5;
+  --premier: #ffad22;
+  --balfer: #76ce3a;
+  --loyalty: #c565f6;
+  --unit: var(--bf-gold);
+  --unit-light: var(--bf-gold-light);
+  --unit-dark: #15171c;
+  --unit-rgb: 255,200,76;
+}
+[data-unit="elite"] {
+  --unit: var(--elite); --unit-light: #65bcff; --unit-dark: #102c49; --unit-rgb: 37,154,245;
+}
+[data-unit="premier"] {
+  --unit: var(--premier); --unit-light: #ffd05a; --unit-dark: #492706; --unit-rgb: 255,173,34;
+}
+[data-unit="balfer"] {
+  --unit: var(--balfer); --unit-light: #a6ec70; --unit-dark: #203b12; --unit-rgb: 118,206,58;
+}
+[data-unit="loyalty"] {
+  --unit: var(--loyalty); --unit-light: #de9aff; --unit-dark: #38194f; --unit-rgb: 197,101,246;
+}
+/* Black backdrop, red diagonal corner accents; no external images. */
+body { background: var(--bg); }
+.arena {
+  background:
+    linear-gradient(135deg, transparent 24px, #ff562b 25px, #bc1f1a 27px, transparent 31px, transparent 49px, #7c1919 50px, #e22b24 53px, transparent 57px) top left / 150px 150px no-repeat,
+    linear-gradient(315deg, transparent 24px, #ff562b 25px, #bc1f1a 27px, transparent 31px, transparent 49px, #7c1919 50px, #e22b24 53px, transparent 57px) bottom right / 150px 150px no-repeat,
+    radial-gradient(ellipse at 0 0, rgba(174,26,20,.30), transparent 25%),
+    radial-gradient(ellipse at 100% 100%, rgba(174,26,20,.25), transparent 23%),
+    linear-gradient(145deg, #111216, #08090c 60%, #101013);
+}
+.masthead { border-bottom-color: #ac753b; }
+.brand > span { color: var(--bf-gold-light); border-left-color: #846d50; }
+.header-meta #status { border-left-color: #846d50; }
+.header-meta #status.stale { color: #ffbd64; }
+/* Metallic panels. Existing grid and responsive layout stay in arena.css. */
+.scoreboard, .standings, .spotlight, .activity {
+  border: 1px solid var(--bf-gold-edge);
+  border-radius: 15px;
+  background: var(--bf-panel);
+  box-shadow: var(--bf-frame);
+}
+.scoreboard, .activity {
+  box-shadow: var(--bf-frame), 0 2px 9px rgba(255,147,30,.20);
+}
+.scoreboard { padding: 8px 22px; }
+.floor-total #volume {
+  color: var(--bf-gold);
+  text-shadow: 0 0 24px rgba(255,180,49,.18);
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .floor-total #volume {
+    background: linear-gradient(180deg, #fff3bc 5%, #ffda74 48%, #e9a22f);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+.score { border-left-color: #91754e; }
+.score span { color: #f0ebe5; }
+.timer.active strong { color: #a6ec70; }
+.timer.cold strong { color: #ffbe5d; }
+/* Unit standings: preserve JS transforms and genuine progress values. */
+.standings { padding: 0 12px 7px; }
+.section-heading h2, .spotlight-heading { color: #f8f6f1; }
+.standings .section-heading, .timeline-view .section-heading {
+  border-bottom: 1px solid rgba(211,164,94,.28);
+  margin-bottom: 5px;
+}
+.lane {
+  border: 1px solid var(--unit);
+  border-left: 5px solid var(--unit);
+  border-radius: 12px;
+  background: linear-gradient(105deg, var(--unit-dark), #10141b 70%, #0c0f14);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.15), inset 0 0 22px rgba(var(--unit-rgb),.08);
+}
+.lane .rank { color: var(--unit-light); text-shadow: 0 0 14px rgba(var(--unit-rgb),.20); }
+.leader-label { border-radius: 4px; color: #0a0c10; }
+.track {
+  border-radius: 8px;
+  background: linear-gradient(180deg, #454951, #282c33);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.45);
+}
+.fill { border-radius: 8px; box-shadow: 0 0 8px rgba(var(--unit-rgb),.35); }
+/* Top closer: keep portrait positioning and fitting untouched. */
+.spotlight { background: radial-gradient(ellipse at 50% 45%, var(--unit-dark), #10141b 76%, #0c0e12); }
+.spotlight-heading { border-left-color: var(--bf-gold); }
+.spotlight-heading span { color: #ddd5c9; }
+.unit-watermark { opacity: .09; }
+.portrait > span, .portrait .missing-photo { color: #ded8d0; font-style: italic; }
+.hero-footer { border-top-color: var(--bf-gold-edge); background: linear-gradient(100deg, var(--unit-dark), #12151b 75%); }
+.hero-footer p { color: var(--unit-light); }
+.unit-tag { border-radius: 4px; }
+/* Recent sales: retain the five cards and existing feed. */
+.activity { padding: 0 12px 9px; }
+.timeline-view .section-heading { margin-bottom: 4px; }
+.transaction {
+  border: 1px solid var(--unit);
+  border-radius: 12px;
+  background: linear-gradient(155deg, var(--unit-dark), #101319 67%, #0b0d11);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
+}
+.transaction-top { padding-bottom: 5px; border-bottom: 1px solid rgba(var(--unit-rgb),.30); color: #f1e9df; }
+.transaction-top .unit-name { color: var(--unit-light); }
+.transaction strong { color: #fffaf2; }
+.sale-event { background: linear-gradient(105deg, var(--unit-dark), #101319 65%, #0b0d10); border-left-color: var(--bf-gold); }
+.event-kicker, .event-money strong { color: var(--bf-gold-light); }
+.event-progress { background: var(--bf-gold); }
+.announcement { background-color: #121316; }
+.eyebrow { color: var(--bf-gold-light); }
+.footer { color: #e4ddd4; }
+.footer i { box-shadow: 0 0 5px currentColor; }
+.maintenance { background: #0b0c10; }
+/* Existing breakpoints — reduce new padding on smaller displays. */
+@media (max-height: 850px) and (min-width: 1101px) {
+  .scoreboard { padding: 6px 16px; }
+  .standings { padding: 0 10px 5px; }
+  .activity { padding: 0 10px 6px; }
+  .standings .section-heading { margin-bottom: 2px; }
+  .transaction-top { padding-bottom: 3px; }
+}
+@media (max-width: 1100px) {
+  .scoreboard { padding: 8px 12px; }
+  .standings { padding: 0 8px 5px; }
+  .activity { padding: 0 8px 6px; }
+}
+@media (max-width: 650px) {
+  .scoreboard { padding: 8px; }
+  .lane, .transaction { border-radius: 9px; }
+}
+
+.brand .bf-logo {
+  display: block;
+  width: 345px;
+  height: 57.5px;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 1400px) {
+  .brand .bf-logo {
+    width: 287.5px;
+    height: 46px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .brand .bf-logo {
+    width: 218.5px;
+    height: 40.25px;
+  }
+
+  .brand > .bf-brand {
+    padding-left: 12px;
+    margin-left: 12px;
+  }
+}

@@ -1,0 +1,86 @@
+/* Black Friday / Screen 03. Load after black-friday-view.css. */
+.vac-view {
+  grid-row: 2 / 5;
+  display: grid;
+  grid-template-rows: minmax(0, .9fr) minmax(0, 2.05fr);
+  gap: clamp(8px, 1vw, 20px);
+  min-width: 0;
+  min-height: 0;
+  font-variant-numeric: tabular-nums;
+}
+.vac-view .bf-panel { overflow: hidden; }
+.vac-progress { justify-content: space-between; }
+.vac-track {
+  height: clamp(20px, 4.2vh, 52px);
+  margin: clamp(3px, .6vh, 8px) clamp(6px, 2vw, 40px) 0;
+  border: 1px solid #b99552;
+  border-radius: 100px;
+  background: linear-gradient(#3e424a, #22252c);
+  box-shadow: inset 0 2px 8px #0009;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.vac-track-fill {
+  height: 100%; width: 0; border-radius: inherit;
+  background: linear-gradient(90deg, #df8b0e, #ffc84c 50%, #fff0ac);
+  box-shadow: 0 0 16px #ffb74088, inset 0 1px 1px #fff8;
+  transition: width .5s ease;
+}
+.vac-progress-bottom { display: grid; grid-template-columns: 1fr 1.4fr 1fr; align-items: center; gap: 10px; text-align: center; min-height: 0; }
+.vac-count-wrap, .vac-side-stat { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.vac-count-wrap strong { font-size: clamp(36px, min(5.2vw, 8.2vh), 102px); line-height: .98; font-weight: 900; letter-spacing: -.045em; white-space: nowrap; }
+.vac-count-wrap > span { font-size: clamp(10px, 1.05vw, 20px); letter-spacing: .18em; font-weight: 800; margin-top: 4px; }
+.vac-side-stat strong { font-size: clamp(24px, 2.6vw, 50px); line-height: 1; margin: 3px 0; }
+.vac-side-stat small { color: var(--bf-gold-light); font-size: clamp(10px, .92vw, 17px); }
+.vac-bottom { display:grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.5fr); min-height:0; min-width:0; gap:clamp(8px,1vw,20px); }
+.vac-rules { gap: clamp(4px, .65vh, 9px); }
+.vac-prize { flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:2px; padding:clamp(6px,1vh,14px) 5px; border:1px solid var(--bf-gold-edge); border-radius:10px; background:radial-gradient(ellipse at top,#68420d55,transparent 80%), #191713; text-align:center; }
+.vac-prize > span { font-size:clamp(9px,.85vw,15px); letter-spacing:.2em; font-weight:800; color:var(--bf-gold-light); }
+.vac-prize > strong { font-size:clamp(19px,1.9vw,36px); line-height:1.05; font-weight:900; }
+.vac-prize > b { font-size:clamp(13px,1.3vw,24px); }
+.vac-prize > small { font-size:clamp(11px,1vw,18px); color:var(--bf-gold-light); }
+.vac-rule { display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:clamp(6px,.6vw,12px); flex:1; min-height:0; padding:clamp(2px,.35vh,5px) 0; }
+.vac-rule + .vac-rule { border-top:1px solid #c39a6033; }
+.vac-rule > b { font-size:clamp(14px,1.35vw,26px); font-weight:900; color:var(--bf-gold); }
+.vac-rule strong { display:block; font-size:clamp(11px,1.07vw,20px); line-height:1.12; }
+.vac-rule p { color:var(--muted); font-size:clamp(10px,.88vw,16px); line-height:1.25; margin-top:3px; }
+.vac-ticket-summary { display:grid; grid-template-columns:1fr 1fr; gap:10px; flex-shrink:0; }
+.vac-ticket-summary > span { display:flex; align-items:center; justify-content:center; gap:clamp(5px,.8vw,15px); padding:clamp(4px,.7vh,10px); border:1px solid #c39a6044; border-radius:8px; background:#ffffff04; font-size:clamp(9px,.95vw,17px); font-weight:700; }
+.vac-ticket-summary strong { font-size:clamp(21px,2.2vw,43px); line-height:1; }
+.vac-ticket-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); grid-auto-rows:minmax(0,1fr); grid-template-rows:repeat(6,minmax(0,1fr)); align-content:start; flex:1; min-height:0; gap:clamp(4px,.55vh,8px); }
+.vac-ticket-row { display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:clamp(5px,.6vw,11px); min-height:0; min-width:0; padding:clamp(3px,.45vh,6px) clamp(5px,.65vw,12px); border:1px solid #c39a6040; border-radius:8px; background:linear-gradient(105deg,#28231b,#15171d 65%); }
+.vac-ticket-rank { font-size:clamp(11px,1.05vw,20px); color:var(--bf-gold-light); font-weight:800; }
+.vac-ticket-details { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.vac-ticket-details > strong { font-size:clamp(10px,1vw,18px); line-height:1.15; overflow-wrap:anywhere; }
+.vac-ticket-details > small { color:var(--muted); font-size:clamp(9px,.76vw,14px); }
+.vac-ticket-badge { display:flex; align-items:center; flex-direction:column; justify-content:center; min-width:clamp(43px,4vw,74px); padding:3px; border-left:1px solid #c39a6066; }
+.vac-ticket-badge strong { color:var(--bf-gold); font-size:clamp(18px,1.8vw,34px); line-height:1; font-weight:900; }
+.vac-ticket-badge small { color:var(--bf-gold-light); font-size:clamp(8px,.65vw,12px); font-weight:800; }
+.vac-empty { grid-column:1/-1; grid-row:1/-1; align-self:center; justify-self:center; color:var(--muted); text-align:center; }
+.vac-disclaimer { flex-shrink:0; border:1px solid #c39a6060; border-radius:8px; background:#ffc84c0a; color:var(--bf-gold-light); padding:clamp(5px,.8vh,11px); font-size:clamp(10px,.93vw,17px); line-height:1.25; text-align:center; }
+@media (max-width:1100px) {
+  .vac-view { grid-row:2; grid-template-rows:auto auto; min-height:740px; }
+  .vac-progress { min-height:185px; }
+  .vac-bottom { grid-template-columns:minmax(0,1fr) minmax(0,2fr); }
+  .vac-rules { min-height:480px; }
+  .vac-ticket-list { min-height:360px; }
+}
+@media (max-width:700px) {
+  .vac-bottom { grid-template-columns:1fr; }
+  .vac-view { min-height:0; }
+  .vac-rules { min-height:420px; }
+  .vac-ticket-list { grid-template-columns:1fr; }
+  .vac-progress-bottom { grid-template-columns:1fr 1.4fr 1fr; gap:3px; }
+  .vac-count-wrap strong { font-size:clamp(29px,8vw,52px); }
+  .vac-view .bf-heading { flex-wrap:wrap; }
+}
+@media (prefers-reduced-motion:reduce) { .vac-track-fill { transition:none; } }
+
+@media (max-height:850px) and (min-width:1101px) {
+  .vac-view .bf-panel { padding: 10px 13px; gap: 5px; }
+  .vac-rule p { font-size: clamp(10px, .82vw, 13px); margin-top: 2px; }
+  .vac-rule strong { font-size: clamp(11px, .98vw, 16px); }
+  .vac-prize { padding: 5px; }
+  .vac-ticket-details > strong { font-size: clamp(10px, .88vw, 15px); }
+  .vac-ticket-details > small { font-size: 10px; }
+}

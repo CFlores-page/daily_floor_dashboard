@@ -61,6 +61,15 @@ window.ArenaPreview = (() => {
   return {
     enabled,
     snapshot,
+    peekNext() {
+      const saved = step;
+      try {
+        step = (step + 1) % 3;
+        return snapshot();
+      } finally {
+        step = saved;
+      }
+    },
     next() {
       step = (step + 1) % 3;
       return snapshot();

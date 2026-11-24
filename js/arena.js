@@ -157,8 +157,14 @@
     }
     state.animations.set(id, requestAnimationFrame(frame));
   }
-  async function sheet(range) {
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=TODAY&range=${encodeURIComponent(range)}&t=${Date.now()}`;
+  async function sheet(range, tab = "TODAY", query = "") {
+    const params = new URLSearchParams({ sheet: tab, t: String(Date.now()) });
+    if (range) params.set("range", range);
+    if (query) {
+      params.set("tq", query);
+      params.set("headers", "0");
+    }
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?${params}`;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
     try {
@@ -189,6 +195,55 @@
       clearTimeout(timeout);
     }
   }
+  // Read only the name and photo columns. Keep the last good directory
+  // if its feed is temporarily unavailable; never block a sale celebration.
+  const closerPhotos = {
+    entries: new Map(),
+    busy: false,
+    nextRefresh: 0,
+  };
+  function closerNameKey(value) {
+    return String(value || "").normalize("NFC").trim()
+      .replace(/\s+/g, " ").toUpperCase();
+  }
+  function photoDirectory(rows) {
+    const entries = new Map();
+    const ambiguous = new Set();
+    for (const row of rows) {
+      const name = closerNameKey(row[0]);
+      const raw = String(row[1] || "").trim();
+      if (!name || !/^https?:\/\//i.test(raw)) continue;
+      const photo = safeImage(raw);
+      if (!photo || ambiguous.has(name)) continue;
+      if (entries.has(name) && entries.get(name) !== photo) {
+        entries.delete(name);
+        ambiguous.add(name);
+      } else {
+        entries.set(name, photo);
+      }
+    }
+    return entries;
+  }
+  async function refreshCloserPhotos() {
+    if (closerPhotos.busy || Date.now() < closerPhotos.nextRefresh) return;
+    closerPhotos.busy = true;
+    try {
+      const rows = await sheet("", "AGENT_INFORMATION", "select C,N where C is not null");
+      closerPhotos.entries = photoDirectory(rows);
+      closerPhotos.nextRefresh = Date.now() + 5 * 60 * 1000;
+    } catch (err) {
+      closerPhotos.nextRefresh = Date.now() + 60 * 1000;
+      console.warn("Closer photo directory unavailable; using fallback portraits.", err.message);
+    } finally {
+      closerPhotos.busy = false;
+    }
+  }
+  function photoForSale(sale, closer) {
+    const name = closerNameKey(sale.name);
+    return closerPhotos.entries.get(name) ||
+      (name && name === closerNameKey(closer && closer.name)
+        ? safeImage(closer.photo) : "");
+  }
   async function fetchSnapshot() {
     const ranges = [
       "E1",
@@ -200,7 +255,7 @@
       "K2:P8",
       "L9:P9",
     ];
-    const r = await Promise.all(ranges.map(sheet));
+    const r = await Promise.all(ranges.map(range => sheet(range)));
     const field = (name, c) => {
       const row = r[6].find(
         (row) => String(row[0]).trim().toUpperCase() === name,
@@ -563,15 +618,61 @@
       "score timer " +
       (seconds > 5400 ? "cold" : seconds <= 1800 ? "active" : "");
   }
+  async function applyLiveSnapshot(snapshot) {
+    const overlay = window.NewSaleOverlay;
+    if (!state.initialized || snapshot.maintenance ||
+        !snapshot.hasSales || !overlay) {
+      apply(snapshot);
+      return;
+    }
+
+    const known = new Set(state.seen);
+    const pending = snapshot.sales.map(row => ({
+      ...saleFromRow(row), cert: String(row[2] || "")
+    })).filter(sale => {
+      if (known.has(sale.key) || !sale.date ||
+          dayKey(sale.date) !== dayKey(new Date())) return false;
+      known.add(sale.key);
+      return true;
+    }).sort((a, b) => a.date - b.date);
+
+    if (!pending.length) {
+      apply(snapshot);
+      return;
+    }
+
+    window.ArenaLiveCelebration = true;
+    try {
+      for (const sale of pending) {
+        const photo = photoForSale(sale, snapshot.closer || {});
+        try {
+          const shown = await overlay.play({ ...sale, photo });
+          if (!shown) break;
+          state.seen.add(sale.key);
+        } catch (err) {
+          console.warn("Live sale overlay:", err);
+          break;
+        }
+      }
+      // Commit only the actual sheet snapshot, never invented totals.
+      // The original notification remains the fallback for unshown sales.
+      apply(snapshot);
+    } finally {
+      window.ArenaLiveCelebration = false;
+      if (window.BlackFridayFeed) window.BlackFridayFeed.refresh();
+    }
+  }
+
   async function refresh() {
     if (state.busy) return;
     state.busy = true;
     try {
-      apply(
-        window.ArenaPreview.enabled
-          ? window.ArenaPreview.snapshot()
-          : await fetchSnapshot(),
-      );
+      if (window.ArenaPreview.enabled) {
+        apply(window.ArenaPreview.snapshot());
+      } else {
+        refreshCloserPhotos(); // independent of the critical sales feed
+        await applyLiveSnapshot(await fetchSnapshot());
+      }
     } catch (e) {
       state.failed = true;
       text(
@@ -634,7 +735,34 @@
     document.addEventListener("keydown", (e) => {
       if (e.code === "Space") {
         e.preventDefault();
+              
+      if (e.repeat || window.NewSaleOverlay.isActive()) return;
+
+      const before = window.ArenaPreview.snapshot();
+      const next = window.ArenaPreview.peekNext();
+
+      const row = next.sales.find(
+        r => !before.sales.some(old => old[2] === r[2])
+      );
+
+      if (!row) return;
+
+      window.NewSaleOverlay.play({
+        unit: row[1],
+        cert: row[2],
+        name: row[3],
+        amount: numeric(row[4])
+      }).then(shown => {
+        if (!shown) return;
+
+        state.seen.add(saleFromRow(row).key);
         apply(window.ArenaPreview.next());
+
+        if (window.BlackFridayFeed) {
+          window.BlackFridayFeed.refresh();
+        }
+      }).catch(console.error);
+
       }
       if (e.code === "KeyR") {
         location.reload();

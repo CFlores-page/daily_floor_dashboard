@@ -1,0 +1,74 @@
+/* Black Friday — ambient broadcast lighting. Load after black-friday-effects.css.
+   Decorative only: no layout, data, overlay travel or ranking transforms. */
+.arena .masthead {
+  background-image: linear-gradient(90deg, transparent 0%, #a76c2c55 25%, #ffca66 45%, #fff2c7 50%, #ffca66 55%, #a76c2c55 75%, transparent 100%);
+  background-repeat: no-repeat;
+  background-size: 36% 3px;
+  background-position: -60% bottom;
+  animation: bf-idle-header 7s linear infinite;
+  box-shadow: 0 4px 13px -8px #ffbc5caa;
+}
+@keyframes bf-idle-header {
+  0% { background-position: -60% bottom; }
+  75%,100% { background-position: 160% bottom; }
+}
+.arena .scoreboard, .arena .bf-goal, .arena .vac-progress {
+  border-color: #d7ae67;
+  animation: bf-idle-main 5.5s ease-in-out infinite;
+}
+@keyframes bf-idle-main {
+  0%,100% { box-shadow: inset 0 1px 0 #ffe3a855, inset 0 0 22px #ffbf4210, 0 0 10px #ffaa3029; }
+  50% { box-shadow: inset 0 1px 0 #fff0bdaa, inset 0 0 28px #ffbf4222, 0 0 19px #ffaa3055; }
+}
+.arena .standings, .arena .activity, .arena .bf-panel:not(.bf-goal):not(.vac-progress) {
+  box-shadow: inset 0 1px 0 #ffe5ad40, 0 0 12px #e9a43b29;
+}
+/* Travelling light sits on the existing heading separator, never over text. */
+.arena .bf-heading, .arena .standings .section-heading, .arena .timeline-view .section-heading {
+  background-image: linear-gradient(90deg, transparent, #ffc86a70 35%, #fff0bc 50%, #ffc86a70 65%, transparent);
+  background-repeat: no-repeat;
+  background-size: 32% 2px;
+  background-position: -50% bottom;
+  animation: bf-idle-header 8s linear infinite;
+}
+.arena .bf-right .bf-heading, .arena .vac-tickets .bf-heading { animation-delay: -3s; }
+.arena .activity .section-heading { animation-delay: -5s; }
+/* Unit identity, without overriding movement or the existing sale-pulse animation. */
+.arena .lane:not(.sale-pulse), .arena .transaction {
+  box-shadow: inset 0 1px 0 rgba(var(--unit-rgb), .40), inset 6px 0 24px rgba(var(--unit-rgb), .13), 0 0 9px rgba(var(--unit-rgb), .20);
+}
+.arena .lane .rank, .arena .transaction-top .unit-name {
+  text-shadow: 0 0 11px rgba(var(--unit-rgb), .65);
+}
+.arena .leader-label { box-shadow: 0 0 12px rgba(var(--unit-rgb), .65); }
+.arena .spotlight {
+  box-shadow: inset 0 0 35px rgba(var(--unit-rgb), .14), 0 0 12px rgba(var(--unit-rgb), .20);
+}
+.arena .unit-watermark { animation: bf-idle-watermark 7s ease-in-out infinite; }
+@keyframes bf-idle-watermark { 0%,100% { opacity: .09; } 50% { opacity: .19; } }
+.arena .bf-chart-bar {
+  background: linear-gradient(to top, var(--unit-dark), var(--unit) 80%, var(--unit-light));
+  box-shadow: inset 0 1px 0 #ffffff88, 0 0 12px rgba(var(--unit-rgb), .33);
+}
+/* Gold metrics and active raffle tokens remain readable. */
+.arena #volume, .arena #bf-total, .arena #vac-count {
+  filter: drop-shadow(0 0 9px #ffc34c55);
+}
+.arena #bf-goal-fill, .arena .vac-track-fill { box-shadow: inset 0 1px 0 #fff4c7a0, 0 0 12px #ffc84c88; }
+.arena .fill::after, .arena #bf-goal-fill::after, .arena .vac-track-fill::after {
+  background: linear-gradient(110deg, transparent 25%, #fff4c780 48%, #fff9dcaa 50%, transparent 73%);
+  animation: bf-progress-shine 4.5s ease-in-out infinite;
+}
+.arena .lane:nth-child(2) .fill::after { animation-delay: -1.1s; }
+.arena .lane:nth-child(3) .fill::after { animation-delay: -2.2s; }
+.arena .lane:nth-child(4) .fill::after { animation-delay: -3.3s; }
+.arena .bf-steps .filled { box-shadow: 0 0 10px #ffc84c99, inset 0 1px 0 #fff5c4; }
+.arena .vac-prize { box-shadow: inset 0 0 20px #ffc84c14, 0 0 12px #ffc84c26; }
+.arena .vac-ticket-row { box-shadow: inset 2px 0 0 #d5a64b88; }
+.arena .vac-ticket-badge strong { text-shadow: 0 0 10px #ffc84c77; }
+.arena .footer i { box-shadow: 0 0 7px currentColor; }
+@media (prefers-reduced-motion: reduce) {
+  .arena .masthead, .arena .scoreboard, .arena .bf-goal, .arena .vac-progress,
+  .arena .bf-heading, .arena .section-heading, .arena .unit-watermark,
+  .arena .fill::after, .arena #bf-goal-fill::after, .arena .vac-track-fill::after { animation: none !important; }
+}

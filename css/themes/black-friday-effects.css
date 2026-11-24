@@ -1,0 +1,157 @@
+/* Black Friday — lighting and motion layer. Load after new-sale.css. */
+/* Ambient dashboard lighting: no changes to layout or data transforms. */
+.scoreboard, .standings, .spotlight, .activity, .bf-panel {
+  box-shadow: inset 0 1px 0 #ffe7ad24, 0 0 11px #e9a43b22;
+}
+.scoreboard, .vac-progress, .bf-goal {
+  animation: bf-ambient-glow 5s ease-in-out infinite;
+}
+@keyframes bf-ambient-glow {
+  0%,100% { box-shadow: inset 0 1px 0 #ffe7ad24, 0 0 9px #e9a43b22; }
+  50% { box-shadow: inset 0 1px 0 #ffe7ad55, 0 0 18px #e9a43b44; }
+}
+.lane .rank, .transaction-top .unit-name {
+  text-shadow: 0 0 10px rgba(var(--unit-rgb),.45);
+}
+.bf-steps span.filled, .vac-ticket-badge strong {
+  filter: drop-shadow(0 0 5px #ffb53666);
+}
+#bf-goal-fill, .vac-track-fill, .fill {
+  position: relative;
+  overflow: hidden;
+}
+#bf-goal-fill::after, .vac-track-fill::after, .fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 30%, #fff9 48%, transparent 66%);
+  transform: translateX(-115%);
+  animation: bf-progress-shine 5s ease-in-out infinite;
+}
+@keyframes bf-progress-shine {
+  0%,20% { transform: translateX(-115%); }
+  65%,100% { transform: translateX(115%); }
+}
+/* NEW SALE: more energy, same 6400 ms timeline. */
+#new-sale-overlay .ns-band {
+  overflow: hidden;
+  border-top: 2px solid #ffce6a;
+  border-bottom: 2px solid #ffce6a;
+  background:
+    linear-gradient(115deg, transparent 73%, #6d4b24 73%, #ffe2a1 75%, #a77c39 77%, #ba2028 77%, #ba2028 78%, transparent 78%),
+    repeating-linear-gradient(125deg, #ffffff04 0px, #ffffff04 1px, transparent 1px, transparent 13px),
+    linear-gradient(110deg, #101114, #2b2c32 48%, #121418 80%);
+  box-shadow: inset 0 0 38px #e7a03724;
+}
+/* Bright upper/lower rails moving inside the metallic band. */
+#new-sale-overlay .ns-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent, #9b5226 20%, #fff3c2 48%, #ffb331 55%, transparent 80%) top left / 60% 3px no-repeat,
+    linear-gradient(90deg, transparent, #9b5226 20%, #fff3c2 48%, #ffb331 55%, transparent 80%) bottom left / 60% 3px no-repeat,
+    linear-gradient(90deg, transparent, #c22930 48%, #ff5550 55%, transparent 80%) 0 7px / 50% 2px no-repeat,
+    linear-gradient(90deg, transparent, #c22930 48%, #ff5550 55%, transparent 80%) 0 calc(100% - 7px) / 50% 2px no-repeat;
+  filter: drop-shadow(0 0 5px #ffb844);
+  pointer-events: none;
+}
+#new-sale-overlay.ns-playing .ns-band::before {
+  animation: ns-rail-flow 2s linear infinite;
+}
+@keyframes ns-rail-flow {
+  from { transform: translateX(-65%); }
+  to { transform: translateX(110%); }
+}
+/* Diagonal gold and crimson broadcast sweep. */
+#new-sale-overlay .ns-band::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 39%, #d19c4320 44%, #ffe1a599 48%, #ffdf94 49%, #982027 50%, #98202733 51%, transparent 55%);
+  transform: translateX(-130%);
+}
+#new-sale-overlay.ns-playing .ns-band::after {
+  animation: ns-metal-sweep 6400ms linear both;
+}
+@keyframes ns-metal-sweep {
+  0% { transform: translateX(-130%); opacity: .9; }
+  12%,84% { transform: translateX(130%); opacity: .85; }
+  85% { transform: translateX(-130%); opacity: 0; }
+  87% { opacity: .9; }
+  100% { transform: translateX(130%); opacity: .9; }
+}
+/* Card frame and unit-colored halo. Do not override ns-card-travel. */
+#new-sale-overlay .ns-card {
+  border-color: #ffdb8b;
+  border-left-color: var(--ns-unit);
+  box-shadow: 0 0 16px #ffc05b66, 0 6px 24px #000b, inset 0 0 16px #ffc05b1a;
+}
+#new-sale-overlay .ns-card::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 0 18px var(--ns-unit), inset 0 0 3px #fff0c2;
+  opacity: .22;
+}
+#new-sale-overlay.ns-playing .ns-card::before {
+  animation: ns-frame-breathe 2.6s ease-in-out infinite;
+}
+@keyframes ns-frame-breathe {
+  0%,100% { opacity: .22; }
+  50% { opacity: .60; }
+}
+#new-sale-overlay .ns-card::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 39%, #fff0c20d 45%, #fff0c244 49%, #fff0c20d 54%, transparent 60%);
+  transform: translateX(-115%);
+}
+#new-sale-overlay.ns-playing .ns-card::after {
+  animation: ns-card-reflection 6400ms linear both;
+}
+@keyframes ns-card-reflection {
+  0%,14% { transform: translateX(-115%); }
+  31%,72% { transform: translateX(115%); }
+  73% { transform: translateX(-115%); opacity: 0; }
+  75% { opacity: 1; }
+  95%,100% { transform: translateX(115%); }
+}
+#new-sale-overlay .ns-portrait {
+  background: radial-gradient(ellipse at 50% 64%, var(--ns-unit-dark), #101319 75%);
+}
+#new-sale-overlay .ns-portrait::before {
+  background: linear-gradient(135deg, transparent 55%, var(--ns-unit) 55%, var(--ns-unit) 56%, transparent 56%);
+  opacity: .65;
+}
+#new-sale-overlay .ns-title {
+  text-shadow: 0 0 12px #ffe1a566, 0 0 25px #ffb52b33;
+}
+#new-sale-overlay .ns-unit {
+  text-shadow: 0 0 12px var(--ns-unit);
+}
+#new-sale-overlay .ns-amount {
+  filter: drop-shadow(0 0 8px #ffb52b77);
+}
+#new-sale-overlay .ns-rule {
+  box-shadow: 0 0 6px #ffc84c99;
+}
+/* Respect reduced motion, without touching the sale lifecycle. */
+@media (prefers-reduced-motion: reduce) {
+  .scoreboard, .vac-progress, .bf-goal,
+  #bf-goal-fill::after, .vac-track-fill::after, .fill::after,
+  #new-sale-overlay.ns-playing .ns-band::before,
+  #new-sale-overlay.ns-playing .ns-band::after,
+  #new-sale-overlay.ns-playing .ns-card::before,
+  #new-sale-overlay.ns-playing .ns-card::after {
+    animation: none !important;
+  }
+}
