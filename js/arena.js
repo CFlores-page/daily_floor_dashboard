@@ -2,6 +2,8 @@
 (() => {
   "use strict";
   const SHEET_ID = "1x8nGAfiI9bmz5G-35uQXWIoBV91CF8VqlUwc05aX8Rg";
+  // Public mirror of R08's roster in the Black Friday tracker.
+  const PHOTO_SHEET_ID = "1YTc-LgBdoQYeR1tihnbApF8HDYcvNs1E-aeTn1-cx5k";
   // Source sale timestamps currently run one hour ahead of real Mexico City time.
   // Set to 0 after the upstream clock is corrected. Preview fixtures use real time.
   const SOURCE_CLOCK_AHEAD_MINUTES = 60;
@@ -157,14 +159,14 @@
     }
     state.animations.set(id, requestAnimationFrame(frame));
   }
-  async function sheet(range, tab = "TODAY", query = "") {
+  async function sheet(range, tab = "TODAY", query = "", spreadsheetId = SHEET_ID) {
     const params = new URLSearchParams({ sheet: tab, t: String(Date.now()) });
     if (range) params.set("range", range);
     if (query) {
       params.set("tq", query);
       params.set("headers", "0");
     }
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?${params}`;
+    const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?${params}`;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
     try {
@@ -203,7 +205,7 @@
     nextRefresh: 0,
   };
   function closerNameKey(value) {
-    return String(value || "").normalize("NFC").trim()
+    return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim()
       .replace(/\s+/g, " ").toUpperCase();
   }
   function photoDirectory(rows) {
@@ -228,7 +230,7 @@
     if (closerPhotos.busy || Date.now() < closerPhotos.nextRefresh) return;
     closerPhotos.busy = true;
     try {
-      const rows = await sheet("", "AGENT_INFORMATION", "select C,N where C is not null");
+      const rows = await sheet("", "AGENT_INFORMATION", "select C,N where C is not null", PHOTO_SHEET_ID);
       closerPhotos.entries = photoDirectory(rows);
       closerPhotos.nextRefresh = Date.now() + 5 * 60 * 1000;
     } catch (err) {
