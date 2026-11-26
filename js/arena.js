@@ -201,6 +201,7 @@
   // if its feed is temporarily unavailable; never block a sale celebration.
   const closerPhotos = {
     entries: new Map(),
+    shortNames: new Map(),
     busy: false,
     nextRefresh: 0,
   };
@@ -208,14 +209,14 @@
     return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim()
       .replace(/\s+/g, " ").toUpperCase();
   }
-  function photoDirectory(rows) {
+  function photoDirectory(rows, column = 1, isPhoto = true) {
     const entries = new Map();
     const ambiguous = new Set();
     for (const row of rows) {
       const name = closerNameKey(row[0]);
-      const raw = String(row[1] || "").trim();
-      if (!name || !/^https?:\/\//i.test(raw)) continue;
-      const photo = safeImage(raw);
+      const raw = String(row[column] || "").trim();
+      if (!name || !raw || (isPhoto && !/^https?:\/\//i.test(raw))) continue;
+      const photo = isPhoto ? safeImage(raw) : raw;
       if (!photo || ambiguous.has(name)) continue;
       if (entries.has(name) && entries.get(name) !== photo) {
         entries.delete(name);
@@ -230,8 +231,10 @@
     if (closerPhotos.busy || Date.now() < closerPhotos.nextRefresh) return;
     closerPhotos.busy = true;
     try {
-      const rows = await sheet("", "AGENT_INFORMATION", "select C,N where C is not null", PHOTO_SHEET_ID);
-      closerPhotos.entries = photoDirectory(rows);
+      const rows = await sheet("", "AGENT_INFORMATION", "select C,D,N where C is not null", PHOTO_SHEET_ID);
+      closerPhotos.entries = photoDirectory(rows, 2);
+      closerPhotos.shortNames = photoDirectory(rows, 1, false);
+      if (state.sales.length) renderTimeline();
       closerPhotos.nextRefresh = Date.now() + 5 * 60 * 1000;
     } catch (err) {
       closerPhotos.nextRefresh = Date.now() + 60 * 1000;
@@ -400,6 +403,7 @@
       date: parseDate(row[0]),
       unit: String(row[1] || ""),
       name: String(row[3] || "Unknown closer"),
+      cert: String(row[2] || ""),
       amount: numeric(row[4]),
     };
   }
@@ -430,11 +434,15 @@
           : "") + timeLabel(sale.date);
       top.append(unit, date);
       const name = document.createElement("h3");
-      name.textContent = sale.name;
+      name.textContent = closerPhotos.shortNames.get(closerNameKey(sale.name)) || sale.name;
       name.title = sale.name;
       const amount = document.createElement("strong");
       amount.textContent = money(sale.amount);
-      card.append(top, name, amount);
+      const certificate = document.createElement("span");
+      certificate.className = "transaction-cert";
+      certificate.textContent = sale.cert ? `Cert: ${sale.cert}` : "";
+      certificate.title = sale.cert;
+      card.append(top, name, certificate, amount);
       timeline.append(card);
     });
   }
@@ -669,10 +677,10 @@
     if (state.busy) return;
     state.busy = true;
     try {
+      refreshCloserPhotos(); // roster is shared by live and preview cards
       if (window.ArenaPreview.enabled) {
         apply(window.ArenaPreview.snapshot());
       } else {
-        refreshCloserPhotos(); // independent of the critical sales feed
         await applyLiveSnapshot(await fetchSnapshot());
       }
     } catch (e) {

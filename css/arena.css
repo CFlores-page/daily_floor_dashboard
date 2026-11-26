@@ -947,3 +947,8 @@ p {
 .portrait[data-fit="loading"] img.fitted-portrait {
   visibility: hidden;
 }
+
+.transaction .transaction-cert {
+  display:block; color:var(--muted); font-size:clamp(10px,.78vw,14px);
+  line-height:1.2; margin:2px 0 4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
