@@ -83,3 +83,9 @@
   .vac-ticket-details > strong { font-size: clamp(10px, .88vw, 15px); }
   .vac-ticket-details > small { font-size: 10px; }
 }
+
+/* Denser columns retain the same name/sales/tickets hierarchy. */
+.vac-ticket-list[data-compact="true"] .vac-ticket-row { gap:5px; padding-left:7px; padding-right:7px; }
+.vac-ticket-list[data-compact="true"] .vac-ticket-details > strong { font-size:clamp(11px,.85vw,16px); }
+.vac-ticket-list[data-compact="true"] .vac-ticket-badge { min-width:38px; padding:2px; }
+.vac-ticket-list[data-compact="true"] .vac-ticket-badge strong { font-size:clamp(18px,1.5vw,28px); }

@@ -86,7 +86,15 @@
     } finally { clearTimeout(timeout); }
   }
 
-  const pageSize = () => window.innerWidth <= 700 ? 6 : 12;
+  // Add columns before paging, with a readable upper limit for TV displays.
+  function ticketLayout(count) {
+    const width = window.innerWidth;
+    const maxColumns = width <= 700 ? 1 : width <= 1100 ? 3 : 4;
+    const columns = Math.min(maxColumns, count <= 12 ? 2 : count <= 18 ? 3 : 4);
+    const capacity = maxColumns * 6;
+    const visible = Math.min(count, capacity);
+    return {columns, size:capacity, rows:Math.max(1, Math.ceil(visible / columns))};
+  }
   const ticketRows = d => (Array.isArray(d.tickets) ? d.tickets : [])
     .filter(r => r && r.name && Number(r.sales) >= 2 && Number(r.tickets) > 0)
     .slice().sort((a,b) => b.tickets-a.tickets || b.sales-a.sales || String(a.name).localeCompare(String(b.name), "es"));
@@ -107,7 +115,11 @@
       return;
     }
     const goal = d.goal, sales = d.weeklySales, pct = 100*sales/goal;
-    const rows = ticketRows(d), size = pageSize(), pages = Math.max(1, Math.ceil(rows.length/size));
+    const rows = ticketRows(d), layout = ticketLayout(rows.length), size = layout.size;
+    const pages = Math.max(1, Math.ceil(rows.length/size));
+    list.style.gridTemplateColumns = `repeat(${layout.columns}, minmax(0, 1fr))`;
+    list.style.gridTemplateRows = `repeat(${layout.rows}, minmax(0, 1fr))`;
+    list.dataset.compact = String(layout.columns >= 3);
     page = Math.min(page, pages-1);
     text("vac-period", period(d));
     text("vac-count", `${sales} / ${goal}`);
@@ -119,7 +131,7 @@
     text("vac-people", rows.length);
     text("vac-ticket-total", d.totalTickets);
     text("vac-page-label", pages > 1 ? `Página ${page+1} / ${pages}` : "Acumulados de la semana");
-    const signature = JSON.stringify([page,size,rows]);
+    const signature = JSON.stringify([page,size,layout.columns,layout.rows,rows]);
     if (lastSignature === signature) return;
     lastSignature = signature;
     list.textContent = "";
@@ -153,7 +165,7 @@
   setInterval(() => {
     if (view.hidden) return;
     const d=feed.getSnapshot(); if (!d) return;
-    const pages=Math.max(1,Math.ceil(ticketRows(d).length/pageSize()));
+    const pages=Math.max(1,Math.ceil(ticketRows(d).length/ticketLayout(ticketRows(d).length).size));
     if (pages>1) {page=(page+1)%pages;render();}
   },6000);
 })();
