@@ -52,6 +52,40 @@
   const text = (id, value) => { $(id).textContent = value; };
   let page = 0;
   let lastSignature = "";
+  let shortNames = new Map();
+  const nameKey = value => String(value || "").normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, " ").toUpperCase();
+  async function refreshShortNames() {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    try {
+      const params = new URLSearchParams({sheet:"AGENT_INFORMATION", headers:"0",
+        tq:"select C,D where C is not null", t:String(Date.now())});
+      const response = await fetch(`https://docs.google.com/spreadsheets/d/1YTc-LgBdoQYeR1tihnbApF8HDYcvNs1E-aeTn1-cx5k/gviz/tq?${params}`,
+        {cache:"no-store", signal:controller.signal});
+      if (!response.ok) throw Error(`Roster HTTP ${response.status}`);
+      const match = (await response.text()).match(/setResponse\(([\s\S]*)\);?\s*$/);
+      if (!match) throw Error("Unexpected roster response");
+      const data = JSON.parse(match[1]);
+      if (data.status === "error" || !data.table) throw Error("Roster unavailable");
+      const next = new Map(), ambiguous = new Set();
+      (data.table.rows || []).forEach(row => {
+        const cells = row.c || [];
+        const full = nameKey(cells[0] && cells[0].v);
+        const short = String(cells[1] && cells[1].v || "").trim();
+        if (!full || !short || full === "FULL NAME" || ambiguous.has(full)) return;
+        if (next.has(full) && next.get(full) !== short) {
+          next.delete(full); ambiguous.add(full);
+        } else next.set(full, short);
+      });
+      shortNames = next;
+      lastSignature = "";
+      render();
+    } catch (error) {
+      console.warn("Ticket short names unavailable; keeping last known names.", error.message);
+    } finally { clearTimeout(timeout); }
+  }
+
   const pageSize = () => window.innerWidth <= 700 ? 6 : 12;
   const ticketRows = d => (Array.isArray(d.tickets) ? d.tickets : [])
     .filter(r => r && r.name && Number(r.sales) >= 2 && Number(r.tickets) > 0)
@@ -90,17 +124,16 @@
     lastSignature = signature;
     list.textContent = "";
     if (!rows.length) { const empty=document.createElement("p");empty.className="vac-empty";empty.textContent="Aún no hay closers con dos ventas.";list.appendChild(empty);return; }
-    rows.slice(page*size,(page+1)*size).forEach((r,i) => {
+    rows.slice(page*size,(page+1)*size).forEach(r => {
       const entry=document.createElement("div");entry.className="vac-ticket-row";
-      const number=document.createElement("span");number.className="vac-ticket-rank";number.textContent=String(page*size+i+1).padStart(2,"0");
       const details=document.createElement("div");details.className="vac-ticket-details";
-      const name=document.createElement("strong");name.textContent=r.name;name.title=r.name;
+      const name=document.createElement("strong");name.textContent=shortNames.get(nameKey(r.name)) || r.name;name.title=r.name;
       const count=document.createElement("small");count.textContent=`${r.sales} ventas`;
       details.append(name,count);
       const ticket=document.createElement("div");ticket.className="vac-ticket-badge";
       const amount=document.createElement("strong");amount.textContent=r.tickets;
       const word=document.createElement("small");word.textContent=Number(r.tickets)===1?"BOLETO":"BOLETOS";
-      ticket.append(amount,word);entry.append(number,details,ticket);list.appendChild(entry);
+      ticket.append(amount,word);entry.append(details,ticket);list.appendChild(entry);
     });
   }
   function hide() { view.hidden = true; }
@@ -112,6 +145,8 @@
     mode.textContent=preview ? "RIFA VACACIONES · SIMULACIÓN · B: SIGUIENTE" : "RIFA VACACIONES · LIVE SHEETS · B: SIGUIENTE";
     render(); feed.refresh();
   }
+  refreshShortNames();
+  setInterval(refreshShortNames, 5 * 60 * 1000);
   window.VacationRaffleView=Object.freeze({show,hide,render});
   window.addEventListener("blackfriday:updated", render);
   window.addEventListener("resize", render);

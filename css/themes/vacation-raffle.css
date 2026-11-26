@@ -48,8 +48,7 @@
 .vac-ticket-summary > span { display:flex; align-items:center; justify-content:center; gap:clamp(5px,.8vw,15px); padding:clamp(4px,.7vh,10px); border:1px solid #c39a6044; border-radius:8px; background:#ffffff04; font-size:clamp(9px,.95vw,17px); font-weight:700; }
 .vac-ticket-summary strong { font-size:clamp(21px,2.2vw,43px); line-height:1; }
 .vac-ticket-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); grid-auto-rows:minmax(0,1fr); grid-template-rows:repeat(6,minmax(0,1fr)); align-content:start; flex:1; min-height:0; gap:clamp(4px,.55vh,8px); }
-.vac-ticket-row { display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:clamp(5px,.6vw,11px); min-height:0; min-width:0; padding:clamp(3px,.45vh,6px) clamp(5px,.65vw,12px); border:1px solid #c39a6040; border-radius:8px; background:linear-gradient(105deg,#28231b,#15171d 65%); }
-.vac-ticket-rank { font-size:clamp(11px,1.05vw,20px); color:var(--bf-gold-light); font-weight:800; }
+.vac-ticket-row { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:clamp(5px,.6vw,11px); min-height:0; min-width:0; padding:clamp(3px,.45vh,6px) clamp(5px,.65vw,12px); border:1px solid #c39a6040; border-radius:8px; background:linear-gradient(105deg,#28231b,#15171d 65%); }
 .vac-ticket-details { display:flex; flex-direction:column; gap:2px; min-width:0; }
 .vac-ticket-details > strong { font-size:clamp(10px,1vw,18px); line-height:1.15; overflow-wrap:anywhere; }
 .vac-ticket-details > small { color:var(--muted); font-size:clamp(9px,.76vw,14px); }
