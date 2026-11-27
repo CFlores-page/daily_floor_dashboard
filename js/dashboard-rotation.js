@@ -43,6 +43,27 @@
       });
     }
   }
+  const mobileNav = document.createElement("nav");
+  mobileNav.className = "mobile-slide-nav";
+  mobileNav.setAttribute("aria-label", "Cambiar pantalla");
+  mobileNav.innerHTML = '<button type="button" aria-label="Pantalla anterior">‹ Anterior</button><span aria-live="polite"></span><button type="button" aria-label="Pantalla siguiente">Siguiente ›</button>';
+  document.body.appendChild(mobileNav);
+  const navButtons = mobileNav.querySelectorAll("button");
+  function updateNav() {
+    const names = {today:"Ventas", "black-friday":"Black Friday", vacation:"Vacaciones"};
+    mobileNav.querySelector("span").textContent = `${names[current]} · ${automatic ? "Auto" : "Manual"}`;
+    navButtons.forEach(button => { button.disabled = blocked(); });
+  }
+  function manualStep(direction) {
+    if (blocked()) return;
+    automatic = false;
+    const order = allowed();
+    show(order[(order.indexOf(current) + direction + order.length) % order.length]);
+    updateNav();
+  }
+  navButtons[0].addEventListener("click", () => manualStep(-1));
+  navButtons[1].addEventListener("click", () => manualStep(1));
+  window.addEventListener("dashboard:slidechange",updateNav);
   function next() {
     if (blocked()) return;
     const order = allowed();
@@ -52,12 +73,12 @@
     if (e.code !== "Space" || e.repeat || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
     if (e.target && (e.target.isContentEditable || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(e.target.tagName))) return;
     e.preventDefault();
-    automatic = false;
-    next();
+    manualStep(1);
   });
   const requested = new URLSearchParams(location.search).get("slide") || "today";
   show(requested, false);
   setInterval(() => {
+    updateNav();
     if (!automatic) return;
     if (blocked()) { wasBusy = true; return; }
     if (wasBusy) {
