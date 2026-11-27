@@ -674,7 +674,7 @@
   }
 
   async function refresh() {
-    if (state.busy) return;
+    if (state.busy || (window.RaffleReadyOverlay && window.RaffleReadyOverlay.isActive())) return;
     state.busy = true;
     try {
       refreshCloserPhotos(); // roster is shared by live and preview cards

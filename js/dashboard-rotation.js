@@ -20,6 +20,7 @@
     return !!el && !el.hidden;
   };
   const blocked = () => Boolean(
+    (window.RaffleReadyOverlay && window.RaffleReadyOverlay.isActive()) ||
     window.ArenaLiveCelebration ||
     (window.NewSaleOverlay && window.NewSaleOverlay.isActive()) ||
     visible("sale-event") || visible("maintenance")
