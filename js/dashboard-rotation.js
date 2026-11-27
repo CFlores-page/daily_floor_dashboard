@@ -12,6 +12,7 @@
   let current = "today";
   let deadline = performance.now() + HOLD_MS;
   let wasBusy = false;
+  let automatic = true;
   const allowed = () => cash.isUnlocked()
     ? ["today", "black-friday", "vacation"]
     : ["today", "vacation"];
@@ -20,7 +21,6 @@
     return !!el && !el.hidden;
   };
   const blocked = () => Boolean(
-    (window.RaffleReadyOverlay && window.RaffleReadyOverlay.isActive()) ||
     window.ArenaLiveCelebration ||
     (window.NewSaleOverlay && window.NewSaleOverlay.isActive()) ||
     visible("sale-event") || visible("maintenance")
@@ -31,6 +31,7 @@
     else cash.show(target === "black-friday");
     current = target;
     deadline = performance.now() + HOLD_MS;
+    window.dispatchEvent(new Event("dashboard:slidechange"));
     if (animate && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
       const selector = target === "today" ? ".scoreboard, .competition, .activity"
         : target === "vacation" ? "#vacation-view" : "#bf-view";
@@ -48,14 +49,16 @@
     show(order[(order.indexOf(current) + 1) % order.length]);
   }
   document.addEventListener("keydown", e => {
-    if (e.code !== "KeyB" || e.repeat || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
-    if (e.target && (e.target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))) return;
+    if (e.code !== "Space" || e.repeat || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+    if (e.target && (e.target.isContentEditable || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(e.target.tagName))) return;
     e.preventDefault();
+    automatic = false;
     next();
   });
   const requested = new URLSearchParams(location.search).get("slide") || "today";
   show(requested, false);
   setInterval(() => {
+    if (!automatic) return;
     if (blocked()) { wasBusy = true; return; }
     if (wasBusy) {
       wasBusy = false;
@@ -67,6 +70,7 @@
   }, 200);
   window.DashboardRotation = Object.freeze({
     current: () => current,
+    isAutomatic: () => automatic,
     allowed: () => allowed().slice()
   });
 })();

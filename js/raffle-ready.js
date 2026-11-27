@@ -1,4 +1,4 @@
-/* Announce a verified five-sale raffle once; never select a winner. */
+/* Replace the Black Friday slide while its current raffle has five sales. */
 (() => {
   "use strict";
   const feed = window.BlackFridayFeed;
@@ -8,11 +8,11 @@
   overlay.hidden = true;
   overlay.setAttribute("role", "status");
   overlay.setAttribute("aria-live", "polite");
-  overlay.innerHTML = '<div class="rr-panel"><div class="rr-kicker">NETCENTER · BLACK FRIDAY</div><h2>¡LA SIGUIENTE RIFA ESTÁ LISTA!</h2><p class="rr-subtitle"></p><div class="rr-lineup"></div><p class="rr-note">5 ventas completadas · Participantes listos para el sorteo</p><button type="button" class="rr-close">Continuar</button></div>';
+  overlay.innerHTML = '<div class="rr-panel"><div class="rr-kicker">NETCENTER · BLACK FRIDAY</div><h2>¡LA SIGUIENTE RIFA ESTÁ LISTA!</h2><p class="rr-subtitle"></p><div class="rr-lineup"></div><p class="rr-note">5 ventas completadas · Participantes listos para el sorteo</p></div>';
   document.body.appendChild(overlay);
   const key = value => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, " ").toUpperCase();
-  const people = new Map(), seen = new Set();
-  let loaded = false, loading = false, retryAt = 0, timer;
+  const people = new Map();
+  let loaded = false, loading = false, retryAt = 0, currentId = "";
   function imageUrl(value) {
     const raw = String(value || "").trim();
     if (!raw) return "";
@@ -50,27 +50,23 @@
     finally { loaded = true; loading = false; clearTimeout(timeout); }
   }
   function close() {
-    clearTimeout(timer);
     overlay.hidden = true;
+    currentId = "";
     overlay.querySelectorAll(".rr-photo").forEach(box => { if (window.PortraitFit) window.PortraitFit.clear(box); });
   }
-  overlay.querySelector("button").addEventListener("click",close);
-  document.addEventListener("keydown",e => { if (e.key === "Escape" && !overlay.hidden) close(); });
   const visible = id => { const el = document.getElementById(id); return el && !el.hidden; };
   function check() {
     const data = feed.getSnapshot();
-    if (!overlay.hidden) {
-      if (visible("maintenance")) close();
-      return;
-    }
     if (!visible("bf-view") || feed.isStale() || !loaded || !data || data.current.length !== 5 ||
         visible("maintenance") || visible("sale-event") || window.ArenaLiveCelebration ||
-        (window.NewSaleOverlay && window.NewSaleOverlay.isActive())) return;
-    const id = JSON.stringify([Boolean(window.ArenaPreview && window.ArenaPreview.enabled),data.fridayStart,data.raffleNumber,data.current.map(p=>p.cert).sort()]);
-    if (seen.has(id)) return;
-    try { if (localStorage.getItem("bf:raffle-ready:"+id)) { seen.add(id); return; } } catch (_) {}
-    seen.add(id);
-    try { localStorage.setItem("bf:raffle-ready:"+id,"1"); } catch (_) {}
+        (window.NewSaleOverlay && window.NewSaleOverlay.isActive())) {
+      if (!overlay.hidden) close();
+      return;
+    }
+    const id = JSON.stringify([data.raffleNumber,data.current,Array.from(people.entries())]);
+    if (!overlay.hidden && currentId === id) return;
+    close();
+    currentId = id;
     overlay.querySelector(".rr-subtitle").textContent = `Rifa #${data.raffleNumber} · $500 MXN`;
     const lineup = overlay.querySelector(".rr-lineup"); lineup.textContent = "";
     data.current.forEach(person => {
@@ -86,11 +82,12 @@
       else { const fallback = document.createElement("span"); fallback.className="missing-photo"; fallback.textContent="Foto no disponible"; photo.append(fallback); }
     });
     overlay.hidden = false;
-    timer = setTimeout(close, 12000);
+
   }
   window.RaffleReadyOverlay = Object.freeze({isActive:()=>!overlay.hidden});
   loadPeople();
   setInterval(loadPeople,60000);
   setInterval(check,500);
   window.addEventListener("blackfriday:updated",check);
+  window.addEventListener("dashboard:slidechange",check);
 })();

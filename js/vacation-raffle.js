@@ -154,7 +154,7 @@
     today.forEach(el => {el.hidden=true;});
     arena.classList.add("bf-showing");
     view.hidden=false;
-    mode.textContent=preview ? "RIFA VACACIONES · SIMULACIÓN · B: SIGUIENTE" : "RIFA VACACIONES · LIVE SHEETS · B: SIGUIENTE";
+    mode.textContent=preview ? "RIFA VACACIONES · SIMULACIÓN · ESPACIO: MANUAL / SIGUIENTE" : "RIFA VACACIONES · LIVE SHEETS · ESPACIO: MANUAL / SIGUIENTE";
     render(); feed.refresh();
   }
   refreshShortNames();

@@ -674,7 +674,7 @@
   }
 
   async function refresh() {
-    if (state.busy || (window.RaffleReadyOverlay && window.RaffleReadyOverlay.isActive())) return;
+    if (state.busy) return;
     state.busy = true;
     try {
       refreshCloserPhotos(); // roster is shared by live and preview cards
@@ -740,10 +740,10 @@
   if (window.ArenaPreview.enabled) {
     text(
       "mode-label",
-      "STAGING PREVIEW · sample data · Space: next sale · R: reset",
+      "STAGING PREVIEW · sample data · N: next sample sale · Space: next tab · R: reset",
     );
     document.addEventListener("keydown", (e) => {
-      if (e.code === "Space") {
+      if (e.code === "KeyN") {
         e.preventDefault();
               
       if (e.repeat || window.NewSaleOverlay.isActive()) return;

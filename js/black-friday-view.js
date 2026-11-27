@@ -212,7 +212,7 @@
     today.forEach(el => { el.hidden = on; });
     view.hidden = !on;
     label.textContent = on
-      ? (isPreview ? "BLACK FRIDAY · SIMULACIÓN · B: SIGUIENTE" : "BLACK FRIDAY · LIVE SHEETS · B: SIGUIENTE")
+      ? (isPreview ? "BLACK FRIDAY · SIMULACIÓN · ESPACIO: MANUAL / SIGUIENTE" : "BLACK FRIDAY · LIVE SHEETS · ESPACIO: MANUAL / SIGUIENTE")
       : todayLabel;
     if (on) { render(); refresh(); }
     return true;
