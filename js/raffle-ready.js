@@ -8,7 +8,7 @@
   overlay.hidden = true;
   overlay.setAttribute("role", "status");
   overlay.setAttribute("aria-live", "polite");
-  overlay.innerHTML = '<div class="rr-panel"><div class="rr-logos"><img src="https://drive.google.com/thumbnail?id=1-AD9JlC3WpJpovCL6WiG99jY-i3rigtO&amp;sz=w1000" alt="NetCenter"><img src="./assets/themes/black-friday/black-friday-logo.png" alt="Black Friday"></div><h2>¡LA SIGUIENTE RIFA ESTÁ LISTA!</h2><p class="rr-subtitle"></p><div class="rr-lineup"></div></div>';
+  overlay.innerHTML = '<div class="rr-panel"><div class="rr-logos"><span class="rr-netcenter"><img src="https://drive.google.com/thumbnail?id=1-AD9JlC3WpJpovCL6WiG99jY-i3rigtO&amp;sz=w1000" alt="NetCenter"></span><span class="rr-logo-divider" aria-hidden="true">|</span><img src="./assets/themes/black-friday/black-friday-logo.png" alt="Black Friday"></div><h2>¡LA SIGUIENTE RIFA ESTÁ LISTA!</h2><p class="rr-subtitle"></p><div class="rr-lineup"></div></div>';
   document.body.appendChild(overlay);
   const key = value => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, " ").toUpperCase();
   const people = new Map();
