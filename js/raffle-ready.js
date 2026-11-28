@@ -49,6 +49,10 @@
     } catch (error) { retryAt = Date.now() + 60000; console.warn("Raffle portraits:",error.message); }
     finally { loaded = true; loading = false; clearTimeout(timeout); }
   }
+  function silhouette(container) {
+    container.textContent = "";
+    container.innerHTML = '<svg class="rr-silhouette" viewBox="0 0 180 220" role="img" aria-label="Foto no disponible"><circle cx="90" cy="68" r="35" fill="#8a96a5"/><path d="M9 220 V190 Q11 124 90 124 Q169 124 171 190 V220Z" fill="#536173"/></svg>';
+  }
   function close() {
     overlay.hidden = true;
     currentId = "";
@@ -78,8 +82,8 @@
       const name = document.createElement("h3"); name.textContent = profile.name || person.name;
       const cert = document.createElement("p"); cert.textContent = person.cert;
       card.append(photo,name,cert); lineup.append(card);
-      if (profile.photo && window.PortraitFit) window.PortraitFit.mount(photo,profile.photo,name.textContent);
-      else { const fallback = document.createElement("span"); fallback.className="missing-photo"; fallback.textContent="Foto no disponible"; photo.append(fallback); }
+      if (profile.photo && window.PortraitFit) window.PortraitFit.mount(photo,profile.photo,name.textContent,silhouette);
+      else silhouette(photo);
     });
     overlay.hidden = false;
 

@@ -99,7 +99,7 @@
     cache.set(analysisUrl, result);
     return result;
   }
-  function mount(container, url, alt) {
+  function mount(container, url, alt, onUnavailable) {
     const old = active.get(container);
     if (old) old.dispose();
     container.textContent = "";
@@ -172,6 +172,10 @@
       entry.dispose();
       container.dataset.fit = "unavailable";
       container.textContent = "";
+      if (typeof onUnavailable === "function") {
+        onUnavailable(container);
+        return;
+      }
       const note = document.createElement("span");
       note.className = "missing-photo";
       note.textContent = "Photo unavailable";
